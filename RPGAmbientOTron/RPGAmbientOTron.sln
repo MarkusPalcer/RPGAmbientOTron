@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambient-O-Tron", "Ambient-O-Tron\Ambient-O-Tron.csproj", "{47B73382-05EF-42F9-AA2D-9CDAEEEB5B48}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other files", "Other files", "{EDE7005A-747A-4D42-A87C-A0A775ECC502}"
-	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
-	EndProjectSection
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{5A871B38-E44F-43BB-9D79-AB271D553B0C}"
 EndProject
