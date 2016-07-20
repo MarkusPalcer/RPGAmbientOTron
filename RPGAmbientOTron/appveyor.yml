@@ -1,0 +1,13 @@
+version: 0.0.{build}
+
+configuration: Release
+
+assembly_info:
+  patch: true
+
+build:
+  verbosity: minimal
+
+artifacts:
+  - path: 'Installer\bin\Release\Installer.msi'
+    name: RPG Ambient-O-Tron
