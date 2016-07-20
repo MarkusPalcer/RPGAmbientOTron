@@ -1,0 +1,48 @@
+<?xml version="1.0"
+      encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?define VERSION="!(bind.FileVersion.MainExecutable)"?>
+
+  <Product Id="*"
+           Name="Ambient-O-Tron"
+           Language="1033"
+           Version="$(var.VERSION)"
+           Manufacturer="Markus Palcer"
+           UpgradeCode="32effac1-8879-453d-910f-cb7257037ca1">
+
+    <Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+
+    <MediaTemplate />
+
+    <Feature Id="ProductFeature"
+             Title="Ambient-O-Tron"
+             Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR"
+               Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER"
+                   Name="Ambient-O-Tron" />
+      </Directory>
+    </Directory>
+
+    <ComponentGroup Id="ProductComponents"
+                    Directory="INSTALLFOLDER">
+      <Component Id="ProductComponent">
+        <File Id="MainExecutable"
+              Name="$(var.Ambient-O-Tron.TargetFileName)" 
+              Source="$(var.Ambient-O-Tron.TargetPath)" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
