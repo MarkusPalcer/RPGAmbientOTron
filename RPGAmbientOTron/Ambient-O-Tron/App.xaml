@@ -1,9 +1,11 @@
-﻿<Application x:Class="Ambient_O_Tron.App"
+﻿<Application x:Class="AmbientOTron.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Ambient_O_Tron"
-             StartupUri="MainWindow.xaml">
+             xmlns:viewModels="clr-namespace:AmbientOTron.ViewModels">
     <Application.Resources>
-         
+
     </Application.Resources>
 </Application>
+
+
+

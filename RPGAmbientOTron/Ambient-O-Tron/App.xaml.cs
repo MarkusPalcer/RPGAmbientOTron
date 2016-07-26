@@ -1,17 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows;
+using AmbientOTron.ViewModels;
+using AmbientOTron.Views;
+using AmbientOTron.Views.Tabs;
+using Prism.Regions;
 
-namespace Ambient_O_Tron
+namespace AmbientOTron
 {
-  /// <summary>
-  /// Interaction logic for App.xaml
-  /// </summary>
-  public partial class App : Application
-  {
-  }
+    public partial class App
+    {
+        public static string SoundEffectTabRegionName = "SoundEffectTab";
+
+        private Bootstrapper bootstrapper;
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            bootstrapper = new Bootstrapper();
+            bootstrapper.Run();
+
+            bootstrapper.Container.GetExportedValue<IRegionManager>()
+                        .RegisterViewWithRegion(SoundEffectTabRegionName, typeof(SoundEffectView));
+
+        }
+
+    }
 }
