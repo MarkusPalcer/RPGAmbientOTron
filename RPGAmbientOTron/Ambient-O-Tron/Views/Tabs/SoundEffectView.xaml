@@ -44,7 +44,8 @@
                             Grid.Column="0"
                             Width="32"
                             Height="32"
-                            Padding="5">
+                            Padding="5"
+                            Command="{Binding PlayCommand}">
                         <Image Source="../../Resources/media-play.png"></Image>
                     </Button>
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 using Prism.Commands;
 
@@ -23,7 +24,6 @@ namespace AmbientOTron.ViewModels
             Mode = DisplayMode.StandardMode;
         }
 
-        
 
         public DisplayMode Mode
         {
@@ -43,6 +43,7 @@ namespace AmbientOTron.ViewModels
 
 
         public ICommand DeleteCommand { get; set; }
+        public ICommand PlayCommand { get; set; }
 
         private void CancelOperation()
         {
