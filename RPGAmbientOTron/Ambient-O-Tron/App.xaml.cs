@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 using NAudio.Wave;
-using Prism.Regions;
 
 namespace AmbientOTron
 {
@@ -15,10 +14,19 @@ namespace AmbientOTron
         {
             base.OnStartup(e);
 
-            bootstrapper = new Bootstrapper();
+            var options = new CommandLineOptions();
+            CommandLine.Parser.Default.ParseArguments(e.Args, options);
+
+            bootstrapper = new Bootstrapper
+            {
+                MefDebugger = options.DebugMef
+            };
+
             bootstrapper.Run();
 
             InitializeNAudio();
+
+            
         }
 
         private void InitializeNAudio()

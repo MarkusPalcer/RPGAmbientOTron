@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition.Hosting;
+﻿using System;
+using System.ComponentModel.Composition.Hosting;
 using System.Windows;
 using Core.Navigation;
 using Prism.Mef;
@@ -7,6 +8,8 @@ namespace AmbientOTron
 {
     public class Bootstrapper : MefBootstrapper
     {
+
+        public bool MefDebugger { get; set; } = false;
 
         protected override AggregateCatalog CreateAggregateCatalog()
         {
@@ -28,21 +31,34 @@ namespace AmbientOTron
 
         protected override DependencyObject CreateShell()
         {
-#if DEBUGMEF
+            return MefDebugger ? CreateMefDebugWindow() : CreateMainWindow();
+        }
+
+        private Window CreateMainWindow()
+        {
+            try
+            {
+                return Container.GetExportedValue<MainWindow>();
+            }
+            catch (Exception)
+            {
+                return CreateMefDebugWindow();
+            }
+        }
+
+        public Window CreateMefDebugWindow()
+        {
             return new Window
             {
-                Title="MEF Debug view",
+                Title = "MEF Debug window",
                 WindowState = WindowState.Maximized,
-                Content = new  MefContrib.Tools.Visualizer.Views.InformationView
+                Content = new MefContrib.Tools.Visualizer.Views.InformationView
                 {
                     ViewModel = {
                         Container = Container
                     }
                 }
             };
-#else
-            return Container.GetExportedValue<MainWindow>();
-#endif
         }
     }
 }
