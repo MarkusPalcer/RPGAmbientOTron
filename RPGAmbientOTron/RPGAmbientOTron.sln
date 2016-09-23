@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other files", "Other files"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{5A871B38-E44F-43BB-9D79-AB271D553B0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,14 @@ Global
 		{5A871B38-E44F-43BB-9D79-AB271D553B0C}.Release|Any CPU.Build.0 = Release|x86
 		{5A871B38-E44F-43BB-9D79-AB271D553B0C}.Release|x86.ActiveCfg = Release|x86
 		{5A871B38-E44F-43BB-9D79-AB271D553B0C}.Release|x86.Build.0 = Release|x86
+		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Debug|x86.Build.0 = Debug|Any CPU
+		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Release|x86.ActiveCfg = Release|Any CPU
+		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
