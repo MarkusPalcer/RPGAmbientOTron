@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
+﻿using System.ComponentModel.Composition.Hosting;
 using System.Windows;
+using Core.Navigation;
 using Prism.Mef;
-using Prism.Regions;
 
 namespace AmbientOTron
 {
@@ -16,6 +13,7 @@ namespace AmbientOTron
             var catalog = base.CreateAggregateCatalog();
 
             catalog.Catalogs.Add(new AssemblyCatalog(typeof(Bootstrapper).Assembly));
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(INavigationService).Assembly));
 
             return catalog;
         }
@@ -30,7 +28,21 @@ namespace AmbientOTron
 
         protected override DependencyObject CreateShell()
         {
+#if DEBUGMEF
+            return new Window
+            {
+                Title="MEF Debug view",
+                WindowState = WindowState.Maximized,
+                Content = new  MefContrib.Tools.Visualizer.Views.InformationView
+                {
+                    ViewModel = {
+                        Container = Container
+                    }
+                }
+            };
+#else
             return Container.GetExportedValue<MainWindow>();
+#endif
         }
     }
 }

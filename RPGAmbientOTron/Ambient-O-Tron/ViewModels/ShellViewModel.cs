@@ -1,16 +1,21 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
 using System.ComponentModel.Composition;
+using System.Windows.Input;
+using AmbientOTron.Views;
+using Core.Navigation;
+using Prism.Mvvm;
 
 namespace AmbientOTron.ViewModels
 {
-  [Export]
-  public class ShellViewModel : Prism.Mvvm.BindableBase
-  {
-    public ShellViewModel()
+    [Export]
+    public class ShellViewModel : BindableBase
     {
-      SoundEffects = new ObservableCollection<SoundEffectViewModel>();
-    }
+        [ImportingConstructor]
+        public ShellViewModel(INavigationService navigationService)
+        {
+            LibraryEditorNavigationCommand = navigationService.CreateNavigationCommand<LibraryEditor>(App.MainRegionName);
+        }
 
-    public ObservableCollection<SoundEffectViewModel> SoundEffects { get; }
-  }
+        public ICommand LibraryEditorNavigationCommand { get; }
+    }
 }

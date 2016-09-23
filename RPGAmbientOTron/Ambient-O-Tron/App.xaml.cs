@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
-using AmbientOTron.Views.Tabs;
 using NAudio.Wave;
 using Prism.Regions;
 
@@ -8,11 +7,9 @@ namespace AmbientOTron
 {
     public partial class App
     {
-        public static string SoundEffectTabRegionName = "SoundEffectTab";
-
         private Bootstrapper bootstrapper;
 
-
+        public const string MainRegionName = "MAIN";
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -22,9 +19,6 @@ namespace AmbientOTron
             bootstrapper.Run();
 
             InitializeNAudio();
-
-            bootstrapper.Container.GetExportedValue<IRegionManager>()
-                        .RegisterViewWithRegion(SoundEffectTabRegionName, typeof(SoundEffectView));
         }
 
         private void InitializeNAudio()
@@ -37,7 +31,6 @@ namespace AmbientOTron
             var waveOutDevice = new WaveOut();
             waveOutDevice.Init(mixer);
             waveOutDevice.Play();
-
 
             bootstrapper.Container.ComposeExportedValue(waveOutDevice);
             bootstrapper.Container.ComposeExportedValue(mixer);
