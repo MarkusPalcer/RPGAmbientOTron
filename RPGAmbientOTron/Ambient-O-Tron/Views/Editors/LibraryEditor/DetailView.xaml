@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="AmbientOTron.Views.Editors.LibraryEditor.DetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:libraryEditor="clr-namespace:AmbientOTron.Views.Editors.LibraryEditor"
+             xmlns:controls="clr-namespace:AmbientOTron.Controls"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance libraryEditor:DetailViewModel}">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+        <StackPanel Orientation="Vertical" Grid.IsSharedSizeScope="True">
+            <controls:LabelledControl Label="Name:">
+                <TextBox Text="{Binding Name}" />
+            </controls:LabelledControl>
+
+            <controls:LabelledControl Label="Files:">
+                <ListView ItemsSource="{Binding Files}" Height="300"
+                          dd:DragDrop.IsDropTarget="True"
+                          dd:DragDrop.DropHandler="{Binding}" />
+            </controls:LabelledControl>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Save" Command="{Binding SaveCommand}" />
+                <Button Content="Revert" Command="{Binding RevertCommand}" />
+                <Button Content="Cancel" Command="{Binding CloseCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

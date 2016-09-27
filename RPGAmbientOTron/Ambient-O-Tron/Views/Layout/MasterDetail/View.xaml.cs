@@ -1,18 +1,15 @@
 ﻿using System.ComponentModel.Composition;
-using AmbientOTron.ViewModels;
 
-namespace AmbientOTron.Views
+namespace AmbientOTron.Views.Layout.MasterDetail
 {
     [Export]
-    public partial class LibraryEditor 
+    public partial class View
     {
         [ImportingConstructor]
-        public LibraryEditor(LibraryEditorViewModel viewModel)
+        public View(ViewModel viewModel)
         {
             InitializeComponent();
-
             DataContext = viewModel;
         }
     }
 }
-

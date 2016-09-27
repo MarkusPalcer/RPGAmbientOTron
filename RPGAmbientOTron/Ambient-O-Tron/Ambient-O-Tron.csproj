@@ -43,6 +43,10 @@
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.1.0.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -103,15 +107,33 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="CommandLineOptions.cs" />
+    <Compile Include="Controls\LabelledControl.xaml.cs">
+      <DependentUpon>LabelledControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="ViewModels\LibraryEditorViewModel.cs" />
-    <Compile Include="ViewModels\ShellViewModel.cs" />
-    <Compile Include="Views\LibraryEditor.xaml.cs">
-      <DependentUpon>LibraryEditor.xaml</DependentUpon>
+    <Compile Include="Views\Editors\LibraryEditor\DetailViewModel.cs" />
+    <Compile Include="Views\Editors\LibraryEditor\MasterView.xaml.cs">
+      <DependentUpon>MasterView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ShellView.xaml.cs">
-      <DependentUpon>ShellView.xaml</DependentUpon>
+    <Compile Include="Views\Editors\LibraryEditor\MasterViewModel.cs" />
+    <Compile Include="Views\Empty.xaml.cs">
+      <DependentUpon>Empty.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Layout\MasterDetail\View.xaml.cs">
+      <DependentUpon>View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Layout\MasterDetail\ViewModel.cs" />
+    <Compile Include="Views\Shell\ViewModel.cs" />
+    <Compile Include="Views\Editors\LibraryEditor\DetailView.xaml.cs">
+      <DependentUpon>DetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Shell\View.xaml.cs">
+      <DependentUpon>View.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Controls\LabelledControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -128,11 +150,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LibraryEditor.xaml">
+    <Page Include="Views\Editors\LibraryEditor\DetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ShellView.xaml">
+    <Page Include="Views\Editors\LibraryEditor\MasterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Empty.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Layout\MasterDetail\View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Shell\View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -183,7 +217,10 @@
   <ItemGroup>
     <Resource Include="Resources\x.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Behaviors\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}</Project>

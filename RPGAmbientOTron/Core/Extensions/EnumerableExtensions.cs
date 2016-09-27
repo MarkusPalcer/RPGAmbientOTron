@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Core.Extensions
 {
@@ -25,6 +27,19 @@ namespace Core.Extensions
             if (exceptions.Any())
             {
                 throw new AggregateException(exceptions);
+            }
+        }
+
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> src)
+        {
+            return new ObservableCollection<T>(src);
+        }
+
+        public static async Task ForEachAsync<T>(this IEnumerable<T> src, Func<T, Task> action)
+        {
+            foreach (var item in src)
+            {
+                await action(item);
             }
         }
     }
