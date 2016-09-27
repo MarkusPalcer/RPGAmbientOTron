@@ -6,8 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Core.Navigation;
+using Core.Repository;
 using Core.Repository.Models;
 using GongSolutions.Wpf.DragDrop;
+using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -17,14 +20,39 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     [Export]
     public class DetailViewModel : BindableBase, IConfirmNavigationRequest, IDropTarget
     {
+        private readonly INavigationService navigationService;
+        private readonly IRepository repository;
         private Library model = null;
 
         [ImportingConstructor]
-        public DetailViewModel()
+        public DetailViewModel(INavigationService navigationService, IRepository repository)
         {
+            this.navigationService = navigationService;
+            this.repository = repository;
             Files.CollectionChanged += (sender, args) => IsDirty = true;
 
             RevertCommand = new DelegateCommand(LoadFromModel).ObservesCanExecute(p => IsDirty);
+            CloseCommand = new DelegateCommand(CloseDetailView);
+            AddFileCommand = new DelegateCommand(ShowOpenFileDialog);
+            // TODO: Save
+        }
+
+        private void ShowOpenFileDialog()
+        {
+            var ofd = new OpenFileDialog
+            {
+                CheckFileExists = true,
+                CheckPathExists = true,
+                Multiselect = true,
+                Title = "Add file(s)...",
+            };
+
+            if (ofd.ShowDialog() != true)
+            {
+                return;
+            }
+
+            Files.AddRange(ofd.FileNames.Select(CreateFileViewModel));
         }
 
         private string name;
@@ -43,6 +71,10 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         public ICommand RevertCommand { get; }
 
+        public ICommand CloseCommand { get; }
+
+        public ICommand AddFileCommand { get; }
+
         private bool isDirty;
 
         private bool IsDirty
@@ -59,6 +91,13 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             IsDirty = false;
         }
 
+        private void CloseDetailView()
+        {
+            IsDirty = false;
+            navigationService.NavigateAsync<Empty>(Layout.MasterDetail.ViewModel.DetailRegion);
+        }
+
+        #region IConfirmNavigationRequest
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters?["id"] == null)
@@ -88,20 +127,51 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         public void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
         {
-            // TODO: When dirty, ask if user wants to lose changes
-            continuationCallback(true);
+            if (IsDirty)
+            {
+                // TODO: Create and use DialogService
+                var result = MessageBox.Show(
+                                             "Do you want to leave this page and loose your changes?",
+                                             "Leave",
+                                             MessageBoxButton.YesNo,
+                                             MessageBoxImage.Warning,
+                                             MessageBoxResult.No);
+
+                continuationCallback(result == MessageBoxResult.Yes);
+            }
+            else
+            {
+                continuationCallback(true);
+            }
         }
+        #endregion
 
         public class FileViewModel : BindableBase
         {
+            // TODO: Delete, Rename
+
             private AudioFile model;
 
             public FileViewModel(AudioFile model)
             {
                 this.model = model;
+
+                Name = model.PersistenceModel.Name;
+                FileName = model.PersistenceModel.FileName;
             }
+
+            private string name;
+
+            public string Name
+            {
+                get { return name; }
+                set { SetProperty(ref name, value); }
+            }
+
+            public string FileName { get; }
         }
 
+        #region IDropTarget
         public void DragOver(IDropInfo dropInfo)
         {
             dropInfo.Effects = DragDropEffects.None;
@@ -123,19 +193,11 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
                 Files.AddRange(files.Select(CreateFileViewModel));
             }
         }
+        #endregion
 
         private FileViewModel CreateFileViewModel(string fileName)
         {
-            var model = new AudioFile
-            {
-                PersistenceModel = new Core.Persistence.Models.AudioFile
-                {
-                    FileName = fileName,
-                    Name = new FileInfo(fileName).Name
-                }
-            };
-
-            return new FileViewModel(model);
+            return new FileViewModel(repository.GetAudioFileModel(fileName));
         }
     }
 }

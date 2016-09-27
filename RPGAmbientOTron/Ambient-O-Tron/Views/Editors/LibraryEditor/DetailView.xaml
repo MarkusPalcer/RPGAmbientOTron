@@ -19,7 +19,18 @@
             <controls:LabelledControl Label="Files:">
                 <ListView ItemsSource="{Binding Files}" Height="300"
                           dd:DragDrop.IsDropTarget="True"
-                          dd:DragDrop.DropHandler="{Binding}" />
+                          dd:DragDrop.DropHandler="{Binding}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" ToolTip="{Binding FileName}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add" Command="{Binding AddFileCommand}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
             </controls:LabelledControl>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -30,6 +41,22 @@
         </StackPanel>
     </ScrollViewer>
 </UserControl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

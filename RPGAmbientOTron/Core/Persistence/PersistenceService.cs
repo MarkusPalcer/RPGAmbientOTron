@@ -23,6 +23,8 @@ namespace Core.Persistence
         private readonly List<Library> libraries = new List<Library>();
 
 
+        private readonly Dictionary<string, AudioFile> audioFileModelCache = new Dictionary<string, AudioFile>();
+
         [ImportingConstructor]
         public PersistenceService(ILoggerFacade logger)
         {
@@ -48,10 +50,10 @@ namespace Core.Persistence
                 if (library == null) continue;
 
                 libraries.Add(library);
+
+                library.SatteliteLibraries.ForEach(x => libraryQueue.Enqueue(x));
             }
         }
-
-
 
         public Library LoadLibrary(string path)
         {
@@ -66,6 +68,9 @@ namespace Core.Persistence
                 var result = JsonConvert.DeserializeObject<Library>(File.ReadAllText(path));
 
                 result.FileName = path;
+
+                SynchronizeAudioFileModelCache(result);
+
                 return result;
             }
             catch (Exception ex)
@@ -73,6 +78,41 @@ namespace Core.Persistence
                 logger.LogException(ex);
                 return null;
             }
+        }
+
+        private void SynchronizeAudioFileModelCache(Library result)
+        {
+            var synchronizedModels = result.Files.Select(MakeDistinct).ToArray();
+
+            result.Files.Clear();
+            result.Files.AddRange(synchronizedModels);
+        }
+
+        private AudioFile MakeDistinct(AudioFile file)
+        {
+            AudioFile model;
+            if (!audioFileModelCache.TryGetValue(file.FileName, out model))
+            {
+                audioFileModelCache[file.FileName] = file;
+                return file;
+            }
+            else
+            {
+                return model;
+            }
+        }
+
+        public AudioFile GetAudioFileModelFor(string fileName)
+        {
+            // Create a new model in case it doesn't exist yet
+            var newModel = new AudioFile
+            {
+                FileName = fileName,
+                Name = new FileInfo(fileName).Name
+            };
+
+            // Either add the new model to the cache or return the existing model
+            return MakeDistinct(newModel);
         }
     }
 }

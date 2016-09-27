@@ -30,6 +30,8 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
             // No parameters -> Blank entry
             AddCommand = navigationService.CreateNavigationCommand<DetailView>(Layout.MasterDetail.ViewModel.DetailRegion);
+
+            // TODO: Update list on add or edit
         }
 
         public ObservableCollection<LibraryViewModel> Libraries { get; }
@@ -41,6 +43,8 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             private string name;
             private string fileName;
             private string fullFileName;
+
+            // TODO: Delete, Edit (bold)
 
             public LibraryViewModel(Library model)
             {

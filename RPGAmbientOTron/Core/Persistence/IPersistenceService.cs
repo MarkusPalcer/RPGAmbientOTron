@@ -9,5 +9,7 @@ namespace Core.Persistence
     {
         IEnumerable<Library> Libraries { get; }
         Library LoadLibrary(string path);
+
+        AudioFile GetAudioFileModelFor(string fileName);
     }
 }
