@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -34,6 +35,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             RevertCommand = new DelegateCommand(LoadFromModel).ObservesCanExecute(p => IsDirty);
             CloseCommand = new DelegateCommand(CloseDetailView);
             AddFileCommand = new DelegateCommand(ShowOpenFileDialog);
+
             // TODO: Save
         }
 
@@ -148,7 +150,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         public class FileViewModel : BindableBase
         {
-            // TODO: Delete, Rename
+            // TODO: Rename
 
             private AudioFile model;
 
@@ -169,6 +171,8 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             }
 
             public string FileName { get; }
+
+            public ICommand DeleteCommand { get; set; }
         }
 
         #region IDropTarget
@@ -197,7 +201,9 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         private FileViewModel CreateFileViewModel(string fileName)
         {
-            return new FileViewModel(repository.GetAudioFileModel(fileName));
+            var result = new FileViewModel(repository.GetAudioFileModel(fileName));
+            result.DeleteCommand = new DelegateCommand(() => Files.Remove(result));
+            return result;
         }
     }
 }
