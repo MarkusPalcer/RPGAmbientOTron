@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.Persistence.Models
+namespace Core.Repository.PersistenceMocels
 {
     public class Library
     {
         public string Name { get; set; }
 
-        public string FileName { get; set; }
-
         public List<AudioFile> Files { get; } = new List<AudioFile>();
 
-        public List<string> SatteliteLibraries { get; } = new List<string>();
+        public List<string> SatteliteLibraryPaths { get; } = new List<string>();
     }
 }

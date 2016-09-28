@@ -2,7 +2,9 @@ namespace Core.Repository.Models
 {
     public class AudioFile 
     {
-        public Core.Persistence.Models.AudioFile PersistenceModel { get; set; }
+        public string FullPath { get; set; }
+
+        public string Name { get; set; }
 
         public byte[] Hash { get; set; }
 

@@ -8,7 +8,10 @@ using Core.Extensions;
 using Core.Persistence;
 using Core.Repository.Models;
 using NAudio.Wave;
+using Newtonsoft.Json;
 using Prism.Logging;
+using AudioFile = Core.Repository.Models.AudioFile;
+using Library = Core.Repository.Models.Library;
 
 namespace Core.Repository
 {
@@ -16,16 +19,20 @@ namespace Core.Repository
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class Repository : IRepository
     {
-        private readonly IPersistenceService persistenceService;
+        private readonly string rootLibraryFileName = $"root{Constants.LibraryExtension}";
+
+        private static readonly string[] RootLibraryPaths = { Environment.CurrentDirectory };
+
         private readonly ILoggerFacade logger;
         private readonly SHA256 sha256 = SHA256.Create();
 
-        private readonly Dictionary<Persistence.Models.AudioFile, AudioFile> fileModelsByPersistenceModel = new Dictionary<Persistence.Models.AudioFile, AudioFile>();
+        private readonly Dictionary<string, AudioFile> audioFileCache = new Dictionary<string, AudioFile>();
+        private readonly Dictionary<string, Library> libraryCache = new Dictionary<string, Library>();
+
 
         [ImportingConstructor]
-        public Repository(IPersistenceService persistenceService, ILoggerFacade logger)
+        public Repository(ILoggerFacade logger)
         {
-            this.persistenceService = persistenceService;
             this.logger = logger;
 
             Init();
@@ -33,47 +40,88 @@ namespace Core.Repository
 
         private void Init()
         {
-            persistenceService.Libraries.ForEach(LoadLibrary);
+            RootLibraryPaths
+                .Select(p => Path.Combine(p, rootLibraryFileName))
+                .ForEach(x => LoadLibrary(x));
         }
 
-        private void LoadLibrary(Core.Persistence.Models.Library persistenceModel)
+        private Library LoadLibrary(string fullPath)
         {
-            var library = new Library
+            Library result;
+            if (libraryCache.TryGetValue(fullPath, out result))
             {
-                PersistenceModel = persistenceModel
-            };
+                return result;
+            }
 
-            library.Files.AddRange(persistenceModel.Files.Select(GetAudioFileModel));
+            if (!File.Exists(fullPath))
+            {
+                logger.Log($"Library {fullPath} does not exist.", Category.Info, Priority.Low);
+                return null;
+            }
+
+            try
+            {
+                var persistenceModel = JsonConvert.DeserializeObject<PersistenceMocels.Library>(File.ReadAllText(fullPath));
+                result = new Library
+                {
+                    Path = fullPath,
+                };
+
+                persistenceModel.SatteliteLibraryPaths
+                    .Select(x => ResolveLink(x, fullPath))
+                    .Select(LoadLibrary)
+                    .Where(x => x != null)
+                    .ForEach(result.SatteliteLibraries.Add);
+
+                persistenceModel.Files
+                    .Select(x => LoadAudioFile(ResolveLink(x.Path, fullPath), x))
+                    .Where(x => x != null)
+                    .ForEach(result.Files.Add);
+
+
+                
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex);
+                return null;
+            }
+
+            libraryCache[fullPath] = result;
+            return result;
         }
 
-        private AudioFile GetAudioFileModel(Persistence.Models.AudioFile persistenceModel)
+        private AudioFile LoadAudioFile(string fullPath, PersistenceMocels.AudioFile persistenceModel = null)
         {
             AudioFile result;
-            if (fileModelsByPersistenceModel.TryGetValue(persistenceModel, out result))
+            if (audioFileCache.TryGetValue(fullPath, out result))
             {
                 return result;
             }
 
             result = new AudioFile
             {
-                PersistenceModel = persistenceModel
+                FullPath = fullPath,
+                Name = persistenceModel?.Name ?? new FileInfo(fullPath).Name
             };
 
-            if (!File.Exists(persistenceModel.FileName))
+            if (!File.Exists(fullPath))
             {
                 result.LoadStatus = LoadStatus.FileNotFound;
             }
 
             try
             {
-                using (var stream = File.OpenRead(persistenceModel.FileName))
+                using (var stream = File.OpenRead(fullPath))
                 {
                     result.Hash = sha256.ComputeHash(stream);
                 }
 
                 // Ensure the file is readable as MP3 file
                 // To be replaced by codec detection later
-                using (new Mp3FileReader(persistenceModel.FileName)) {}
+                using (new Mp3FileReader(fullPath)) { }
+
+                result.LoadStatus = LoadStatus.FileOk;
             }
             catch (Exception ex)
             {
@@ -81,14 +129,23 @@ namespace Core.Repository
                 result.LoadStatus = LoadStatus.LoadError;
             }
 
-            fileModelsByPersistenceModel[persistenceModel] = result;
-
+            audioFileCache[fullPath] = result;
             return result;
         }
 
+        private string ResolveLink(string path, string parentPath)
+        {
+            return path.StartsWith(".") 
+                ? Path.Combine(parentPath, path) 
+                : path;
+        }
+
+
         public AudioFile GetAudioFileModel(string fileName)
         {
-            return GetAudioFileModel(persistenceService.GetAudioFileModelFor(fileName));
+            return LoadAudioFile(fileName);
         }
+
+        public IEnumerable<Library> Libraries => libraryCache.Values;
     }
 }

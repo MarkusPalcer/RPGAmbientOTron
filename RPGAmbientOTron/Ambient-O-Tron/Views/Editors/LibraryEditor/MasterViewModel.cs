@@ -5,26 +5,19 @@ using System.Linq;
 using System.Windows.Input;
 using Core.Extensions;
 using Core.Navigation;
-using Core.Persistence;
-using Core.Persistence.Models;
-using Prism.Commands;
+using Core.Repository;
 using Prism.Mvvm;
+using Library = Core.Repository.Models.Library;
 
 namespace AmbientOTron.Views.Editors.LibraryEditor
 {
     [Export]
     public class MasterViewModel
     {
-        private readonly IPersistenceService persistenceService;
-        private readonly INavigationService navigationService;
-
         [ImportingConstructor]
-        public MasterViewModel(IPersistenceService persistenceService, INavigationService navigationService)
+        public MasterViewModel(IRepository repository, INavigationService navigationService)
         {
-            this.persistenceService = persistenceService;
-            this.navigationService = navigationService;
-
-            Libraries = persistenceService.Libraries
+            Libraries = repository.Libraries
                 .Select(x => new LibraryViewModel(x))
                 .ToObservableCollection();
 
@@ -49,7 +42,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             public LibraryViewModel(Library model)
             {
                 Name = model.Name;
-                FullFileName = model.FileName;
+                FullFileName = model.Path;
                 FileName = new FileInfo(FullFileName).Name;
             }
 

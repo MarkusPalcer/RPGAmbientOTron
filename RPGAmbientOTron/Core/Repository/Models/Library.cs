@@ -6,9 +6,11 @@ namespace Core.Repository.Models
 
     public class Library 
     {
-        public Guid Id { get; } = Guid.NewGuid();
+        public string Path { get; set; }
 
-        public Core.Persistence.Models.Library PersistenceModel { get; set; }
+        public string Name { get; set; }
+
+        public List<Library> SatteliteLibraries { get; } = new List<Library>();
 
         public List<AudioFile> Files { get; } = new List<AudioFile>();
     }

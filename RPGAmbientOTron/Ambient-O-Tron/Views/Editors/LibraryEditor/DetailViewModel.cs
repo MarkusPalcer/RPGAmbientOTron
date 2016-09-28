@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -23,7 +20,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     {
         private readonly INavigationService navigationService;
         private readonly IRepository repository;
-        private Library model = null;
+        private Library model;
 
         [ImportingConstructor]
         public DetailViewModel(INavigationService navigationService, IRepository repository)
@@ -87,7 +84,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         private void LoadFromModel()
         {
-            Name = model.PersistenceModel.Name;
+            Name = model.Name;
             Files.Clear();
             Files.AddRange(model.Files.Select(x => new FileViewModel(x)));
             IsDirty = false;
@@ -104,11 +101,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         {
             if (navigationContext.Parameters?["id"] == null)
             {
-                model = new Library
-                {
-                    PersistenceModel = new Core.Persistence.Models.Library()
-                };
-
+                model = new Library();
             }
             else
             {
@@ -150,16 +143,12 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         public class FileViewModel : BindableBase
         {
+            
             // TODO: Rename
-
-            private AudioFile model;
-
             public FileViewModel(AudioFile model)
             {
-                this.model = model;
-
-                Name = model.PersistenceModel.Name;
-                FileName = model.PersistenceModel.FileName;
+                Name = model.Name;
+                FileName = model.FullPath;
             }
 
             private string name;
