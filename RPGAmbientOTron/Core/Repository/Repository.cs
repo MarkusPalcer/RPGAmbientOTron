@@ -4,12 +4,14 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Core.Events;
 using Core.Extensions;
 using Core.Persistence;
 using Core.Repository.Models;
 using Core.Repository.PersistenceMocels;
 using NAudio.Wave;
 using Newtonsoft.Json;
+using Prism.Events;
 using Prism.Logging;
 using AudioFile = Core.Repository.Models.AudioFile;
 using Library = Core.Repository.Models.Library;
@@ -25,6 +27,7 @@ namespace Core.Repository
         private static readonly string[] RootLibraryPaths = { Environment.CurrentDirectory };
 
         private readonly ILoggerFacade logger;
+        private readonly IEventAggregator eventAggregator;
         private readonly SHA256 sha256 = SHA256.Create();
 
         private readonly Dictionary<string, AudioFile> audioFileCache = new Dictionary<string, AudioFile>();
@@ -32,9 +35,10 @@ namespace Core.Repository
 
 
         [ImportingConstructor]
-        public Repository(ILoggerFacade logger)
+        public Repository(ILoggerFacade logger, IEventAggregator eventAggregator)
         {
             this.logger = logger;
+            this.eventAggregator = eventAggregator;
 
             Init();
         }
@@ -89,6 +93,7 @@ namespace Core.Repository
             }
 
             libraryCache[fullPath] = result;
+            eventAggregator.GetEvent<AddModelEvent<Library>>().Publish(result);
             return result;
         }
 
@@ -150,9 +155,29 @@ namespace Core.Repository
 
         public void Save(Library model)
         {
+            var exists = libraryCache.ContainsKey(model.Path);
             libraryCache[model.Path] = model;
 
             File.WriteAllText(model.Path, JsonConvert.SerializeObject(model.ConvertToPersistenceModel()));
+
+            if (exists)
+            {
+                // TODO: Send update event
+            }
+            else
+            {
+                eventAggregator.GetEvent<AddModelEvent<Library>>().Publish(model);
+            }
         }
+
+      void IRepository.LoadLibrary(string path)
+      {
+        if (libraryCache.ContainsKey(path))
+        {
+          return;
+        }
+
+        LoadLibrary(path);
+      }
     }
 }
