@@ -7,5 +7,6 @@ namespace Core.Repository
     {
         AudioFile GetAudioFileModel(string fileName);
         IEnumerable<Library> Libraries { get; }
+        void Save(Library model);
     }
 }

@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using Core.Extensions;
 using Core.Persistence;
 using Core.Repository.Models;
+using Core.Repository.PersistenceMocels;
 using NAudio.Wave;
 using Newtonsoft.Json;
 using Prism.Logging;
@@ -19,7 +20,7 @@ namespace Core.Repository
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class Repository : IRepository
     {
-        private readonly string rootLibraryFileName = $"root{Constants.LibraryExtension}";
+        private readonly string rootLibraryFileName = $"root.{Constants.LibraryExtension}";
 
         private static readonly string[] RootLibraryPaths = { Environment.CurrentDirectory };
 
@@ -140,12 +141,18 @@ namespace Core.Repository
                 : path;
         }
 
-
         public AudioFile GetAudioFileModel(string fileName)
         {
             return LoadAudioFile(fileName);
         }
 
         public IEnumerable<Library> Libraries => libraryCache.Values;
+
+        public void Save(Library model)
+        {
+            libraryCache[model.Path] = model;
+
+            File.WriteAllText(model.Path, JsonConvert.SerializeObject(model.ConvertToPersistenceModel()));
+        }
     }
 }

@@ -5,11 +5,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Core.Navigation;
+using Core.Persistence;
 using Core.Repository;
 using Core.Repository.Models;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 
@@ -20,20 +22,47 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     {
         private readonly INavigationService navigationService;
         private readonly IRepository repository;
+        private readonly IEventAggregator eventAggregator;
         private Library model;
 
         [ImportingConstructor]
-        public DetailViewModel(INavigationService navigationService, IRepository repository)
+        public DetailViewModel(INavigationService navigationService, IRepository repository, IEventAggregator eventAggregator)
         {
             this.navigationService = navigationService;
             this.repository = repository;
+            this.eventAggregator = eventAggregator;
             Files.CollectionChanged += (sender, args) => IsDirty = true;
 
             RevertCommand = new DelegateCommand(LoadFromModel).ObservesCanExecute(p => IsDirty);
             CloseCommand = new DelegateCommand(CloseDetailView);
             AddFileCommand = new DelegateCommand(ShowOpenFileDialog);
+            SaveCommand = new DelegateCommand(SaveLibrary).ObservesCanExecute(p => IsDirty);
+        }
 
-            // TODO: Save
+        private void SaveLibrary()
+        {
+            if (string.IsNullOrEmpty(model.Path))
+            {
+                var dlg = new SaveFileDialog
+                {
+                    AddExtension = true,
+                    DefaultExt = Constants.LibraryExtension,
+                    Filter = $"Libraries|*.{Constants.LibraryExtension}",
+                    OverwritePrompt = true,
+                    Title = "Save library",
+                };
+
+                if (dlg.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                model.Path = dlg.FileName;
+            }
+
+            repository.Save(model);
+
+            CloseDetailView();
         }
 
         private void ShowOpenFileDialog()
@@ -73,6 +102,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         public ICommand CloseCommand { get; }
 
         public ICommand AddFileCommand { get; }
+        public ICommand SaveCommand { get; }
 
         private bool isDirty;
 

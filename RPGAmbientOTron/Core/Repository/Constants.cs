@@ -2,6 +2,6 @@
 {
     public static class Constants
     {
-        public const string LibraryExtension = ".AOTLIB";
+        public const string LibraryExtension = "AOTLIB";
     }
 }
