@@ -70,6 +70,7 @@ namespace Core.Repository
                 result = new Library
                 {
                     Path = fullPath,
+                    Name = persistenceModel.Name
                 };
 
                 persistenceModel.SatteliteLibraryPaths
