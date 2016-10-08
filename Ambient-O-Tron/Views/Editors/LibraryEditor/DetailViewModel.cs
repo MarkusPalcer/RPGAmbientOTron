@@ -43,8 +43,8 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
             RevertCommand = new DelegateCommand(LoadFromModel).ObservesCanExecute(p => IsDirty);
             CloseCommand = new DelegateCommand(CloseDetailView);
-            AddFileCommand = new DelegateCommand(ShowOpenFileDialog);
             SaveCommand = new DelegateCommand(SaveLibrary).ObservesCanExecute(p => IsDirty);
+            DeleteFileCommand = new DelegateCommand<FileViewModel>(vm => Files.Remove(vm), vm => vm != null);
         }
 
         public string Name
@@ -63,8 +63,9 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         public ICommand CloseCommand { get; }
 
-        public ICommand AddFileCommand { get; }
         public ICommand SaveCommand { get; }
+
+        public ICommand DeleteFileCommand { get; }
 
         private bool IsDirty
         {
@@ -102,25 +103,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
             CloseDetailView();
         }
-
-        private void ShowOpenFileDialog()
-        {
-            var ofd = new OpenFileDialog
-            {
-                CheckFileExists = true,
-                CheckPathExists = true,
-                Multiselect = true,
-                Title = "Add file(s)..."
-            };
-
-            if (ofd.ShowDialog() != true)
-            {
-                return;
-            }
-
-            Files.AddRange(ofd.FileNames.Select(CreateFileViewModel));
-        }
-
+        
         private void LoadFromModel()
         {
             Name = model.Name;
@@ -133,13 +116,6 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         {
             IsDirty = false;
             navigationService.NavigateAsync<Empty>(ViewModel.DetailRegion);
-        }
-
-        private FileViewModel CreateFileViewModel(string fileName)
-        {
-            var result = new FileViewModel(repository.GetAudioFileModel(fileName));
-            result.DeleteCommand = new DelegateCommand(() => Files.Remove(result));
-            return result;
         }
 
         public class FileViewModel : BindableBase
@@ -163,8 +139,6 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             }
 
             public string FileName { get; }
-
-            public ICommand DeleteCommand { get; set; }
         }
 
         #region IConfirmNavigationRequest
@@ -228,7 +202,11 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             if (dataObject?.GetDataPresent(DataFormats.FileDrop) == true)
             {
                 var files = (string[])dataObject.GetData(DataFormats.FileDrop);
-                Files.AddRange(files.Select(CreateFileViewModel));
+                Files.AddRange(files.Select(fileName =>
+                {
+                    var result = new FileViewModel(repository.GetAudioFileModel(fileName));
+                    return result;
+                }));
             }
         }
 
