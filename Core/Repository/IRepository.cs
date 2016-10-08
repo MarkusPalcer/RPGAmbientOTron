@@ -9,5 +9,6 @@ namespace Core.Repository
         IEnumerable<Library> Libraries { get; }
         void Save(Library model);
         void LoadLibrary(string path);
+        Library GetLibraryModel(string path);
     }
 }
