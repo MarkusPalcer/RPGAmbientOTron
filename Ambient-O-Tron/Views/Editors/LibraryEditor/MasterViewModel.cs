@@ -72,8 +72,6 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             private string fileName;
             private string fullFileName;
 
-            // TODO: Delete, Edit (bold)
-
             public LibraryViewModel(Library model, IEventAggregator eventAggregator)
             {
                 SetModel(model);

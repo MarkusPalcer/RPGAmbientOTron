@@ -20,17 +20,9 @@
                 <ListBox ItemsSource="{Binding Files}" Height="300"
                           dd:DragDrop.IsDropTarget="True"
                           dd:DragDrop.DropHandler="{Binding}">
-                    <ListBox.Resources>
-                        <ContextMenu x:Key="MyElementMenu">
-                            <MenuItem Header="Add" Command="{Binding Path=DataContext.AddFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}" />
-                            <Separator></Separator>
-                            <MenuItem Header="Delete" Command="{Binding Path=DeleteCommand}"></MenuItem>
-                        </ContextMenu>
-
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="ContextMenu" Value="{StaticResource MyElementMenu}" />
-                        </Style>
-                    </ListBox.Resources>
+                    <ListBox.InputBindings>
+                        <KeyBinding Key="Delete" Command="{Binding DeleteFileCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}, Path=SelectedItem}"></KeyBinding>
+                    </ListBox.InputBindings>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}" ToolTip="{Binding FileName}" />
