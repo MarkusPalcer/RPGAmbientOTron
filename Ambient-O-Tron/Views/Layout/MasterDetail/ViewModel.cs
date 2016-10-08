@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Threading.Tasks;
 using Core.Navigation;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -12,6 +10,7 @@ namespace AmbientOTron.Views.Layout.MasterDetail
     public class ViewModel : BindableBase, IConfirmNavigationRequest
     {
         private readonly INavigationService navigationService;
+        private string myRegion = null;
 
         [ImportingConstructor]
         public ViewModel(INavigationService navigationService)
@@ -21,6 +20,10 @@ namespace AmbientOTron.Views.Layout.MasterDetail
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
+            if (navigationContext.Uri.Equals(new Uri(typeof(View).FullName, UriKind.Relative)))
+            {
+                myRegion = navigationContext.NavigationService.Region.Name;
+            }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -30,19 +33,31 @@ namespace AmbientOTron.Views.Layout.MasterDetail
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            if (navigationContext.Uri.Equals(new Uri(typeof(View).FullName, UriKind.Relative)))
+            {
+                myRegion = null;
+            }
         }
 
         public async void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
         {
-            try
+            // I'm only interested when my region gets new content
+            if (myRegion == navigationContext.NavigationService.Region.Name)
             {
-                continuationCallback(
-                    await navigationService.NavigateAsync<Empty>(MasterRegion) &&
-                    await navigationService.NavigateAsync<Empty>(DetailRegion));
+                try
+                {
+                    continuationCallback(
+                                         await navigationService.NavigateAsync<Empty>(MasterRegion) &&
+                                         await navigationService.NavigateAsync<Empty>(DetailRegion));
+                }
+                catch (Exception)
+                {
+                    continuationCallback(false);
+                }
             }
-            catch (Exception)
+            else
             {
-                continuationCallback(false);
+                continuationCallback(true);
             }
         }
 

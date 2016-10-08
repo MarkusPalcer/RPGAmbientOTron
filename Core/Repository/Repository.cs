@@ -84,7 +84,7 @@ namespace Core.Repository
                     .ForEach(result.Files.Add);
 
 
-                
+
             }
             catch (Exception ex)
             {
@@ -141,9 +141,14 @@ namespace Core.Repository
 
         private string ResolveLink(string path, string parentPath)
         {
-            return path.StartsWith(".") 
-                ? Path.Combine(parentPath, path) 
+            return path.StartsWith(".")
+                ? Path.Combine(parentPath, path)
                 : path;
+        }
+
+        public Library GetLibraryModel(string path)
+        {
+            return LoadLibrary(path);
         }
 
         public AudioFile GetAudioFileModel(string fileName)
@@ -162,7 +167,7 @@ namespace Core.Repository
 
             if (exists)
             {
-                // TODO: Send update event
+                eventAggregator.GetEvent<UpdateModelEvent<Library>>().Publish(model);
             }
             else
             {
@@ -170,14 +175,14 @@ namespace Core.Repository
             }
         }
 
-      void IRepository.LoadLibrary(string path)
-      {
-        if (libraryCache.ContainsKey(path))
+        void IRepository.LoadLibrary(string path)
         {
-          return;
-        }
+            if (libraryCache.ContainsKey(path))
+            {
+                return;
+            }
 
-        LoadLibrary(path);
-      }
+            LoadLibrary(path);
+        }
     }
 }
