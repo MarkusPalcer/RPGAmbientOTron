@@ -141,9 +141,6 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
             var files = (string[])dataObject.GetData(DataFormats.FileDrop);
             files.ForEach(repository.LoadLibrary);
-
-            Libraries.Clear();
-            Libraries.AddRange(repository.Libraries.Select(x => new LibraryViewModel(x, eventAggregator)));
         }
 
         #endregion
