@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -20,7 +21,7 @@ namespace Core.Repository
 {
     [Export(typeof(IRepository))]
     [PartCreationPolicy(CreationPolicy.Shared)]
-    public class Repository : IRepository
+    public class Repository : IRepository, IDisposable
     {
         private readonly string rootLibraryFileName = $"root.{Constants.LibraryExtension}";
 
@@ -47,10 +48,10 @@ namespace Core.Repository
         {
             RootLibraryPaths
                 .Select(p => Path.Combine(p, rootLibraryFileName))
-                .ForEach(x => LoadLibrary(x));
+                .ForEach(x => LoadLibrary(x, false));
         }
 
-        private Library LoadLibrary(string fullPath)
+        private Library LoadLibrary(string fullPath, bool addToLibraryList)
         {
             Library result;
             if (libraryCache.TryGetValue(fullPath, out result))
@@ -75,7 +76,7 @@ namespace Core.Repository
 
                 persistenceModel.SatteliteLibraryPaths
                     .Select(x => ResolveLink(x, fullPath))
-                    .Select(LoadLibrary)
+                    .Select(x => LoadLibrary(x, true))
                     .Where(x => x != null)
                     .ForEach(result.SatteliteLibraries.Add);
 
@@ -83,9 +84,6 @@ namespace Core.Repository
                     .Select(x => LoadAudioFile(ResolveLink(x.Path, fullPath), x))
                     .Where(x => x != null)
                     .ForEach(result.Files.Add);
-
-
-
             }
             catch (Exception ex)
             {
@@ -93,8 +91,12 @@ namespace Core.Repository
                 return null;
             }
 
-            libraryCache[fullPath] = result;
-            eventAggregator.GetEvent<AddModelEvent<Library>>().Publish(result);
+            if (addToLibraryList)
+            {
+                libraryCache[fullPath] = result;
+                eventAggregator.GetEvent<AddModelEvent<Library>>().Publish(result);
+            }
+
             return result;
         }
 
@@ -149,7 +151,7 @@ namespace Core.Repository
 
         public Library GetLibraryModel(string path)
         {
-            return LoadLibrary(path);
+            return LoadLibrary(path, true);
         }
 
         public AudioFile GetAudioFileModel(string fileName)
@@ -183,7 +185,57 @@ namespace Core.Repository
                 return;
             }
 
-            LoadLibrary(path);
+            LoadLibrary(path, true);
         }
+
+        private void SaveRootLibraries()
+        {
+            var rootLibrary = new PersistenceMocels.Library();
+            rootLibrary.SatteliteLibraryPaths.AddRange(libraryCache.Values.Select(x => x.Path));
+            var rootLibraryString = JsonConvert.SerializeObject(rootLibrary);
+
+            foreach (var path in RootLibraryPaths.Select(p => Path.Combine(p, rootLibraryFileName)))
+            {
+                try
+                {
+                    File.WriteAllText(path, rootLibraryString);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogException(ex, $"Error while writing root library to '{path}'");
+                }
+            }
+        }
+
+        #region Implementation of IDisposable
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///   <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.
+        /// </param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                SaveRootLibraries();
+            }
+
+            // Release unmanaged resources here
+        }
+
+        
+
+        #endregion
     }
 }

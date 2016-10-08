@@ -29,6 +29,16 @@ namespace AmbientOTron
             
         }
 
+        #region Overrides of Application
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            bootstrapper.Container.Dispose();
+            base.OnExit(e);
+        }
+
+        #endregion
+
         private void InitializeNAudio()
         {
             var mixer = new WaveMixerStream32
