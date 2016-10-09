@@ -8,7 +8,7 @@ namespace AmbientOTron
     {
         private Bootstrapper bootstrapper;
 
-        public const string MainRegionName = "MAIN";
+        public const string MainRegionName = "8EDA40C4-2DB8-4AE4-8799-30BF08685EBE";
 
         protected override void OnStartup(StartupEventArgs e)
         {

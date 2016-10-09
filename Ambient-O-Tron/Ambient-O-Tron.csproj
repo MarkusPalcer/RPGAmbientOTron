@@ -83,6 +83,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -111,6 +112,11 @@
       <DependentUpon>LabelledControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Views\Dialogs\MessageBox\Extensions.cs" />
+    <Compile Include="Views\Dialogs\MessageBox\View.xaml.cs">
+      <DependentUpon>View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\MessageBox\ViewModel.cs" />
     <Compile Include="Views\Editors\LibraryEditor\DetailViewModel.cs" />
     <Compile Include="Views\Editors\LibraryEditor\MasterView.xaml.cs">
       <DependentUpon>MasterView.xaml</DependentUpon>
@@ -150,6 +156,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Dialogs\MessageBox\View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Editors\LibraryEditor\DetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -159,8 +169,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Empty.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Layout\MasterDetail\View.xaml">
       <SubType>Designer</SubType>
