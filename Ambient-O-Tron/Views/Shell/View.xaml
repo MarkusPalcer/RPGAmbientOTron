@@ -1,21 +1,63 @@
 ﻿<UserControl x:Class="AmbientOTron.Views.Shell.View"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:region="clr-namespace:Prism.Regions;assembly=Prism.Wpf"
              xmlns:ambientOTron="clr-namespace:AmbientOTron"
              xmlns:shell="clr-namespace:AmbientOTron.Views.Shell"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:dialogs="clr-namespace:Core.Dialogs;assembly=Core"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
              d:DataContext="{d:DesignInstance shell:ViewModel}">
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="View">
-                <MenuItem Header="Library editor" Command="{Binding LibraryEditorNavigationCommand}" />
-            </MenuItem>
-        </Menu>
 
-        <ContentControl region:RegionManager.RegionName="{x:Static ambientOTron:App.MainRegionName}" />
-    </DockPanel>
+    <Grid>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="View">
+                    <MenuItem Header="Library editor"
+                              Command="{Binding LibraryEditorNavigationCommand}" />
+                    <MenuItem Header="Test dialog"
+                              Command="{Binding TestDialogCommand}" />
+                </MenuItem>
+            </Menu>
+
+            <ContentControl region:RegionManager.RegionName="{x:Static ambientOTron:App.MainRegionName}" />
+        </DockPanel>
+
+        <ContentControl region:RegionManager.RegionName="{x:Static dialogs:DialogService.DialogRegionName}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+            <ContentControl.Template>
+                <ControlTemplate TargetType="ContentControl">
+                    <Border>
+                        <Border.Background>
+                            <SolidColorBrush Color="Black"
+                                             Opacity="0.5" />
+                        </Border.Background>
+
+                        <Border Background="White"
+                                CornerRadius="10"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Padding="10">
+                            <ContentPresenter />
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </ContentControl.Template>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <Trigger Property="HasContent"
+                                 Value="False">
+                            <Setter Property="Visibility"
+                                    Value="Hidden" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </Grid>
 </UserControl>

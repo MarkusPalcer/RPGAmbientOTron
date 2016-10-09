@@ -2,26 +2,33 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
-using AmbientOTron.Views.Layout.MasterDetail;
+using Core.Dialogs;
 using Core.Navigation;
 using Core.Persistence;
 using Core.Repository;
 using Core.Repository.Models;
 using GongSolutions.Wpf.DragDrop;
-using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using Application = System.Windows.Application;
+using DataFormats = System.Windows.DataFormats;
+using DataObject = System.Windows.DataObject;
+using DragDropEffects = System.Windows.DragDropEffects;
+using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using AmbientOTron.Views.Dialogs.MessageBox;
+using ViewModel = AmbientOTron.Views.Layout.MasterDetail.ViewModel;
 
 namespace AmbientOTron.Views.Editors.LibraryEditor
 {
     [Export]
     public class DetailViewModel : BindableBase, IConfirmNavigationRequest, IDropTarget
     {
-        private readonly IEventAggregator eventAggregator;
+        private readonly IDialogService dialogService;
         private readonly INavigationService navigationService;
         private readonly IRepository repository;
 
@@ -34,11 +41,12 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         public DetailViewModel(
           INavigationService navigationService,
           IRepository repository,
-          IEventAggregator eventAggregator)
+          IEventAggregator eventAggregator,
+          IDialogService dialogService)
         {
             this.navigationService = navigationService;
             this.repository = repository;
-            this.eventAggregator = eventAggregator;
+            this.dialogService = dialogService;
             Files.CollectionChanged += (sender, args) => IsDirty = true;
 
             RevertCommand = new DelegateCommand(LoadFromModel).ObservesCanExecute(p => IsDirty);
@@ -160,19 +168,18 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         public void OnNavigatedFrom(NavigationContext navigationContext) { }
 
-        public void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
+        public async void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
         {
             if (IsDirty)
             {
-                // TODO: Create and use DialogService
-                var result = MessageBox.Show(
-                                             "Do you want to leave this page and loose your changes?",
-                                             "Leave",
-                                             MessageBoxButton.YesNo,
-                                             MessageBoxImage.Warning,
-                                             MessageBoxResult.No);
+                var result =
+                    await
+                    dialogService.ShowMessageBox(
+                        "Do you want to leave this page and loose your changes?",
+                        MessageBoxButtons.YesNo,
+                        DialogResult.No);
 
-                continuationCallback(result == MessageBoxResult.Yes);
+                continuationCallback(result == DialogResult.Yes);
             }
             else
             {
