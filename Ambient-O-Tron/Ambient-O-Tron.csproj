@@ -112,12 +112,15 @@
       <DependentUpon>LabelledControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ValueConverters\BooleanToAnyConverter.cs" />
     <Compile Include="Views\Dialogs\MessageBox\Extensions.cs" />
     <Compile Include="Views\Dialogs\MessageBox\View.xaml.cs">
       <DependentUpon>View.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\MessageBox\ViewModel.cs" />
     <Compile Include="Views\Editors\LibraryEditor\DetailViewModel.cs" />
+    <Compile Include="Views\Editors\LibraryEditor\FileViewModel.cs" />
+    <Compile Include="Views\Editors\LibraryEditor\LibraryViewModel.cs" />
     <Compile Include="Views\Editors\LibraryEditor\MasterView.xaml.cs">
       <DependentUpon>MasterView.xaml</DependentUpon>
     </Compile>

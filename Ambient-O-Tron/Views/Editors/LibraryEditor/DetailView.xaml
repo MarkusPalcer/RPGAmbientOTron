@@ -9,6 +9,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance libraryEditor:DetailViewModel}">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type libraryEditor:FileViewModel}">
+            <TextBlock Text="{Binding Name}" ToolTip="{Binding FileName}" />
+        </DataTemplate>
+    </UserControl.Resources>
 
     <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical" Grid.IsSharedSizeScope="True">
@@ -23,16 +28,6 @@
                     <ListBox.InputBindings>
                         <KeyBinding Key="Delete" Command="{Binding DeleteFileCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}, Path=SelectedItem}"></KeyBinding>
                     </ListBox.InputBindings>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" ToolTip="{Binding FileName}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Add" Command="{Binding AddFileCommand}" />
-                        </ContextMenu>
-                    </ListBox.ContextMenu>
                 </ListBox>
             </controls:LabelledControl>
             
