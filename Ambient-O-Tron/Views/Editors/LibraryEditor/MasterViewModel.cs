@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -12,7 +11,6 @@ using Core.Repository;
 using GongSolutions.Wpf.DragDrop;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Mvvm;
 using Prism.Regions;
 using Library = Core.Repository.Models.Library;
 
@@ -34,78 +32,22 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
 
             Libraries = repository.Libraries
-            .Select(x => new LibraryViewModel(x, eventAggregator))
+            .Select(x => new LibraryViewModel(x, eventAggregator, navigationService))
             .ToObservableCollection();
 
-            // No parameters -> Blank entry
             AddCommand = navigationService.CreateNavigationCommand<DetailView>(Layout.MasterDetail.ViewModel.DetailRegion);
-            EditCommand = new DelegateCommand<LibraryViewModel>(ExecuteEditCommand);
 
             eventAggregator.GetEvent<AddModelEvent<Library>>().Subscribe(HandleAddModel);
         }
 
+        public ICommand AddCommand { get; }
+
         private void HandleAddModel(Library model)
         {
-            Libraries.Add(new LibraryViewModel(model, eventAggregator));
-        }
-
-        private void ExecuteEditCommand(LibraryViewModel vm)
-        {
-            if (vm == null)
-                return;
-
-            navigationService.NavigateAsync<DetailView>(
-                                                        Layout.MasterDetail.ViewModel.DetailRegion,
-                                                        new NavigationParameters
-                                                        {
-                                                            {"id", vm.FullFileName}
-                                                        });
+            Libraries.Add(new LibraryViewModel(model, eventAggregator, navigationService));
         }
 
         public ObservableCollection<LibraryViewModel> Libraries { get; }
-
-        public ICommand AddCommand { get; }
-
-        public ICommand EditCommand { get; }
-
-        public class LibraryViewModel : BindableBase
-        {
-            private string name;
-            private string fileName;
-            private string fullFileName;
-
-            public LibraryViewModel(Library model, IEventAggregator eventAggregator)
-            {
-                SetModel(model);
-                eventAggregator.GetEvent<UpdateModelEvent<Library>>()
-                               .Subscribe(SetModel, ThreadOption.UIThread, false, x => x.Path == FullFileName);
-            }
-
-            private void SetModel(Library model)
-            {
-                Name = model.Name;
-                FullFileName = model.Path;
-                FileName = new FileInfo(FullFileName).Name;
-            }
-
-            public string Name
-            {
-                get { return name; }
-                set { SetProperty(ref name, value); }
-            }
-
-            public string FileName
-            {
-                get { return fileName; }
-                set { SetProperty(ref fileName, value); }
-            }
-
-            public string FullFileName
-            {
-                get { return fullFileName; }
-                set { SetProperty(ref fullFileName, value); }
-            }
-        }
 
         #region Implementation of IDropTarget
 
