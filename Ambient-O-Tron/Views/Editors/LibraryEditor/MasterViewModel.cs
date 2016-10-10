@@ -41,7 +41,6 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             AddCommand = navigationService.CreateNavigationCommand<DetailView>(Layout.MasterDetail.ViewModel.DetailRegion);
             EditCommand = new DelegateCommand<LibraryViewModel>(ExecuteEditCommand);
 
-            // TODO: Update list on edit
             eventAggregator.GetEvent<AddModelEvent<Library>>().Subscribe(HandleAddModel);
         }
 
@@ -52,6 +51,9 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         private void ExecuteEditCommand(LibraryViewModel vm)
         {
+            if (vm == null)
+                return;
+
             navigationService.NavigateAsync<DetailView>(
                                                         Layout.MasterDetail.ViewModel.DetailRegion,
                                                         new NavigationParameters
