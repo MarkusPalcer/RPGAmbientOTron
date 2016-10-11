@@ -52,7 +52,6 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             RevertCommand = new DelegateCommand(LoadFromModel).ObservesCanExecute(p => IsDirty);
             CloseCommand = new DelegateCommand(CloseDetailView);
             SaveCommand = new DelegateCommand(SaveLibrary).ObservesCanExecute(p => IsDirty);
-            DeleteFileCommand = new DelegateCommand<FileViewModel>(vm => Files.Remove(vm), vm => vm != null);
         }
 
         public string Name
@@ -72,8 +71,6 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         public ICommand CloseCommand { get; }
 
         public ICommand SaveCommand { get; }
-
-        public ICommand DeleteFileCommand { get; }
 
         private bool IsDirty
         {
@@ -116,8 +113,16 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         {
             Name = model.Name;
             Files.Clear();
-            Files.AddRange(model.Files.Select(x => new FileViewModel(x)));
+            Files.AddRange(model.Files.Select(CreateFileViewModel));
             IsDirty = false;
+        }
+
+        private FileViewModel CreateFileViewModel(AudioFile arg)
+        {
+            var result = new FileViewModel(arg);
+            result.DeleteCommand = new DelegateCommand(() => Files.Remove(result));
+
+            return result;
         }
 
         private void CloseDetailView()
