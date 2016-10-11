@@ -18,8 +18,6 @@
                 <MenuItem Header="View">
                     <MenuItem Header="Library editor"
                               Command="{Binding LibraryEditorNavigationCommand}" />
-                    <MenuItem Header="Test dialog"
-                              Command="{Binding TestDialogCommand}" />
                 </MenuItem>
             </Menu>
 
