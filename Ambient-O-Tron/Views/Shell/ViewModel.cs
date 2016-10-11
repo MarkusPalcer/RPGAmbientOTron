@@ -4,7 +4,6 @@ using Core.Dialogs;
 using Core.Navigation;
 using Prism.Commands;
 using Prism.Mvvm;
-using Prism.Regions;
 
 namespace AmbientOTron.Views.Shell
 {
@@ -22,21 +21,8 @@ namespace AmbientOTron.Views.Shell
                 { App.MainRegionName, typeof(Layout.MasterDetail.View) },
                 { Layout.MasterDetail.ViewModel.MasterRegion, typeof(Editors.LibraryEditor.MasterView) }
             });
-
-            TestDialogCommand = new DelegateCommand(ShowTestDialog);
-        }
-
-        private async void ShowTestDialog()
-        {
-            await dialogService.ShowDialog<Dialogs.MessageBox.View,int?>(new NavigationParameters
-            {
-                {"message", "TestMessage" },
-                {"options","Test|123|456" }
-            });
         }
 
         public ICommand LibraryEditorNavigationCommand { get; }
-
-        public ICommand TestDialogCommand { get; }
     }
 }
