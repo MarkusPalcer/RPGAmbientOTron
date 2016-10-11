@@ -1,31 +1,33 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using log4net;
 using Prism.Logging;
 
-namespace Core
+namespace Core.Logging
 {
     [Export(typeof(ILoggerFacade))]
     public class LoggerFacade : ILoggerFacade
     {
-        private readonly ILog logger = log4net.LogManager.GetLogger("LoggerFacade");
-
+        private readonly ILoggingService loggingService;
+        public LoggerFacade(ILoggingService loggingService)
+        {
+            this.loggingService = loggingService;
+        }
 
         public void Log(string message, Category category, Priority priority)
         {
             switch (category)
             {
                 case Category.Debug:
-                    logger.Debug(message);
+                    loggingService.Debug<ILoggerFacade>(message);
                     break;
                 case Category.Exception:
-                    logger.Fatal(message);
+                    loggingService.Error<ILoggerFacade>(message);
                     break;
                 case Category.Info:
-                    logger.Info(message);
+                    loggingService.Info<ILoggerFacade>(message);
                     break;
                 case Category.Warn:
-                    logger.Warn(message);
+                    loggingService.Warn<ILoggerFacade>(message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(category), category, null);
