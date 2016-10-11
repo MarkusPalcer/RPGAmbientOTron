@@ -16,7 +16,7 @@
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="False">
-                <Setter Property="Opacity" Value="0.5"></Setter>
+                <Setter Property="Opacity" Value="0.5" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

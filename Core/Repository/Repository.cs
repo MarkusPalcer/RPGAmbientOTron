@@ -5,13 +5,13 @@ using System.IO;
 using System.Linq;
 using Core.Events;
 using Core.Extensions;
+using Core.Logging;
 using Core.Persistence;
 using Core.Repository.Models;
 using Core.Repository.PersistenceMocels;
 using NAudio.Wave;
 using Newtonsoft.Json;
 using Prism.Events;
-using Prism.Logging;
 using AudioFile = Core.Repository.Models.AudioFile;
 using Library = Core.Repository.Models.Library;
 
@@ -25,7 +25,7 @@ namespace Core.Repository
 
         private static readonly string[] RootLibraryPaths = { Environment.CurrentDirectory };
 
-        private readonly ILoggerFacade logger;
+        private readonly ILoggingService logger;
         private readonly IEventAggregator eventAggregator;
 
         private readonly Dictionary<string, AudioFile> audioFileCache = new Dictionary<string, AudioFile>();
@@ -33,7 +33,7 @@ namespace Core.Repository
 
 
         [ImportingConstructor]
-        public Repository(ILoggerFacade logger, IEventAggregator eventAggregator)
+        public Repository(ILoggingService logger, IEventAggregator eventAggregator)
         {
             this.logger = logger;
             this.eventAggregator = eventAggregator;
@@ -58,7 +58,7 @@ namespace Core.Repository
 
             if (!File.Exists(fullPath))
             {
-                logger.Log($"Library {fullPath} does not exist.", Category.Info, Priority.Low);
+                logger.Info<Repository>($"Library {fullPath} does not exist.");
                 return null;
             }
 
@@ -84,7 +84,7 @@ namespace Core.Repository
             }
             catch (Exception ex)
             {
-                logger.LogException(ex);
+                logger.Warn<Repository>($"Could not load library from {fullPath}", ex);
                 return null;
             }
 
@@ -126,7 +126,7 @@ namespace Core.Repository
             }
             catch (Exception ex)
             {
-                logger.LogException(ex);
+                logger.Warn<Repository>($"Could not load audio file from {fullPath}", ex);
                 result.LoadStatus = LoadStatus.LoadError;
             }
 
@@ -194,7 +194,7 @@ namespace Core.Repository
                 }
                 catch (Exception ex)
                 {
-                    logger.LogException(ex, $"Error while writing root library to '{path}'");
+                    logger.Warn<Repository>($"Error while writing root library to '{path}'", ex);
                 }
             }
         }
@@ -206,7 +206,7 @@ namespace Core.Repository
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 

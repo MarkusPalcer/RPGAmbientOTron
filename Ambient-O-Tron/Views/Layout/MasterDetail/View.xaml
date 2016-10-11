@@ -9,11 +9,42 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-        <ContentControl regions:RegionManager.RegionName="{x:Static local:ViewModel.MasterRegion}" Grid.Column="0"></ContentControl>
-        <GridSplitter Grid.Column="0" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Width="5"></GridSplitter>
-        <ContentControl regions:RegionManager.RegionName="{x:Static local:ViewModel.DetailRegion}" Grid.Column="1"></ContentControl>
+        <ContentControl regions:RegionManager.RegionName="{x:Static local:ViewModel.MasterRegion}" Grid.Column="0" />
+        <GridSplitter Grid.Column="0" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Width="5" />
+        <ContentControl regions:RegionManager.RegionName="{x:Static local:ViewModel.DetailRegion}" Grid.Column="1" />
     </Grid>
 </UserControl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

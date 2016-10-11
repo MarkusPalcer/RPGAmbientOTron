@@ -14,10 +14,10 @@
     <UserControl.Resources>
         <vc:BooleanToAnyConverter x:Key="ErrorToColorConverter">
             <vc:BooleanToAnyConverter.TrueValue>
-                <SolidColorBrush Color="Red"></SolidColorBrush>
+                <SolidColorBrush Color="Red" />
             </vc:BooleanToAnyConverter.TrueValue>
             <vc:BooleanToAnyConverter.FalseValue>
-                <SolidColorBrush Color="Black"></SolidColorBrush>
+                <SolidColorBrush Color="Black" />
             </vc:BooleanToAnyConverter.FalseValue>
         </vc:BooleanToAnyConverter>
         
@@ -57,9 +57,9 @@
     </UserControl.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical"
                     Grid.Row="0">
@@ -72,8 +72,8 @@
                           dd:DragDrop.DropHandler="{Binding}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <ItemsControl ItemsSource="{Binding Files}" Grid.Row="0">
                         <ItemsControl.ItemsPanel>

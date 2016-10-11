@@ -8,12 +8,4 @@ namespace Core.Repository.Models
 
         public LoadStatus LoadStatus { get; set; } = LoadStatus.Unknown;
     }
-
-    public enum LoadStatus
-    {
-        Unknown,
-        FileNotFound,
-        LoadError,
-        FileOk
-    }
 }

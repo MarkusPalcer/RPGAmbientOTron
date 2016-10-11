@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Core.Extensions;
+using Core.Logging;
 using Prism.Commands;
-using Prism.Logging;
 using Prism.Regions;
 
 namespace Core.Navigation
@@ -14,10 +13,10 @@ namespace Core.Navigation
     [PartCreationPolicy(CreationPolicy.Shared)]
     class NavigationService : INavigationService {
         private readonly IRegionManager regionManager;
-        private readonly ILoggerFacade logger;
+        private readonly ILoggingService logger;
 
         [ImportingConstructor]
-        public NavigationService(IRegionManager regionManager, ILoggerFacade logger)
+        public NavigationService(IRegionManager regionManager, ILoggingService logger)
         {
             this.regionManager = regionManager;
             this.logger = logger;
@@ -66,7 +65,7 @@ namespace Core.Navigation
             {
                 if (result.Error != null)
                 {
-                    logger.LogException(result.Error, $"Error while executing navigation request {result.Context.NavigationService.Region.Name} -> {result.Context.Uri}");
+                    logger.Error<NavigationService>($"Error while executing navigation request {result.Context.NavigationService.Region.Name} -> {result.Context.Uri}", result.Error);
                     tcs.SetException(result.Error);
                 }
                 else
@@ -86,29 +85,4 @@ namespace Core.Navigation
         }
 
     }
-
-    public class NavigationRequestCollection : Collection<NavigationRequest>
-    {
-        public void Add(string region, Uri view, NavigationParameters parameters = null)
-        {
-            Add(new NavigationRequest
-            {
-                Region = region,
-                View = view, 
-                Parameters =  parameters
-            });
-        }
-
-        public void Add(string region, Type viewType, NavigationParameters parameters = null)
-        {
-            Add(new NavigationRequest
-            {
-                Region = region,
-                View = new Uri(viewType.FullName, UriKind.Relative),
-                Parameters = parameters
-            });
-        }
-    }
-
-   
 }

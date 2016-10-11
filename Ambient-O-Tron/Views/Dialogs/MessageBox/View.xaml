@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance local:ViewModel}">
     <StackPanel Orientation="Vertical" Margin="10">
-        <TextBlock Text="{Binding Message}"></TextBlock>
+        <TextBlock Text="{Binding Message}" />
         <ItemsControl ItemsSource="{Binding Options}" Margin="0,10,0,0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -23,6 +23,10 @@
         </ItemsControl>
     </StackPanel>
 </UserControl>
+
+
+
+
 
 
 
