@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using Core.Events;
 using Core.Extensions;
 using Core.Persistence;
@@ -29,7 +27,6 @@ namespace Core.Repository
 
         private readonly ILoggerFacade logger;
         private readonly IEventAggregator eventAggregator;
-        private readonly SHA256 sha256 = SHA256.Create();
 
         private readonly Dictionary<string, AudioFile> audioFileCache = new Dictionary<string, AudioFile>();
         private readonly Dictionary<string, Library> libraryCache = new Dictionary<string, Library>();
@@ -121,11 +118,6 @@ namespace Core.Repository
 
             try
             {
-                using (var stream = File.OpenRead(fullPath))
-                {
-                    result.Hash = sha256.ComputeHash(stream);
-                }
-
                 // Ensure the file is readable as MP3 file
                 // To be replaced by codec detection later
                 using (new Mp3FileReader(fullPath)) { }

@@ -6,8 +6,6 @@ namespace Core.Repository.Models
 
         public string Name { get; set; }
 
-        public byte[] Hash { get; set; }
-
         public LoadStatus LoadStatus { get; set; } = LoadStatus.Unknown;
     }
 

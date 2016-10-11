@@ -13,14 +13,6 @@
              d:DataContext="{d:DesignInstance local:MasterViewModel}"
              Margin="0,0,5,0">
     <UserControl.Resources>
-        <vc:BooleanToAnyConverter x:Key="BooleanToVisibilityConverter">
-            <vc:BooleanToAnyConverter.TrueValue>
-                <Visibility>Visible</Visibility>
-            </vc:BooleanToAnyConverter.TrueValue>
-            <vc:BooleanToAnyConverter.FalseValue>
-                <Visibility>Hidden</Visibility>
-            </vc:BooleanToAnyConverter.FalseValue>
-        </vc:BooleanToAnyConverter>
         <DataTemplate DataType="{x:Type local:LibraryViewModel}">
             <Grid>
                 <StackPanel Orientation="Vertical"
@@ -32,7 +24,7 @@
                                ToolTip="{Binding FullFileName}" />
                 </StackPanel>
 
-                <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Grid}, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}"
+                <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Grid}, Path=IsMouseOver, Converter={StaticResource BooleanToHiddenConverter}}"
                         VerticalAlignment="Center">
                     <Border.Background>
                         <SolidColorBrush Color="White"
@@ -40,6 +32,7 @@
                     </Border.Background>
 
                     <StackPanel HorizontalAlignment="Right"
+                                Orientation="Horizontal"
                                 Margin="10,10,0,10">
                         <Button Command="{Binding EditCommand}"
                                 Padding="5">
