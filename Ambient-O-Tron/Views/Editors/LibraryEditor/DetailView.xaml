@@ -105,15 +105,20 @@
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Grid.Row="2">
+                    Grid.Row="2"
+                    Margin="10">
             <Button Command="{Binding SaveCommand}"
                     Style="{StaticResource IconButtonStyle32}">
                 <controls:IconContainer IconName="IconicCheck" />
             </Button>
-            <Button Content="Revert"
-                    Command="{Binding RevertCommand}" />
-            <Button Content="Cancel"
-                    Command="{Binding CloseCommand}" />
+            <Button Command="{Binding RevertCommand}"
+                    Style="{StaticResource IconButtonStyle32}">
+                <controls:IconContainer IconName="IconicUndo" />
+            </Button>
+            <Button Command="{Binding CloseCommand}"
+                    Style="{StaticResource IconButtonStyle32}">
+                <controls:IconContainer IconName="IconicX" />
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

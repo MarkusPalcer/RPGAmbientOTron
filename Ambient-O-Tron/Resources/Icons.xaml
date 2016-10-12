@@ -3,11 +3,14 @@
     <!-- {Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground} -->
 
     <Style x:Key="IconButtonStyle32"
+           BasedOn="{StaticResource {x:Type Button}}"
            TargetType="Button">
         <Setter Property="Height"
                 Value="32" />
         <Setter Property="Width"
                 Value="32" />
+        <Setter Property="Margin"
+                Value="10,0,0,0" />
     </Style>
 
     <Viewbox x:Key="IconicPencilMedium"
@@ -395,4 +398,152 @@
             </Canvas>
         </Canvas>
     </Viewbox>
+
+    <Viewbox x:Key="IconicXSmall"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="16"
+                Height="16">
+            <Canvas>
+                <Path StrokeThickness="4"
+                      Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}"
+                      StrokeStartLineCap="Square"
+                      StrokeEndLineCap="Square">
+                    <Path.Data>
+                        <PathGeometry Figures="M3 3l10 10M13 3l-10 10"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicXMedium"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="32"
+                Height="32">
+            <Canvas>
+                <Path StrokeThickness="6"
+                      Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}"
+                      StrokeStartLineCap="Square"
+                      StrokeEndLineCap="Square">
+                    <Path.Data>
+                        <PathGeometry Figures="M4.5 4.5l23 23M27.5 4.5l-23 23"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicXLarge"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="128"
+                Height="128">
+            <Canvas>
+                <Path StrokeThickness="16"
+                      Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}"
+                      StrokeStartLineCap="Square"
+                      StrokeEndLineCap="Square">
+                    <Path.Data>
+                        <PathGeometry Figures="M13 13l102 102M115 13l-102 102"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicUndoSmall"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="16"
+                Height="16">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="0"
+                                            Y="2" />
+                        <ScaleTransform ScaleX="1"
+                                        ScaleY="1" />
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M2 9v-2c0-3.9 3.1-7 7-7s7 3.1 7 7c0-2.8-2.2-5-5-5s-5 2.2-5 5v2h-4z"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M0 8l4 4 4-4z"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicUndoMedium"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="32"
+                Height="32">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="0"
+                                            Y="4" />
+                        <ScaleTransform ScaleX="1"
+                                        ScaleY="1" />
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M9 14.5c0-6.4 5.1-11.5 11.5-11.5 6 0 10.9 4.7 11.4 10.5-.6-7.5-6.8-13.5-14.4-13.5-8 0-14.5 6.5-14.5 14.5v2.5h6v-2.5z"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M6.3 23.6l5.4-7.2c.2-.2.1-.4-.2-.4h-11c-.3 0-.4.2-.2.4l5.4 7.2c.2.2.4.2.6 0z"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicUndoLarge"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="128"
+                Height="128">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1"
+                                        ScaleY="1" />
+                        <TranslateTransform X="0"
+                                            Y="16" />
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M30 59c0-27.1 21.9-49 49-49s49 21.9 49 49c0-32.6-26.4-59-59-59s-59 26.4-59 59v11h20v-11z"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M19.2 94.7l-18.4-29.4c-.4-.7-.1-1.3.7-1.3h37c.8 0 1.1.6.7 1.3l-18.4 29.4c-.4.7-1.2.7-1.6 0z"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
 </ResourceDictionary>
