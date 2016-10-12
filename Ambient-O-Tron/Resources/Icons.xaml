@@ -9,7 +9,7 @@
         <Setter Property="Width"
                 Value="32" />
     </Style>
-    
+
     <Viewbox x:Key="IconicPencilMedium"
              Stretch="Uniform"
              x:Shared="False">
@@ -24,7 +24,7 @@
                     </PathGeometry.Transform>
                 </PathGeometry>
             </Canvas.Resources>
-            <Canvas >
+            <Canvas>
                 <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
                     <Path.Data>
                         <PathGeometry Figures="M2 27l1-3 19-19 5 5-19 19-3 1"
@@ -107,7 +107,7 @@
                     </PathGeometry.Transform>
                 </PathGeometry>
             </Canvas.Resources>
-            <Canvas >
+            <Canvas>
                 <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
                     <Path.Data>
                         <PathGeometry Figures="M106.707 22.707l-77 77c-.195.195-.451.293-.707.293s-.512-.098-.707-.293c-.391-.391-.391-1.023 0-1.414l77-77-7.293-7.293-82.3 82.3c.107.107.197.231.248.384l1.842 5.526 5.526 1.842c.298.1.533.334.632.632l1.842 5.526 5.526 1.842c.153.051.277.142.384.249l82.3-82.3-7.293-7.293z"
@@ -156,7 +156,7 @@
                               Figures="M23 7v21.5c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-21.5h-3v21.5c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-21.5h-3v21.5c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-21.5h-3v21.5c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-21.5h-3v21.5c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-21.5h-3v25h23v-25h-3z"
                               FillRule="NonZero" />
             </Canvas.Resources>
-            <Canvas >
+            <Canvas>
                 <Canvas.RenderTransform>
                     <TranslateTransform X="1" />
                 </Canvas.RenderTransform>
@@ -193,7 +193,7 @@
                               Figures="M11 5v8.5c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-8.5h-2v8.5c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-8.5h-2v8.5c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-8.5h-2v11h11v-11h-2z"
                               FillRule="NonZero" />
             </Canvas.Resources>
-            <Canvas >
+            <Canvas>
                 <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}"
                       Clip="{StaticResource Iconic-Size-Sm-Trash-Clip-0}">
                     <Path.Data>
@@ -227,7 +227,7 @@
                               Figures="M88 20v93c0 1.105-.895 2-2 2s-2-.895-2-2v-93h-12v93c0 1.105-.895 2-2 2s-2-.895-2-2v-93h-12v93c0 1.105-.895 2-2 2s-2-.895-2-2v-93h-12v93c0 1.105-.895 2-2 2s-2-.895-2-2v-93h-12v93c0 1.105-.895 2-2 2s-2-.895-2-2v-93h-12v108h92v-108h-12z"
                               FillRule="NonZero" />
             </Canvas.Resources>
-            <Canvas >
+            <Canvas>
                 <Canvas.RenderTransform>
                     <TranslateTransform X="10" />
                 </Canvas.RenderTransform>
@@ -284,7 +284,7 @@
              x:Shared="False">
         <Canvas Width="32"
                 Height="32">
-            <Canvas >
+            <Canvas>
                 <Canvas.RenderTransform>
                     <TranslateTransform X="11" />
                 </Canvas.RenderTransform>
@@ -326,4 +326,73 @@
             </Canvas>
         </Canvas>
     </Viewbox>
-</ResourceDictionary> 
+
+    <Viewbox x:Key="IconicCheckSmall"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="16"
+                Height="16">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TranslateTransform X="0"
+                                        Y="1" />
+                </Canvas.RenderTransform>
+                <Path StrokeThickness="4"
+                      Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}"
+                      StrokeStartLineCap="Square"
+                      StrokeEndLineCap="Square">
+                    <Path.Data>
+                        <PathGeometry Figures="M13 3l-7 7-3-3"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicCheckMedium"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="32"
+                Height="32">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TranslateTransform X="0"
+                                        Y="2" />
+                </Canvas.RenderTransform>
+                <Path StrokeThickness="6"
+                      Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}"
+                      StrokeStartLineCap="Square"
+                      StrokeEndLineCap="Square">
+                    <Path.Data>
+                        <PathGeometry Figures="M27.5 4.5l-16.5 17.5-6.5-6.5"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicCheckLarge"
+             Stretch="Uniform"
+             x:Shared="False">
+        <Canvas Width="128"
+                Height="128">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TranslateTransform X="2"
+                                        Y="15" />
+                </Canvas.RenderTransform>
+                <Path StrokeThickness="16"
+                      Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}"
+                      StrokeStartLineCap="Square"
+                      StrokeEndLineCap="Square">
+                    <Path.Data>
+                        <PathGeometry Figures="M112.5 11.5l-70.457 74.891-30.043-29.391"
+                                      FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+</ResourceDictionary>

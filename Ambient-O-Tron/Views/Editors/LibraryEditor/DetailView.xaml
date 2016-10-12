@@ -106,8 +106,10 @@
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Grid.Row="2">
-            <Button Content="Save"
-                    Command="{Binding SaveCommand}" />
+            <Button Command="{Binding SaveCommand}"
+                    Style="{StaticResource IconButtonStyle32}">
+                <controls:IconContainer IconName="IconicCheck" />
+            </Button>
             <Button Content="Revert"
                     Command="{Binding RevertCommand}" />
             <Button Content="Cancel"
