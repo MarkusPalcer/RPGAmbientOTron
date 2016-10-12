@@ -20,7 +20,7 @@
                 <SolidColorBrush Color="Black" />
             </vc:BooleanToAnyConverter.FalseValue>
         </vc:BooleanToAnyConverter>
-        
+
         <DataTemplate DataType="{x:Type libraryEditor:FileViewModel}">
             <Grid>
                 <StackPanel Orientation="Vertical"
@@ -44,11 +44,20 @@
                                 Orientation="Horizontal"
                                 Margin="10,10,0,10">
                         <Button Command="{Binding DeleteCommand}"
-                                Padding="5">
-                            Delete
+                                Padding="5"
+                                Margin="10,0,0,0"
+                                Style="{StaticResource IconButtonStyle32}">
+                            <controls:IconContainer IconName="IconicTrash" />
                         </Button>
-                        <Border ToolTip="{Binding InfoText}">
-                            <TextBlock>Info</TextBlock>
+                        
+                        <Border ToolTip="{Binding InfoText}"
+                                Height="32"
+                                Width="32"
+                                Padding="5"
+                                Background="LightGray"
+                                Margin="10,0,0,0"
+                                CornerRadius="16">
+                            <controls:IconContainer IconName="IconicInfo" />
                         </Border>
                     </StackPanel>
                 </Border>
@@ -67,7 +76,8 @@
                 <TextBox Text="{Binding Name}" />
             </controls:LabelledControl>
         </StackPanel>
-        <controls:LabelledControl Grid.Row="1" Label="Files:">
+        <controls:LabelledControl Grid.Row="1"
+                                  Label="Files:">
             <ScrollViewer dd:DragDrop.IsDropTarget="True"
                           dd:DragDrop.DropHandler="{Binding}">
                 <Grid>
@@ -75,7 +85,8 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <ItemsControl ItemsSource="{Binding Files}" Grid.Row="0">
+                    <ItemsControl ItemsSource="{Binding Files}"
+                                  Grid.Row="0">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel Orientation="Vertical"
@@ -83,17 +94,24 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
-                    <Button Template="{StaticResource GhostButtonTemplate}" Padding="5" Grid.Row="1">
+                    <Button Template="{StaticResource GhostButtonTemplate}"
+                            Padding="10"
+                            Grid.Row="1">
                         Drag files into list to add them
                     </Button>
                 </Grid>
             </ScrollViewer>
         </controls:LabelledControl>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2">
-            <Button Content="Save" Command="{Binding SaveCommand}" />
-            <Button Content="Revert" Command="{Binding RevertCommand}" />
-            <Button Content="Cancel" Command="{Binding CloseCommand}" />
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="2">
+            <Button Content="Save"
+                    Command="{Binding SaveCommand}" />
+            <Button Content="Revert"
+                    Command="{Binding RevertCommand}" />
+            <Button Content="Cancel"
+                    Command="{Binding CloseCommand}" />
         </StackPanel>
     </Grid>
 </UserControl>

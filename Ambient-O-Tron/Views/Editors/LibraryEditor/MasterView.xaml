@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:AmbientOTron.Views.Editors.LibraryEditor"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             xmlns:vc="clr-namespace:AmbientOTron.ValueConverters"
+             xmlns:controls="clr-namespace:AmbientOTron.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -35,8 +34,9 @@
                                 Orientation="Horizontal"
                                 Margin="10,10,0,10">
                         <Button Command="{Binding EditCommand}"
-                                Padding="5">
-                            Edit
+                                Padding="5"
+                                Style="{StaticResource IconButtonStyle32}">
+                            <controls:IconContainer IconName="IconicPencil" />
                         </Button>
                     </StackPanel>
                 </Border>
