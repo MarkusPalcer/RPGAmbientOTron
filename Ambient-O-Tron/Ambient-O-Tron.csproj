@@ -108,6 +108,9 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="CommandLineOptions.cs" />
+    <Compile Include="Controls\IconContainer.xaml.cs">
+      <DependentUpon>IconContainer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LabelledControl.xaml.cs">
       <DependentUpon>LabelledControl.xaml</DependentUpon>
     </Compile>
@@ -139,6 +142,10 @@
     <Compile Include="Views\Shell\View.xaml.cs">
       <DependentUpon>View.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\IconContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\LabelledControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -155,6 +162,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\CommonStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\CommonTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -162,6 +173,10 @@
     <Page Include="Resources\CommonValueConverters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\MessageBox\View.xaml">
       <SubType>Designer</SubType>
@@ -215,24 +230,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\volume-medium.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\plus-thin.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\media-play.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\trash.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\cog.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Behaviors\" />

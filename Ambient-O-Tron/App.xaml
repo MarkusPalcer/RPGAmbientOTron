@@ -6,6 +6,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/CommonTemplates.xaml" />
                 <ResourceDictionary Source="Resources/CommonValueConverters.xaml" />
+                <ResourceDictionary Source="Resources/CommonStyles.xaml" />
+                <ResourceDictionary Source="Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
