@@ -53,9 +53,16 @@
                     <StackPanel HorizontalAlignment="Right"
                                 Orientation="Horizontal"
                                 Margin="10,10,0,10">
+                        <Button Padding="5"
+                                Style="{StaticResource IconButtonStyle32}"
+                                ToolTip="Edit">
+                            <controls:IconContainer IconName="IconicPencil" />
+                        </Button>
+                        
                         <Button Command="{Binding DeleteCommand}"
                                 Padding="5"
-                                Style="{StaticResource IconButtonStyle32}">
+                                Style="{StaticResource IconButtonStyle32}"
+                                ToolTip="Delete">
                             <controls:IconContainer IconName="IconicTrash" />
                         </Button>
 
