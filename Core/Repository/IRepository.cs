@@ -3,12 +3,13 @@ using Core.Repository.Models;
 
 namespace Core.Repository
 {
-    public interface IRepository
-    {
-        AudioFile GetAudioFileModel(string fileName);
-        IEnumerable<Library> Libraries { get; }
-        void Save(Library model);
-        void LoadLibrary(string path);
-        Library GetLibraryModel(string path);
-    }
+  public interface IRepository
+  {
+    IEnumerable<Library> Libraries { get; }
+    AudioFile GetAudioFileModel(string fileName);
+    void Save(Library model);
+    void LoadLibrary(string path);
+    Library GetLibraryModel(string path);
+    void Save(AudioFile model);
+  }
 }

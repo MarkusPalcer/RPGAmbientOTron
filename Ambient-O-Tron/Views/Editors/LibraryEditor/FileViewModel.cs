@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using System.Windows.Input;
 using Core.Events;
+using Core.Repository;
 using Core.Repository.Models;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 
@@ -11,17 +13,41 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
   public class FileViewModel : BindableBase
   {
     private readonly IEventAggregator eventAggregator;
+    private readonly IRepository repository;
     private string name;
 
     // TODO: Rename
-    public FileViewModel(AudioFile model, IEventAggregator eventAggregator)
+    public FileViewModel(AudioFile model, IEventAggregator eventAggregator, IRepository repository)
     {
       this.eventAggregator = eventAggregator;
+      this.repository = repository;
 
       eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>()
                      .Subscribe(SetModel, ThreadOption.UIThread, false, m => m.FullPath == Model.FullPath);
 
+      StartRenamingCommand = new DelegateCommand(StartRename);
+      AcceptRenameCommand = new DelegateCommand(AcceptRename);
+      CancelRenameCommand = new DelegateCommand(CancelRename);
+
       SetModel(model);
+    }
+
+    private void AcceptRename()
+    {
+      Model.Name = Name;
+      repository.Save(Model);
+      IsInEditMode = false;
+    }
+
+    private void CancelRename()
+    {
+      Name = Model.Name;
+      IsInEditMode = false;
+    }
+
+    private void StartRename()
+    {
+      IsInEditMode = true;
     }
 
     public AudioFile Model { get; set; }
@@ -70,7 +96,18 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
       }
     }
 
+    private bool isInEditMode;
+
+    public bool IsInEditMode
+    {
+      get { return isInEditMode; }
+      set { SetProperty(ref isInEditMode, value); }
+    }
+
     public ICommand DeleteCommand { get; set; }
+    public ICommand AcceptRenameCommand { get; }
+    public ICommand CancelRenameCommand { get;  }
+    public ICommand StartRenamingCommand { get;  }
 
     private void SetModel(AudioFile model)
     {

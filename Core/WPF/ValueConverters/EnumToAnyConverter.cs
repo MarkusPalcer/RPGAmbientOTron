@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace AmbientOTron.ValueConverters
+namespace Core.WPF.ValueConverters
 {
   [ContentProperty("Value")]
   public class EnumToAnyConversion

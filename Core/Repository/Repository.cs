@@ -69,6 +69,23 @@ namespace Core.Repository
       }
     }
 
+    public void Save(AudioFile model)
+    {
+      var oldStatus = model.LoadStatus;
+      model.LoadStatus = LoadStatus.Unknown;
+      eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>().Publish(model);
+
+      Task.Factory.StartNew(
+        () =>
+        {
+          // Search for usages and save them
+          libraryCache.Values.Where(l => l.Files.Any(f => f.FullPath == model.FullPath)).ToArray().ForEach(Save);
+
+          model.LoadStatus = oldStatus;
+          eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>().Publish(model);
+        });
+    }
+
     void IRepository.LoadLibrary(string path)
     {
       if (libraryCache.ContainsKey(path))
@@ -148,11 +165,17 @@ namespace Core.Repository
 
       audioFileCache[fullPath] = result;
 
+      UpdateFromDisk(result);
+
+      return result;
+    }
+
+    private void UpdateFromDisk(AudioFile result)
+    {
       Task.Factory.StartNew(
         () =>
         {
-
-          if (!File.Exists(fullPath))
+          if (!File.Exists(result.FullPath))
           {
             result.LoadStatus = LoadStatus.FileNotFound;
           }
@@ -161,20 +184,18 @@ namespace Core.Repository
           {
             // Ensure the file is readable as MP3 file
             // To be replaced by codec detection later
-            using (new Mp3FileReader(fullPath)) {}
+            using (new Mp3FileReader(result.FullPath)) {}
 
             result.LoadStatus = LoadStatus.FileOk;
           }
           catch (Exception ex)
           {
-            logger.Warn($"Could not load audio file from {fullPath}", ex);
+            logger.Warn($"Could not load audio file from {result.FullPath}", ex);
             result.LoadStatus = LoadStatus.LoadError;
           }
 
           eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>().Publish(result);
         });
-
-      return result;
     }
 
     private string ResolveLink(string path, string parentPath)

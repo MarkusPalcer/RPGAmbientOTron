@@ -117,8 +117,6 @@
     </Compile>
     <Compile Include="Controls\ProgressCircle.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="ValueConverters\BooleanToAnyConverter.cs" />
-    <Compile Include="ValueConverters\EnumToAnyConverter.cs" />
     <Compile Include="Views\Dialogs\MessageBox\Extensions.cs" />
     <Compile Include="Views\Dialogs\MessageBox\View.xaml.cs">
       <DependentUpon>View.xaml</DependentUpon>
@@ -234,9 +232,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Behaviors\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}</Project>

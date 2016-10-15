@@ -6,8 +6,7 @@
              xmlns:libraryEditor="clr-namespace:AmbientOTron.Views.Editors.LibraryEditor"
              xmlns:controls="clr-namespace:AmbientOTron.Controls"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             xmlns:vc="clr-namespace:AmbientOTron.ValueConverters"
-             xmlns:models="clr-namespace:Core.Repository.Models;assembly=Core"
+             xmlns:vc="clr-namespace:Core.WPF.ValueConverters;assembly=Core"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -55,7 +54,8 @@
                                 Margin="10,10,0,10">
                         <Button Padding="5"
                                 Style="{StaticResource IconButtonStyle32}"
-                                ToolTip="Edit">
+                                ToolTip="Edit"
+                                Command="{Binding StartRenamingCommand}">
                             <controls:IconContainer IconName="IconicPencil" />
                         </Button>
                         
@@ -84,19 +84,6 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Grid.Style>
-                        <Style TargetType="Grid">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Status}">
-                                    <DataTrigger.Value>
-                                        <models:LoadStatus>Unknown</models:LoadStatus>
-                                    </DataTrigger.Value>
-                                    <Setter Property="Visibility"
-                                            Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Style>
 
                     <TextBlock Grid.Column="0"
                                Text="{Binding FileName}"
@@ -112,6 +99,27 @@
                                              Margin="10,0,0,0"
                                              Height="32"
                                              Width="32" />
+                </Grid>
+
+                <Grid Visibility="{Binding IsInEditMode, Converter={StaticResource BooleanToHiddenConverter}}" Background="White">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical" Grid.Column="0">
+                        <TextBlock>Enter new name:</TextBlock>
+                        <TextBox Text="{Binding Name}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                        <Button Style="{StaticResource IconButtonStyle32}"
+                                Command="{Binding AcceptRenameCommand}">
+                            <controls:IconContainer IconName="IconicCheck" />
+                        </Button>
+                        <Button Style="{StaticResource IconButtonStyle32}"
+                                Command="{Binding CancelRenameCommand}">
+                            <controls:IconContainer IconName="IconicX" />
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </Grid>
         </DataTemplate>
