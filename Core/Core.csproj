@@ -79,8 +79,6 @@
     <Compile Include="Events\UpdateModelEvent.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Logging\LoggerFacade.cs" />
-    <Compile Include="Logging\ILoggingService.cs" />
-    <Compile Include="Logging\LoggingService.cs" />
     <Compile Include="Navigation\INavigationService.cs" />
     <Compile Include="Navigation\NavigationRequest.cs" />
     <Compile Include="Navigation\NavigationRequestCollection.cs" />

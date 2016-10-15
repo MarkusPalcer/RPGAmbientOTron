@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Core.Extensions;
-using Core.Logging;
+using log4net;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -13,13 +13,12 @@ namespace Core.Navigation
     [PartCreationPolicy(CreationPolicy.Shared)]
     class NavigationService : INavigationService {
         private readonly IRegionManager regionManager;
-        private readonly ILoggingService logger;
+        private readonly ILog logger = LogManager.GetLogger(typeof(NavigationService));
 
         [ImportingConstructor]
-        public NavigationService(IRegionManager regionManager, ILoggingService logger)
+        public NavigationService(IRegionManager regionManager)
         {
             this.regionManager = regionManager;
-            this.logger = logger;
         }
 
         public DelegateCommand CreateNavigationCommand(IEnumerable<NavigationRequest> requests)
@@ -65,7 +64,7 @@ namespace Core.Navigation
             {
                 if (result.Error != null)
                 {
-                    logger.Error<NavigationService>($"Error while executing navigation request {result.Context.NavigationService.Region.Name} -> {result.Context.Uri}", result.Error);
+                    logger.Error($"Error while executing navigation request {result.Context.NavigationService.Region.Name} -> {result.Context.Uri}", result.Error);
                     tcs.SetException(result.Error);
                 }
                 else

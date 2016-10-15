@@ -21,8 +21,8 @@
                 <SolidColorBrush Color="Black" />
             </vc:BooleanToAnyConverter.FalseValue>
         </vc:BooleanToAnyConverter>
-        
-        <vc:EnumToAnyConverter x:Key="UnknownFileStatusToVisibilityConverter" >
+
+        <vc:EnumToAnyConverter x:Key="UnknownFileStatusToVisibilityConverter">
             <vc:EnumToAnyConverter.DefaultValue>
                 <Visibility>Collapsed</Visibility>
             </vc:EnumToAnyConverter.DefaultValue>
@@ -84,7 +84,8 @@
                                     <DataTrigger.Value>
                                         <models:LoadStatus>Unknown</models:LoadStatus>
                                     </DataTrigger.Value>
-                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -94,8 +95,7 @@
                                Text="{Binding FileName}"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
-                               Foreground="LightGray"
-                               />
+                               Foreground="LightGray" />
 
                     <controls:ProgressCircle Grid.Column="1"
                                              IsIndeterminate="True"
@@ -103,7 +103,8 @@
                                              TrackColor="LightGray"
                                              Value="25"
                                              Margin="10,0,0,0"
-                                             Height="32" Width="32" />
+                                             Height="32"
+                                             Width="32" />
                 </Grid>
             </Grid>
         </DataTemplate>
@@ -124,20 +125,13 @@
                                   Label="Files:">
             <ScrollViewer dd:DragDrop.IsDropTarget="True"
                           dd:DragDrop.DropHandler="{Binding}">
-                <Grid>
+                <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <ItemsControl ItemsSource="{Binding Files}"
-                                  Grid.Row="0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Vertical"
-                                           ItemWidth="250" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                                  Grid.Row="0" />
                     <Button Template="{StaticResource GhostButtonTemplate}"
                             Padding="10"
                             Grid.Row="1">

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Events;
 using Core.Extensions;
-using Core.Logging;
 using Core.Persistence;
 using Core.Repository.Models;
 using Core.Repository.PersistenceMocels;
+using log4net;
 using NAudio.Wave;
 using Newtonsoft.Json;
 using Prism.Events;
@@ -28,14 +28,13 @@ namespace Core.Repository
     private readonly IEventAggregator eventAggregator;
     private readonly Dictionary<string, Library> libraryCache = new Dictionary<string, Library>();
 
-    private readonly ILoggingService logger;
+    private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = $"root.{Constants.LibraryExtension}";
 
 
     [ImportingConstructor]
-    public Repository(ILoggingService logger, IEventAggregator eventAggregator)
+    public Repository(IEventAggregator eventAggregator)
     {
-      this.logger = logger;
       this.eventAggregator = eventAggregator;
 
       Init();
@@ -95,7 +94,7 @@ namespace Core.Repository
 
       if (!File.Exists(fullPath))
       {
-        logger.Info<Repository>($"Library {fullPath} does not exist.");
+        logger.Info($"Library {fullPath} does not exist.");
         return null;
       }
 
@@ -119,7 +118,7 @@ namespace Core.Repository
       }
       catch (Exception ex)
       {
-        logger.Warn<Repository>($"Could not load library from {fullPath}", ex);
+        logger.Warn($"Could not load library from {fullPath}", ex);
         return null;
       }
 
@@ -168,7 +167,7 @@ namespace Core.Repository
           }
           catch (Exception ex)
           {
-            logger.Warn<Repository>($"Could not load audio file from {fullPath}", ex);
+            logger.Warn($"Could not load audio file from {fullPath}", ex);
             result.LoadStatus = LoadStatus.LoadError;
           }
 
@@ -197,7 +196,7 @@ namespace Core.Repository
         }
         catch (Exception ex)
         {
-          logger.Warn<Repository>($"Error while writing root library to '{path}'", ex);
+          logger.Warn($"Error while writing root library to '{path}'", ex);
         }
       }
     }
