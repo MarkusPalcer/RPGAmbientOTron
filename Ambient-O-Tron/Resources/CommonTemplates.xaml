@@ -34,15 +34,8 @@
                                          Duration="0:00:01.00"
                                          AutoReverse="False"
                                          RepeatBehavior="Forever"
-                                         Storyboard.TargetName="Indicator"
-                                         Storyboard.TargetProperty="StartAngle" />
-                            <DoubleAnimation From="15"
-                                         To="374"
-                                         Duration="0:00:01.00"
-                                         AutoReverse="False"
-                                         RepeatBehavior="Forever"
-                                         Storyboard.TargetName="Indicator"
-                                         Storyboard.TargetProperty="EndAngle" />
+                                         Storyboard.TargetName="Rotator"
+                                         Storyboard.TargetProperty="Angle" />
                         </Storyboard>
                     </ControlTemplate.Resources>
 
@@ -52,19 +45,18 @@
                             <RotateTransform Angle="0"
                                          x:Name="Rotator" />
                         </Grid.RenderTransform>
-                        <ed:Arc x:Name="Indicator"
-                            ArcThickness="{TemplateBinding Thickness}"
-                            ArcThicknessUnit="Pixel"
-                            EndAngle="{TemplateBinding controls:ProgressCircle.ArcDegrees}"
-                            Fill="{TemplateBinding Foreground}"
-                            Stretch="None"
-                            StartAngle="0">
-                        </ed:Arc>
                         <ed:Arc x:Name="Track"
                             ArcThickness="{TemplateBinding Thickness}"
                             ArcThicknessUnit="Pixel"
                             EndAngle="360"
                             Fill="{TemplateBinding TrackColor}"
+                            Stretch="None"
+                            StartAngle="0" />
+                        <ed:Arc x:Name="Indicator"
+                            ArcThickness="{TemplateBinding Thickness}"
+                            ArcThicknessUnit="Pixel"
+                            EndAngle="{TemplateBinding controls:ProgressCircle.ArcDegrees}"
+                            Fill="{TemplateBinding Foreground}"
                             Stretch="None"
                             StartAngle="0" />
                     </Grid>

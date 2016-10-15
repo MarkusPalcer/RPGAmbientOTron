@@ -31,8 +31,9 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         private readonly IDialogService dialogService;
         private readonly INavigationService navigationService;
         private readonly IRepository repository;
+      private readonly IEventAggregator eventAggregator;
 
-        private bool isDirty;
+      private bool isDirty;
         private Library model;
 
         private string name;
@@ -46,7 +47,8 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         {
             this.navigationService = navigationService;
             this.repository = repository;
-            this.dialogService = dialogService;
+          this.eventAggregator = eventAggregator;
+          this.dialogService = dialogService;
             Files.CollectionChanged += (sender, args) => IsDirty = true;
 
             RevertCommand = new DelegateCommand(LoadFromModel).ObservesCanExecute(p => IsDirty);
@@ -119,7 +121,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
         private FileViewModel CreateFileViewModel(AudioFile arg)
         {
-            var result = new FileViewModel(arg);
+            var result = new FileViewModel(arg, eventAggregator);
             result.DeleteCommand = new DelegateCommand(() => Files.Remove(result));
 
             return result;
@@ -193,7 +195,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
                 var files = (string[])dataObject.GetData(DataFormats.FileDrop);
                 Files.AddRange(files.Select(fileName =>
                 {
-                    var result = new FileViewModel(repository.GetAudioFileModel(fileName));
+                    var result = new FileViewModel(repository.GetAudioFileModel(fileName), eventAggregator);
                     return result;
                 }));
             }

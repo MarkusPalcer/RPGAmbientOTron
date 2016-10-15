@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:AmbientOTron.Controls"
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:vc="clr-namespace:AmbientOTron.ValueConverters"
+             xmlns:models="clr-namespace:Core.Repository.Models;assembly=Core"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -20,6 +21,15 @@
                 <SolidColorBrush Color="Black" />
             </vc:BooleanToAnyConverter.FalseValue>
         </vc:BooleanToAnyConverter>
+        
+        <vc:EnumToAnyConverter x:Key="UnknownFileStatusToVisibilityConverter" >
+            <vc:EnumToAnyConverter.DefaultValue>
+                <Visibility>Collapsed</Visibility>
+            </vc:EnumToAnyConverter.DefaultValue>
+            <vc:EnumToAnyConversion EnumValue="Unknown">
+                <Visibility>Visible</Visibility>
+            </vc:EnumToAnyConversion>
+        </vc:EnumToAnyConverter>
 
         <DataTemplate DataType="{x:Type libraryEditor:FileViewModel}">
             <Grid>
@@ -45,11 +55,10 @@
                                 Margin="10,10,0,10">
                         <Button Command="{Binding DeleteCommand}"
                                 Padding="5"
-                                Margin="10,0,0,0"
                                 Style="{StaticResource IconButtonStyle32}">
                             <controls:IconContainer IconName="IconicTrash" />
                         </Button>
-                        
+
                         <Border ToolTip="{Binding InfoText}"
                                 Height="32"
                                 Width="32"
@@ -61,6 +70,41 @@
                         </Border>
                     </StackPanel>
                 </Border>
+
+                <Grid Visibility="{Binding Status, Converter={StaticResource UnknownFileStatusToVisibilityConverter}}"
+                      Background="White">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Status}">
+                                    <DataTrigger.Value>
+                                        <models:LoadStatus>Unknown</models:LoadStatus>
+                                    </DataTrigger.Value>
+                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding FileName}"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Foreground="LightGray"
+                               />
+
+                    <controls:ProgressCircle Grid.Column="1"
+                                             IsIndeterminate="True"
+                                             Thickness="3"
+                                             TrackColor="LightGray"
+                                             Value="25"
+                                             Margin="10,0,0,0"
+                                             Height="32" Width="32" />
+                </Grid>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

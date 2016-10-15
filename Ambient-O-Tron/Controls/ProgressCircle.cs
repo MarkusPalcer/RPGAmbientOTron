@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Windows.Media;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -155,7 +154,7 @@ namespace AmbientOTron.Controls
       "TrackColor",
       typeof(Brush),
       typeof(ProgressCircle),
-      new PropertyMetadata(Brushes.LightGray));
+      new UIPropertyMetadata(Brushes.LightGray));
 
     public Brush TrackColor
     {
@@ -219,8 +218,9 @@ namespace AmbientOTron.Controls
 
     private void RecalculateRenderProperties()
     {
-      if ((Maximum - Minimum < double.Epsilon) || IsIndeterminate)
+      if ((Maximum - Minimum < double.Epsilon))
       {
+        ArcDegrees = 356.4D; // 99%
         return;
       }
 

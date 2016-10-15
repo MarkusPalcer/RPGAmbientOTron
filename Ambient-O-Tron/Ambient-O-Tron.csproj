@@ -118,6 +118,7 @@
     <Compile Include="Controls\ProgressCircle.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ValueConverters\BooleanToAnyConverter.cs" />
+    <Compile Include="ValueConverters\EnumToAnyConverter.cs" />
     <Compile Include="Views\Dialogs\MessageBox\Extensions.cs" />
     <Compile Include="Views\Dialogs\MessageBox\View.xaml.cs">
       <DependentUpon>View.xaml</DependentUpon>
