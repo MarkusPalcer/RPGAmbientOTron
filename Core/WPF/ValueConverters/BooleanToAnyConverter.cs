@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace AmbientOTron.ValueConverters
+namespace Core.WPF.ValueConverters
 {
     public class BooleanToAnyConverter: IValueConverter
     {

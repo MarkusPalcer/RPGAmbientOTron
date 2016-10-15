@@ -6,7 +6,7 @@
              xmlns:libraryEditor="clr-namespace:AmbientOTron.Views.Editors.LibraryEditor"
              xmlns:controls="clr-namespace:AmbientOTron.Controls"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             xmlns:vc="clr-namespace:AmbientOTron.ValueConverters"
+             xmlns:vc="clr-namespace:Core.WPF.ValueConverters;assembly=Core"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -20,6 +20,15 @@
                 <SolidColorBrush Color="Black" />
             </vc:BooleanToAnyConverter.FalseValue>
         </vc:BooleanToAnyConverter>
+
+        <vc:EnumToAnyConverter x:Key="UnknownFileStatusToVisibilityConverter">
+            <vc:EnumToAnyConverter.DefaultValue>
+                <Visibility>Collapsed</Visibility>
+            </vc:EnumToAnyConverter.DefaultValue>
+            <vc:EnumToAnyConversion EnumValue="Unknown">
+                <Visibility>Visible</Visibility>
+            </vc:EnumToAnyConversion>
+        </vc:EnumToAnyConverter>
 
         <DataTemplate DataType="{x:Type libraryEditor:FileViewModel}">
             <Grid>
@@ -43,13 +52,20 @@
                     <StackPanel HorizontalAlignment="Right"
                                 Orientation="Horizontal"
                                 Margin="10,10,0,10">
-                        <Button Command="{Binding DeleteCommand}"
-                                Padding="5"
-                                Margin="10,0,0,0"
-                                Style="{StaticResource IconButtonStyle32}">
-                            <controls:IconContainer IconName="IconicTrash" />
+                        <Button Padding="5"
+                                Style="{StaticResource IconButtonStyle32}"
+                                ToolTip="Edit"
+                                Command="{Binding StartRenamingCommand}">
+                            <controls:IconContainer IconName="IconicPencil" />
                         </Button>
                         
+                        <Button Command="{Binding DeleteCommand}"
+                                Padding="5"
+                                Style="{StaticResource IconButtonStyle32}"
+                                ToolTip="Delete">
+                            <controls:IconContainer IconName="IconicTrash" />
+                        </Button>
+
                         <Border ToolTip="{Binding InfoText}"
                                 Height="32"
                                 Width="32"
@@ -61,6 +77,50 @@
                         </Border>
                     </StackPanel>
                 </Border>
+
+                <Grid Visibility="{Binding Status, Converter={StaticResource UnknownFileStatusToVisibilityConverter}}"
+                      Background="White">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding FileName}"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Foreground="LightGray" />
+
+                    <controls:ProgressCircle Grid.Column="1"
+                                             IsIndeterminate="True"
+                                             Thickness="3"
+                                             TrackColor="LightGray"
+                                             Value="25"
+                                             Margin="10,0,0,0"
+                                             Height="32"
+                                             Width="32" />
+                </Grid>
+
+                <Grid Visibility="{Binding IsInEditMode, Converter={StaticResource BooleanToHiddenConverter}}" Background="White">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical" Grid.Column="0">
+                        <TextBlock>Enter new name:</TextBlock>
+                        <TextBox Text="{Binding Name}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                        <Button Style="{StaticResource IconButtonStyle32}"
+                                Command="{Binding AcceptRenameCommand}">
+                            <controls:IconContainer IconName="IconicCheck" />
+                        </Button>
+                        <Button Style="{StaticResource IconButtonStyle32}"
+                                Command="{Binding CancelRenameCommand}">
+                            <controls:IconContainer IconName="IconicX" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
@@ -80,20 +140,13 @@
                                   Label="Files:">
             <ScrollViewer dd:DragDrop.IsDropTarget="True"
                           dd:DragDrop.DropHandler="{Binding}">
-                <Grid>
+                <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <ItemsControl ItemsSource="{Binding Files}"
-                                  Grid.Row="0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Vertical"
-                                           ItemWidth="250" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                                  Grid.Row="0" />
                     <Button Template="{StaticResource GhostButtonTemplate}"
                             Padding="10"
                             Grid.Row="1">
