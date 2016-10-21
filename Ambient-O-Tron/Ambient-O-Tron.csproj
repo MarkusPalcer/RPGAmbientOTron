@@ -132,10 +132,6 @@
     <Compile Include="Views\Empty.xaml.cs">
       <DependentUpon>Empty.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Layout\MasterDetail\View.xaml.cs">
-      <DependentUpon>View.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Layout\MasterDetail\ViewModel.cs" />
     <Compile Include="Views\Shell\ViewModel.cs" />
     <Compile Include="Views\Editors\LibraryEditor\DetailView.xaml.cs">
       <DependentUpon>DetailView.xaml</DependentUpon>
@@ -194,10 +190,6 @@
     <Page Include="Views\Empty.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Layout\MasterDetail\View.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Shell\View.xaml">
       <SubType>Designer</SubType>

@@ -35,7 +35,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
             .Select(x => new LibraryViewModel(x, eventAggregator, navigationService))
             .ToObservableCollection();
 
-            AddCommand = navigationService.CreateNavigationCommand<DetailView>(Layout.MasterDetail.ViewModel.DetailRegion);
+            AddCommand = navigationService.CreateNavigationCommand<DetailView>(Shell.ViewModel.DetailRegion);
 
             eventAggregator.GetEvent<AddModelEvent<Library>>().Subscribe(HandleAddModel);
         }

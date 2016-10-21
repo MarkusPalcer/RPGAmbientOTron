@@ -23,7 +23,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
             EditCommand =
                 navigationService.CreateNavigationCommand<DetailView>(
-                    Layout.MasterDetail.ViewModel.DetailRegion,
+                    Shell.ViewModel.DetailRegion,
                     new NavigationParameters
                     {
                         {"id", FullFileName}
