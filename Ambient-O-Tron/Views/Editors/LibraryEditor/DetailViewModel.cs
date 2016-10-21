@@ -21,7 +21,6 @@ using DataObject = System.Windows.DataObject;
 using DragDropEffects = System.Windows.DragDropEffects;
 using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using ViewModel = AmbientOTron.Views.Layout.MasterDetail.ViewModel;
 
 namespace AmbientOTron.Views.Editors.LibraryEditor
 {
@@ -130,7 +129,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     private void CloseDetailView()
     {
       IsDirty = false;
-      navigationService.NavigateAsync<Empty>(ViewModel.DetailRegion);
+      navigationService.NavigateAsync<Empty>(Shell.ViewModel.DetailRegion);
     }
 
     #region IConfirmNavigationRequest
