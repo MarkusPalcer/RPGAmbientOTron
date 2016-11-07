@@ -1,5 +1,5 @@
-﻿using System;
-using System.Reactive;
+﻿using System.Reactive;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NAudio.Wave;
 
@@ -8,7 +8,7 @@ namespace Core.Audio
   /// <summary>
   /// Represents a file currently being played back
   /// </summary>
-  internal class Playback
+  internal class Playback : IPlayback
   {
     private WaveOut waveOut;
     private AudioFileReader audioFileReader;
@@ -40,6 +40,13 @@ namespace Core.Audio
       }
     }
 
-    public Task Task => taskCompletionSource.Task;
+    #region Implementation of IAsyncOperation
+
+    public TaskAwaiter GetAwaiter()
+    {
+      return ((Task)taskCompletionSource.Task).GetAwaiter();
+    }
+
+    #endregion
   }
 }

@@ -1,10 +1,7 @@
-﻿using System.Reactive;
-using System.Threading.Tasks;
-
-namespace Core.Audio
+﻿namespace Core.Audio
 {
   public interface IAudioService
   {
-    Task PlayAudioFile(string path);
+    IPlayback PlayAudioFile(string path);
   }
 } 

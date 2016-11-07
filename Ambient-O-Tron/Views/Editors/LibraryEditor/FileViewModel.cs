@@ -31,16 +31,26 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
       StartRenamingCommand = new DelegateCommand(StartRename);
       AcceptRenameCommand = new DelegateCommand(AcceptRename);
       CancelRenameCommand = new DelegateCommand(CancelRename);
-      PreviewCommand = new DelegateCommand(StartPreview);
+      PreviewCommand = new DelegateCommand(StartPreview, () => !PreviewRunning).ObservesProperty(() => PreviewRunning);
 
       SetModel(model);
     }
 
-    private void StartPreview()
+    private async void StartPreview()
     {
-      audioService.PlayAudioFile(Model.FullPath);
+      PreviewRunning = true;
+      var playback = audioService.PlayAudioFile(Model.FullPath);
+      await playback;
+      PreviewRunning = false;
     }
 
+    private bool previewRunning = false;
+
+    public bool PreviewRunning
+    {
+      get { return previewRunning; }
+      private set { SetProperty(ref previewRunning, value); }
+    }
 
     private void AcceptRename()
     {
