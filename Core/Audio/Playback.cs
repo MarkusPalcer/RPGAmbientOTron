@@ -40,11 +40,16 @@ namespace Core.Audio
       }
     }
 
-    #region Implementation of IAsyncOperation
+    #region Implementation of IPlayback
 
     public TaskAwaiter GetAwaiter()
     {
       return ((Task)taskCompletionSource.Task).GetAwaiter();
+    }
+
+    public void Stop()
+    {
+      waveOut.Stop();
     }
 
     #endregion

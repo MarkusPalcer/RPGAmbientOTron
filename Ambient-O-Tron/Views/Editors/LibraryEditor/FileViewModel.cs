@@ -31,25 +31,17 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
       StartRenamingCommand = new DelegateCommand(StartRename);
       AcceptRenameCommand = new DelegateCommand(AcceptRename);
       CancelRenameCommand = new DelegateCommand(CancelRename);
-      PreviewCommand = new DelegateCommand(StartPreview, () => !PreviewRunning).ObservesProperty(() => PreviewRunning);
+      PreviewCommand = new DelegateCommand(StartPreview, () => !IsInPreview).ObservesProperty(() => IsInPreview);
+      StopPreviewCommand = new DelegateCommand(() => Playback.Stop()).ObservesCanExecute(_ => IsInPreview);
 
       SetModel(model);
     }
 
     private async void StartPreview()
     {
-      PreviewRunning = true;
-      var playback = audioService.PlayAudioFile(Model.FullPath);
-      await playback;
-      PreviewRunning = false;
-    }
-
-    private bool previewRunning = false;
-
-    public bool PreviewRunning
-    {
-      get { return previewRunning; }
-      private set { SetProperty(ref previewRunning, value); }
+      Playback = audioService.PlayAudioFile(Model.FullPath);
+      await Playback;
+      Playback = null;
     }
 
     private void AcceptRename()
@@ -96,6 +88,8 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
     public LoadStatus Status => Model.LoadStatus;
 
+    public bool IsInPreview => Playback != null;
+
     public string InfoText
     {
       get
@@ -117,6 +111,17 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     }
 
     private bool isInEditMode;
+    private IPlayback playback;
+
+    private IPlayback Playback
+    {
+      get { return playback; }
+      set
+      {
+        SetProperty(ref playback, value);
+        OnPropertyChanged(() => IsInPreview);
+      }
+    }
 
     public bool IsInEditMode
     {
@@ -129,6 +134,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     public ICommand CancelRenameCommand { get;  }
     public ICommand StartRenamingCommand { get;  }
     public ICommand PreviewCommand { get; }
+    public ICommand StopPreviewCommand { get; }
 
     private void SetModel(AudioFile model)
     {
