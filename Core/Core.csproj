@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="Audio\AudioService.cs" />
     <Compile Include="Audio\IAudioService.cs" />
+    <Compile Include="Audio\Playback.cs" />
     <Compile Include="Dialogs\DialogService.cs" />
     <Compile Include="Dialogs\IDialogService.cs" />
     <Compile Include="Dialogs\IDialogView.cs" />

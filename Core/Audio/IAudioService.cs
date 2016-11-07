@@ -1,9 +1,10 @@
 ﻿using System.Reactive;
+using System.Threading.Tasks;
 
 namespace Core.Audio
 {
   public interface IAudioService
   {
-    void PlayAudioFile(string path);
+    Task PlayAudioFile(string path);
   }
 } 

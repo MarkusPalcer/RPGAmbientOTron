@@ -21,13 +21,10 @@ namespace Core.Audio
 
     #region Implementation of IAudioService
 
-    public void PlayAudioFile(string path)
+    public async Task PlayAudioFile(string path)
     {
-      var device = new WaveOut();
-      var reader = new AudioFileReader(path);
-      device.PlaybackStopped += (_,__) => device.Dispose();
-      device.Init(reader);
-      device.Play();
+      var playback = new Playback(path);
+      await playback.Task; 
     }
 
     #endregion
