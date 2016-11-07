@@ -13,7 +13,116 @@
                 Value="10,0,0,0" />
     </Style>
 
-    
+    <Viewbox x:Key="IconicMediaStopLarge" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="128" Height="128">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                        <TranslateTransform X="32" Y="32"/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="Black">
+                    <Path.Data>
+                        <PathGeometry Figures="M62.5 64h-61c-.8 0-1.5-.7-1.5-1.5v-61c0-.8.7-1.5 1.5-1.5h61c.8 0 1.5.7 1.5 1.5v61c0 .8-.7 1.5-1.5 1.5z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicMediaStopMedium" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="32" Height="32">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="8" Y="8"/>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="Black">
+                    <Path.Data>
+                        <PathGeometry Figures="M15.5 16h-15c-.3 0-.5-.2-.5-.5v-15c0-.3.2-.5.5-.5h15c.3 0 .5.2.5.5v15c0 .3-.2.5-.5.5z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicMediaStopSmall" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="16" Height="16">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="3" Y="4"/>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="Black">
+                    <Path.Data>
+                        <PathGeometry Figures="M0 0h8v8h-8z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+
+    <Viewbox x:Key="IconicMediaPlayLarge" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="128" Height="128">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                        <TranslateTransform X="32" Y="32"/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M62.7 32.7l-61.4 30.6c-.7.4-1.3 0-1.3-.8v-61c0-.8.6-1.2 1.3-.8l61.3 30.7c.8.3.8.9.1 1.3z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicMediaPlayMedium" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="32" Height="32">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="8" Y="8"/>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M15.6 8.2l-15.2 7.6c-.2.1-.4 0-.4-.3v-15c0-.3.2-.4.4-.3l15.1 7.6c.3.1.3.3.1.4z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="IconicMediaPlaySmall" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="16" Height="16">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="4" Y="4"/>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control}, Path=Foreground}">
+                    <Path.Data>
+                        <PathGeometry Figures="M8 4l-8 4v-8z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+
+
     <Viewbox x:Key="IconicPencilMedium"
              Stretch="Uniform"
              x:Shared="False">
