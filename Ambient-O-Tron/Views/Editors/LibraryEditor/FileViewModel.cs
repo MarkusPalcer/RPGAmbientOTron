@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Reactive;
 using System.Windows.Input;
+using Core.Audio;
 using Core.Events;
 using Core.Repository;
 using Core.Repository.Models;
@@ -14,13 +16,14 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
   {
     private readonly IEventAggregator eventAggregator;
     private readonly IRepository repository;
+    private readonly IAudioService audioService;
     private string name;
 
-    // TODO: Rename
-    public FileViewModel(AudioFile model, IEventAggregator eventAggregator, IRepository repository)
+    public FileViewModel(AudioFile model, IEventAggregator eventAggregator, IRepository repository, IAudioService audioService)
     {
       this.eventAggregator = eventAggregator;
       this.repository = repository;
+      this.audioService = audioService;
 
       eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>()
                      .Subscribe(SetModel, ThreadOption.UIThread, false, m => m.FullPath == Model.FullPath);
@@ -28,9 +31,16 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
       StartRenamingCommand = new DelegateCommand(StartRename);
       AcceptRenameCommand = new DelegateCommand(AcceptRename);
       CancelRenameCommand = new DelegateCommand(CancelRename);
+      PreviewCommand = new DelegateCommand(StartPreview);
 
       SetModel(model);
     }
+
+    private void StartPreview()
+    {
+      audioService.PlayAudioFile(Model.FullPath);
+    }
+
 
     private void AcceptRename()
     {
@@ -108,6 +118,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     public ICommand AcceptRenameCommand { get; }
     public ICommand CancelRenameCommand { get;  }
     public ICommand StartRenamingCommand { get;  }
+    public ICommand PreviewCommand { get; }
 
     private void SetModel(AudioFile model)
     {

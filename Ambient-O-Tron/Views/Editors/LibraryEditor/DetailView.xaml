@@ -54,6 +54,13 @@
                                 Margin="10,10,0,10">
                         <Button Padding="5"
                                 Style="{StaticResource IconButtonStyle32}"
+                                ToolTip="Preview"
+                                Command="{Binding PreviewCommand}">
+                            Play
+                        </Button>
+                        
+                        <Button Padding="5"
+                                Style="{StaticResource IconButtonStyle32}"
                                 ToolTip="Edit"
                                 Command="{Binding StartRenamingCommand}">
                             <controls:IconContainer IconName="IconicPencil" />

@@ -184,7 +184,7 @@ namespace Core.Repository
           {
             // Ensure the file is readable as MP3 file
             // To be replaced by codec detection later
-            using (new Mp3FileReader(result.FullPath)) {}
+            using (new AudioFileReader(result.FullPath)) {}
 
             result.LoadStatus = LoadStatus.FileOk;
           }

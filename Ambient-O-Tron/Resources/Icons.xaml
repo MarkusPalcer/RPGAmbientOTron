@@ -13,6 +13,7 @@
                 Value="10,0,0,0" />
     </Style>
 
+    
     <Viewbox x:Key="IconicPencilMedium"
              Stretch="Uniform"
              x:Shared="False">
