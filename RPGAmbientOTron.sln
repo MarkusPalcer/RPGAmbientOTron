@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambient-O-Tron", "Ambient-O-Tron\Ambient-O-Tron.csproj", "{47B73382-05EF-42F9-AA2D-9CDAEEEB5B48}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{5A871B38-E44F-43BB-9D79-AB271D553B0C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientTests", "ClientTests\ClientTests.csproj", "{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,14 @@ Global
 		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Release|x86.ActiveCfg = Release|Any CPU
 		{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}.Release|x86.Build.0 = Release|Any CPU
+		{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}.Debug|x86.Build.0 = Debug|Any CPU
+		{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}.Release|x86.ActiveCfg = Release|Any CPU
+		{CF0EF7A1-980B-4BD8-AE89-EC090EA8BBE9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
