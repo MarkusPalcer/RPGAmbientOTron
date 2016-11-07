@@ -41,7 +41,14 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     {
       Playback = audioService.PlayAudioFile(Model.FullPath);
       Playback.Progress.Subscribe(p => Progress = p);
-      await Playback;
+      try
+      {
+        await Playback;
+      }
+      catch (Exception)
+      {
+        Model.LoadStatus = LoadStatus.LoadError;
+      }
       Playback = null;
     }
 
