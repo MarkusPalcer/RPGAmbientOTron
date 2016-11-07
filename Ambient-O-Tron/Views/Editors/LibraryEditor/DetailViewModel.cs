@@ -197,15 +197,19 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
       }
 
       var files = (string[]) dataObject.GetData(DataFormats.FileDrop);
-      Files.AddRange(
-        files.Select(
-          fileName =>
-          {
-            var result = new FileViewModel(repository.GetAudioFileModel(fileName), eventAggregator, repository, audioService);
-            return result;
-          }));
+      if (files == null) return;
+
+      foreach (var file in files)
+      {
+        if (Files.Any(x => x.Model.FullPath == file))
+          continue;
+
+        Files.Add(CreateFileViewModel(repository.GetAudioFileModel(file)));
+      }
     }
 
     #endregion
+
+
   }
 }
