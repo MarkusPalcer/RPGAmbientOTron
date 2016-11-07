@@ -9,4 +9,22 @@
             <Visibility>Hidden</Visibility>
         </vc:BooleanToAnyConverter.FalseValue>
     </vc:BooleanToAnyConverter>
+    
+    <vc:BooleanToAnyConverter x:Key="BooleanToVisibilityConverter">
+        <vc:BooleanToAnyConverter.TrueValue>
+            <Visibility>Visible</Visibility>
+        </vc:BooleanToAnyConverter.TrueValue>
+        <vc:BooleanToAnyConverter.FalseValue>
+            <Visibility>Collapsed</Visibility>
+        </vc:BooleanToAnyConverter.FalseValue>
+    </vc:BooleanToAnyConverter>
+
+    <vc:BooleanToAnyConverter x:Key="InvertedBooleanToVisibilityConverter">
+        <vc:BooleanToAnyConverter.TrueValue>
+            <Visibility>Collapsed</Visibility>
+        </vc:BooleanToAnyConverter.TrueValue>
+        <vc:BooleanToAnyConverter.FalseValue>
+            <Visibility>Visible</Visibility>
+        </vc:BooleanToAnyConverter.FalseValue>
+    </vc:BooleanToAnyConverter>
 </ResourceDictionary>

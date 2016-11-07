@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AmbientOTron.Views.Dialogs.MessageBox;
+using Core.Audio;
 using Core.Dialogs;
 using Core.Navigation;
 using Core.Persistence;
@@ -28,6 +29,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
   public class DetailViewModel : BindableBase, IConfirmNavigationRequest, IDropTarget
   {
     private readonly IDialogService dialogService;
+    private readonly IAudioService audioService;
     private readonly IEventAggregator eventAggregator;
     private readonly INavigationService navigationService;
     private readonly IRepository repository;
@@ -42,12 +44,14 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
       INavigationService navigationService,
       IRepository repository,
       IEventAggregator eventAggregator,
-      IDialogService dialogService)
+      IDialogService dialogService,
+      IAudioService audioService)
     {
       this.navigationService = navigationService;
       this.repository = repository;
       this.eventAggregator = eventAggregator;
       this.dialogService = dialogService;
+      this.audioService = audioService;
       Files.CollectionChanged += (sender, args) => IsDirty = true;
 
       RevertCommand = new DelegateCommand(LoadFromModel).ObservesCanExecute(p => IsDirty);
@@ -120,7 +124,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
     private FileViewModel CreateFileViewModel(AudioFile arg)
     {
-      var result = new FileViewModel(arg, eventAggregator, repository);
+      var result = new FileViewModel(arg, eventAggregator, repository, audioService);
       result.DeleteCommand = new DelegateCommand(() => Files.Remove(result));
 
       return result;
@@ -197,7 +201,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         files.Select(
           fileName =>
           {
-            var result = new FileViewModel(repository.GetAudioFileModel(fileName), eventAggregator, repository);
+            var result = new FileViewModel(repository.GetAudioFileModel(fileName), eventAggregator, repository, audioService);
             return result;
           }));
     }

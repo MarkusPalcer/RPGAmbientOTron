@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Reactive;
 using System.Windows.Input;
+using Core.Audio;
 using Core.Events;
 using Core.Repository;
 using Core.Repository.Models;
@@ -14,13 +16,14 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
   {
     private readonly IEventAggregator eventAggregator;
     private readonly IRepository repository;
+    private readonly IAudioService audioService;
     private string name;
 
-    // TODO: Rename
-    public FileViewModel(AudioFile model, IEventAggregator eventAggregator, IRepository repository)
+    public FileViewModel(AudioFile model, IEventAggregator eventAggregator, IRepository repository, IAudioService audioService)
     {
       this.eventAggregator = eventAggregator;
       this.repository = repository;
+      this.audioService = audioService;
 
       eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>()
                      .Subscribe(SetModel, ThreadOption.UIThread, false, m => m.FullPath == Model.FullPath);
@@ -28,8 +31,25 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
       StartRenamingCommand = new DelegateCommand(StartRename);
       AcceptRenameCommand = new DelegateCommand(AcceptRename);
       CancelRenameCommand = new DelegateCommand(CancelRename);
+      PreviewCommand = new DelegateCommand(StartPreview, () => !IsInPreview).ObservesProperty(() => IsInPreview);
+      StopPreviewCommand = new DelegateCommand(() => Playback.Stop()).ObservesCanExecute(_ => IsInPreview);
 
       SetModel(model);
+    }
+
+    private async void StartPreview()
+    {
+      Playback = audioService.PlayAudioFile(Model.FullPath);
+      Playback.Progress.Subscribe(p => Progress = p);
+      try
+      {
+        await Playback;
+      }
+      catch (Exception)
+      {
+        Model.LoadStatus = LoadStatus.LoadError;
+      }
+      Playback = null;
     }
 
     private void AcceptRename()
@@ -76,6 +96,8 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
 
     public LoadStatus Status => Model.LoadStatus;
 
+    public bool IsInPreview => Playback != null;
+
     public string InfoText
     {
       get
@@ -97,6 +119,25 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     }
 
     private bool isInEditMode;
+    private IPlayback playback;
+
+    private IPlayback Playback
+    {
+      get { return playback; }
+      set
+      {
+        SetProperty(ref playback, value);
+        OnPropertyChanged(() => IsInPreview);
+      }
+    }
+
+    private double progress = double.NaN;
+
+    public double Progress
+    {
+      get { return progress; }
+      private set { SetProperty(ref progress, value); }
+    }
 
     public bool IsInEditMode
     {
@@ -108,6 +149,8 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     public ICommand AcceptRenameCommand { get; }
     public ICommand CancelRenameCommand { get;  }
     public ICommand StartRenamingCommand { get;  }
+    public ICommand PreviewCommand { get; }
+    public ICommand StopPreviewCommand { get; }
 
     private void SetModel(AudioFile model)
     {

@@ -8,8 +8,6 @@ namespace AmbientOTron
     {
         private Bootstrapper bootstrapper;
 
-        public const string MainRegionName = "8EDA40C4-2DB8-4AE4-8799-30BF08685EBE";
-
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -23,10 +21,6 @@ namespace AmbientOTron
             };
 
             bootstrapper.Run();
-
-            InitializeNAudio();
-
-            
         }
 
         #region Overrides of Application
@@ -38,21 +32,5 @@ namespace AmbientOTron
         }
 
         #endregion
-
-        private void InitializeNAudio()
-        {
-            var mixer = new WaveMixerStream32
-            {
-                AutoStop = false
-            };
-
-            var waveOutDevice = new WaveOut();
-            waveOutDevice.Init(mixer);
-            waveOutDevice.Play();
-
-            bootstrapper.Container.ComposeExportedValue(waveOutDevice);
-            bootstrapper.Container.ComposeExportedValue(mixer);
-
-        }
     }
 }
