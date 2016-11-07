@@ -64,7 +64,14 @@
                                 ToolTip="Stop Preview"
                                 Visibility="{Binding IsInPreview, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Command="{Binding StopPreviewCommand}">
-                            Stop
+                            <Grid>
+                                <controls:ProgressCircle Maximum="1"
+                                                         Minimum="0"
+                                                         Value="{Binding Progress}"
+                                                         Thickness="2" 
+                                                         Margin="-5"/>
+                                <TextBlock>Stop</TextBlock>
+                            </Grid>
                         </Button>
 
                         <Button Padding="5"
@@ -73,7 +80,7 @@
                                 Command="{Binding StartRenamingCommand}">
                             <controls:IconContainer IconName="IconicPencil" />
                         </Button>
-                        
+
                         <Button Command="{Binding DeleteCommand}"
                                 Padding="5"
                                 Style="{StaticResource IconButtonStyle32}"
@@ -116,16 +123,19 @@
                                              Width="32" />
                 </Grid>
 
-                <Grid Visibility="{Binding IsInEditMode, Converter={StaticResource BooleanToHiddenConverter}}" Background="White">
+                <Grid Visibility="{Binding IsInEditMode, Converter={StaticResource BooleanToHiddenConverter}}"
+                      Background="White">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Grid.Column="0">
+                    <StackPanel Orientation="Vertical"
+                                Grid.Column="0">
                         <TextBlock>Enter new name:</TextBlock>
                         <TextBox Text="{Binding Name}" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Column="1">
                         <Button Style="{StaticResource IconButtonStyle32}"
                                 Command="{Binding AcceptRenameCommand}">
                             <controls:IconContainer IconName="IconicCheck" />

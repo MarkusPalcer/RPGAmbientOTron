@@ -40,6 +40,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     private async void StartPreview()
     {
       Playback = audioService.PlayAudioFile(Model.FullPath);
+      Playback.Progress.Subscribe(p => Progress = p);
       await Playback;
       Playback = null;
     }
@@ -121,6 +122,14 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
         SetProperty(ref playback, value);
         OnPropertyChanged(() => IsInPreview);
       }
+    }
+
+    private double progress = double.NaN;
+
+    public double Progress
+    {
+      get { return progress; }
+      private set { SetProperty(ref progress, value); }
     }
 
     public bool IsInEditMode
