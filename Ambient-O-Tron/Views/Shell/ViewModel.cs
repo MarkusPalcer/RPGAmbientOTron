@@ -18,13 +18,16 @@ namespace AmbientOTron.Views.Shell
             this.dialogService = dialogService;
             LibraryEditorNavigationCommand = navigationService.CreateNavigationCommand(new NavigationRequestCollection
             {
-                { MasterRegion, typeof(Editors.LibraryEditor.MasterView) }
+                { ResourcesPane, typeof(Editors.LibraryEditor.MasterView) }
             });
         }
 
         public ICommand LibraryEditorNavigationCommand { get; }
 
-      public const string MasterRegion = "MasterDetail_Master";
-      public const string DetailRegion = "MasterDetail_Detail";
-  }
+
+      public const string ResourcesPane = "RessourcesPane";
+      public const string MainRegion = "MainRegion";
+      public const string LowerPane = "LowerPane";
+      public const string PropertiesPane = "PropertiesPane";
+    }
 }

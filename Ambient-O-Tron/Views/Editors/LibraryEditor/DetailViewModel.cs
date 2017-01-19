@@ -133,7 +133,7 @@ namespace AmbientOTron.Views.Editors.LibraryEditor
     private void CloseDetailView()
     {
       IsDirty = false;
-      navigationService.NavigateAsync<Empty>(Shell.ViewModel.DetailRegion);
+      navigationService.NavigateAsync<Empty>(Shell.ViewModel.MainRegion);
     }
 
     #region IConfirmNavigationRequest
