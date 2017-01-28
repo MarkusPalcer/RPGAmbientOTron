@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
+using AmbientOTron.Views.Gaming.SoundBoard;
+using AmbientOTron.Views.Shell;
 using NAudio.Wave;
+using Prism.Regions;
 
 namespace AmbientOTron
 {
@@ -15,13 +18,17 @@ namespace AmbientOTron
             var options = new CommandLineOptions();
             CommandLine.Parser.Default.ParseArguments(e.Args, options);
 
+          
+
             bootstrapper = new Bootstrapper
             {
                 MefDebugger = options.DebugMef
             };
 
             bootstrapper.Run();
-        }
+
+        bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ViewModel.LowerPane, typeof(SoundBoardView));
+    }
 
         #region Overrides of Application
 

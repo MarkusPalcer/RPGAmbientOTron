@@ -11,5 +11,6 @@ namespace Core.Repository
     void LoadLibrary(string path);
     Library GetLibraryModel(string path);
     void Save(AudioFile model);
+    SoundBoard LoadSoundBoard(string fullPath);
   }
 }

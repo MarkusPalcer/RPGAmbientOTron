@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Input;
+using AmbientOTron.Views.Gaming.SoundBoard;
 using Core.Dialogs;
 using Core.Navigation;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace AmbientOTron.Views.Shell
 {
@@ -20,6 +22,7 @@ namespace AmbientOTron.Views.Shell
             {
                 { ResourcesPane, typeof(Editors.LibraryEditor.MasterView) }
             });
+      
         }
 
         public ICommand LibraryEditorNavigationCommand { get; }

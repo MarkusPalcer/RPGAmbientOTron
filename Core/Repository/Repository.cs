@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Core.Events;
 using Core.Extensions;
 using Core.Persistence;
@@ -27,6 +28,7 @@ namespace Core.Repository
     private readonly Dictionary<string, AudioFile> audioFileCache = new Dictionary<string, AudioFile>();
     private readonly IEventAggregator eventAggregator;
     private readonly Dictionary<string, Library> libraryCache = new Dictionary<string, Library>();
+    private readonly Dictionary<string, SoundBoard> soundBoardCache = new Dictionary<string, SoundBoard>();
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = $"root.{Constants.LibraryExtension}";
@@ -84,6 +86,23 @@ namespace Core.Repository
           model.LoadStatus = oldStatus;
           eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>().Publish(model);
         });
+    }
+
+    public void Save(SoundBoard model)
+    {
+      var exists = soundBoardCache.ContainsKey(model.Path);
+      soundBoardCache[model.Path] = model;
+
+      File.WriteAllText(model.Path, JsonConvert.SerializeObject(model));
+
+      if (exists)
+      {
+        eventAggregator.GetEvent<UpdateModelEvent<SoundBoard>>().Publish(model);
+      }
+      else
+      {
+        eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(model);
+      }
     }
 
     void IRepository.LoadLibrary(string path)
@@ -166,6 +185,35 @@ namespace Core.Repository
       audioFileCache[fullPath] = result;
 
       UpdateFromDisk(result);
+
+      return result;
+    }
+
+    public SoundBoard LoadSoundBoard(string fullPath)
+    {
+      SoundBoard result;
+      if (soundBoardCache.TryGetValue(fullPath, out result))
+      {
+        return result;
+      }
+
+      if (!File.Exists(fullPath))
+      {
+        logger.Info($"Sound board {fullPath} does not exist.");
+        return null;
+      }
+
+      try
+      {
+        result = JsonConvert.DeserializeObject<SoundBoard>(File.ReadAllText(fullPath));
+      }
+      catch (Exception ex)
+      {
+        logger.Warn($"Could not load sound board from {fullPath}", ex);
+        return null;
+      }
+
+      result.Sounds = result.Sounds.Select(x => LoadAudioFile(x.FullPath)).ToList();
 
       return result;
     }
