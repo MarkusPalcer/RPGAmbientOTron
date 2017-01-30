@@ -149,7 +149,14 @@ namespace Core.Repository
                         .Where(x => x != null)
                         .ForEach(result.Files.Add);
 
-        persistenceModel.SoundBoards.ForEach(soundBoard => soundBoardCache[soundBoard.Id] = soundBoard);
+        foreach (var soundBoard in persistenceModel.SoundBoards)
+        {
+          soundBoardCache[soundBoard.Id] = soundBoard;
+          foreach (var sound in soundBoard.Sounds)
+          {
+            UpdateFromDisk(sound);
+          }
+        }
       }
       catch (Exception ex)
       {

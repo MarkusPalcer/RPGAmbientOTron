@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reactive.Disposables;
-using System.Windows.Forms;
-using System.Windows.Input;
-using AmbientOTron.Views.Dialogs.MessageBox;
-using Core.Dialogs;
 using Core.Repository;
 using Core.Repository.Models;
 using Core.WPF;
 using GongSolutions.Wpf.DragDrop;
-using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using DataFormats = System.Windows.DataFormats;
@@ -26,7 +20,6 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
   public class SoundBoardViewModel : BindableBase, IConfirmNavigationRequest, IDropTarget, IDisposable
   {
     private readonly ExportFactory<AudioFileViewModel> audioFileViewModelFactory;
-    private readonly IDialogService dialogService;
     private readonly CompositeDisposable disposables = new CompositeDisposable();
 
     private readonly DragDropHelper dragDropHelper;
@@ -40,15 +33,11 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
     [ImportingConstructor]
     public SoundBoardViewModel(
       IRepository repository,
-      IDialogService dialogService,
       ExportFactory<AudioFileViewModel> audioFileViewModelFactory)
     {
       this.repository = repository;
-      this.dialogService = dialogService;
       this.audioFileViewModelFactory = audioFileViewModelFactory;
       Files = new ObservableCollection<AudioFileViewModel>();
-
-      SaveCommand = new DelegateCommand(SaveChanges).ObservesCanExecute(_ => IsDirty);
 
       dragDropHelper = new DragDropHelper
       {
@@ -67,16 +56,6 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       model.Name = Name;
       model.Sounds = Files.Select(x => x.Model).ToList();
       repository.Save(model);
-
-      IsDirty = false;
-    }
-
-    private bool isDirty;
-
-    public bool IsDirty
-    {
-      get { return isDirty; }
-      set { SetProperty(ref isDirty, value); }
     }
 
     public ObservableCollection<AudioFileViewModel> Files
@@ -91,8 +70,6 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       set { SetProperty(ref name, value); }
     }
 
-    public ICommand SaveCommand { get; set; }
-
     #region IDisposable
 
     public void Dispose()
@@ -105,27 +82,24 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
     private void ReorderEntries(IDropInfo dropInfo)
     {
       Files.Move(Files.IndexOf(dropInfo.Data as AudioFileViewModel), dropInfo.InsertIndex);
-      IsDirty = true;
+      SaveChanges();
     }
 
     private void DropFile(IDropInfo dropInfo)
     {
-      var dataObject = dropInfo.Data as DataObject;
-
-      var files = (string[]) dataObject.GetData(DataFormats.FileDrop);
-      if (files == null)
+      var newFiles = (string[]) ((DataObject) dropInfo.Data).GetData(DataFormats.FileDrop);
+      if (newFiles == null)
         return;
 
-      foreach (var file in files)
+      foreach (var file in newFiles)
       {
         if (Files.Any(x => x.Model.FullPath == file))
           continue;
 
         Files.Add(CreateFileViewModel(repository.GetAudioFileModel(file)));
-
-        IsDirty = true;
       }
 
+      SaveChanges();
     }
 
     private void LoadFromModel()
@@ -133,16 +107,15 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       Name = model.Name;
       Files.Clear();
       Files.AddRange(model.Sounds.Select(CreateFileViewModel));
-      IsDirty = false;
     }
 
-    private AudioFileViewModel CreateFileViewModel(AudioFile model)
+    private AudioFileViewModel CreateFileViewModel(AudioFile forModel)
     {
       var export = audioFileViewModelFactory.CreateExport();
       disposables.Add(export);
 
       var result = export.Value;
-      result.SetModel(model);
+      result.SetModel(forModel);
       return result;
     }
 
@@ -163,21 +136,9 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
 
     public void OnNavigatedFrom(NavigationContext navigationContext) {}
 
-    public async void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
+    public void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
     {
-      if (IsDirty)
-      {
-        var result = await dialogService.ShowMessageBox(
-                       "Do you want to leave this page and loose your changes?",
-                       MessageBoxButtons.YesNo,
-                       DialogResult.No);
-
-        continuationCallback(result == DialogResult.Yes);
-      }
-      else
-      {
-        continuationCallback(true);
-      }
+      continuationCallback(true);
     }
 
     #endregion
