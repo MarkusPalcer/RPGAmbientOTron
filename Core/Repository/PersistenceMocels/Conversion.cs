@@ -23,6 +23,8 @@ namespace Core.Repository.PersistenceMocels
                 result.SatteliteLibraryPaths.Add(MakeRelativePath(model.Path, library.Path));
             }
 
+          result.SoundBoards.AddRange(model.SoundBoards);
+
             return result;
         }
 

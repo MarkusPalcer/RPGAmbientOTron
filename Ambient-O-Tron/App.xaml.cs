@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 using AmbientOTron.Views.Gaming.SoundBoard;
+using AmbientOTron.Views.Navigation;
 using AmbientOTron.Views.Shell;
 using NAudio.Wave;
 using Prism.Regions;
@@ -18,8 +19,6 @@ namespace AmbientOTron
             var options = new CommandLineOptions();
             CommandLine.Parser.Default.ParseArguments(e.Args, options);
 
-          
-
             bootstrapper = new Bootstrapper
             {
                 MefDebugger = options.DebugMef
@@ -28,6 +27,7 @@ namespace AmbientOTron
             bootstrapper.Run();
 
         bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ViewModel.LowerPane, typeof(SoundBoardView));
+        bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ViewModel.ResourcesPane, typeof(NavigationView));
     }
 
         #region Overrides of Application

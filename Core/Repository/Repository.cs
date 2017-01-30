@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.XPath;
 using Core.Events;
 using Core.Extensions;
 using Core.Persistence;
@@ -28,7 +27,7 @@ namespace Core.Repository
     private readonly Dictionary<string, AudioFile> audioFileCache = new Dictionary<string, AudioFile>();
     private readonly IEventAggregator eventAggregator;
     private readonly Dictionary<string, Library> libraryCache = new Dictionary<string, Library>();
-    private readonly Dictionary<string, SoundBoard> soundBoardCache = new Dictionary<string, SoundBoard>();
+    private readonly Dictionary<Guid, SoundBoard> soundBoardCache = new Dictionary<Guid, SoundBoard>();
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = $"root.{Constants.LibraryExtension}";
@@ -90,10 +89,8 @@ namespace Core.Repository
 
     public void Save(SoundBoard model)
     {
-      var exists = soundBoardCache.ContainsKey(model.Path);
-      soundBoardCache[model.Path] = model;
-
-      File.WriteAllText(model.Path, JsonConvert.SerializeObject(model));
+      var exists = soundBoardCache.ContainsKey(model.Id);
+      soundBoardCache[model.Id] = model;
 
       if (exists)
       {
@@ -151,6 +148,8 @@ namespace Core.Repository
         persistenceModel.Files.Select(x => LoadAudioFile(ResolveLink(x.Path, fullPath), x))
                         .Where(x => x != null)
                         .ForEach(result.Files.Add);
+
+        persistenceModel.SoundBoards.ForEach(soundBoard => soundBoardCache[soundBoard.Id] = soundBoard);
       }
       catch (Exception ex)
       {
@@ -189,33 +188,15 @@ namespace Core.Repository
       return result;
     }
 
-    public SoundBoard LoadSoundBoard(string fullPath)
+    public SoundBoard LoadSoundBoard(Guid id)
     {
       SoundBoard result;
-      if (soundBoardCache.TryGetValue(fullPath, out result))
-      {
-        return result;
-      }
+      return soundBoardCache.TryGetValue(id, out result) ? result : null;
+    }
 
-      if (!File.Exists(fullPath))
-      {
-        logger.Info($"Sound board {fullPath} does not exist.");
-        return null;
-      }
-
-      try
-      {
-        result = JsonConvert.DeserializeObject<SoundBoard>(File.ReadAllText(fullPath));
-      }
-      catch (Exception ex)
-      {
-        logger.Warn($"Could not load sound board from {fullPath}", ex);
-        return null;
-      }
-
-      result.Sounds = result.Sounds.Select(x => LoadAudioFile(x.FullPath)).ToList();
-
-      return result;
+    public IEnumerable<SoundBoard> GetSoundBoards()
+    {
+      return soundBoardCache.Values.ToArray();
     }
 
     private void UpdateFromDisk(AudioFile result)
@@ -255,6 +236,7 @@ namespace Core.Repository
     {
       var rootLibrary = new PersistenceMocels.Library();
       rootLibrary.SatteliteLibraryPaths.AddRange(libraryCache.Values.Select(x => x.Path));
+      rootLibrary.SoundBoards.AddRange(soundBoardCache.Values);
       var rootLibraryString = JsonConvert.SerializeObject(rootLibrary);
 
       foreach (var path in RootLibraryPaths.Select(p => Path.Combine(p, rootLibraryFileName)))

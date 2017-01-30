@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Core.Repository.Models;
 
 namespace Core.Repository
@@ -11,6 +12,8 @@ namespace Core.Repository
     void LoadLibrary(string path);
     Library GetLibraryModel(string path);
     void Save(AudioFile model);
-    SoundBoard LoadSoundBoard(string fullPath);
+    SoundBoard LoadSoundBoard(Guid id);
+    IEnumerable<SoundBoard> GetSoundBoards();
+    void Save(SoundBoard model);
   }
 }

@@ -101,5 +101,12 @@ namespace Core.WPF
     }
 
     #endregion
+
+    public static bool IsFileDrop(IDropInfo dropInfo)
+    {
+      var dataObject = dropInfo.Data as DataObject;
+        
+      return (dataObject?.GetDataPresent(DataFormats.FileDrop) == true);
+    }
   }
 }

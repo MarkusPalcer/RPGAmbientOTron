@@ -23,7 +23,24 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock FontSize="16" Text="{Binding Name}"/>
+            <TextBlock FontSize="16" Text="{Binding Name}" Grid.Column="0"/>
+
+            <StackPanel Orientation="Vertical" Grid.Column="1">
+                <Button Padding="5"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource IconButtonStyle32}"
+                                ToolTip="Edit properties"
+                                Command="{Binding PropertiesCommand}">
+                    <controls:IconContainer IconName="IconicPencil" />
+                </Button>
+                <Button Padding="5"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource IconButtonStyle32}"
+                                ToolTip="Save changes"
+                                Command="{Binding SaveCommand}">
+                    <controls:IconContainer IconName="IconicPencil" />
+                </Button>
+            </StackPanel>
         </Grid>
 
         <ListView ItemsSource="{Binding Files}" Grid.Row="1" 
