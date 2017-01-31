@@ -67,12 +67,7 @@ namespace AmbientOTron.Views.Navigation
 
           var id = idAccessor(model);
 
-          eventAggregator.GetEvent<UpdateModelEvent<TModel>>()
-                         .Subscribe(
-                           _ => Name = nameAccessor(model),
-                           ThreadOption.UIThread,
-                           false,
-                           m => idAccessor(m).Equals(id));
+          eventAggregator.GetEvent<UpdateModelEvent<TModel>>().Subscribe(_ => Name = nameAccessor(model));
 
           NavigateCommand = new DelegateCommand(() => navigateAction(model));
         }

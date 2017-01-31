@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Windows.Input;
+using Core.Navigation;
 using Core.Repository;
 using Core.Repository.Models;
 using Core.WPF;
@@ -33,7 +35,8 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
     [ImportingConstructor]
     public SoundBoardViewModel(
       IRepository repository,
-      ExportFactory<AudioFileViewModel> audioFileViewModelFactory)
+      ExportFactory<AudioFileViewModel> audioFileViewModelFactory,
+      INavigationService navigationService)
     {
       this.repository = repository;
       this.audioFileViewModelFactory = audioFileViewModelFactory;
@@ -44,6 +47,14 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
         {DragDropHelper.IsFileDrop, DropFile},
         {dropInfo => dropInfo.Data is AudioFileViewModel, ReorderEntries, _ => DragDropEffects.Move}
       };
+
+      PropertiesCommand =
+        navigationService.CreateNavigationCommand<SoundBoardPropertiesView>(
+          Shell.ViewModel.PropertiesPane,
+          new NavigationParameters
+          {
+            {"ViewModel", this}
+          });
     }
 
     private void SaveChanges()
@@ -67,8 +78,16 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
     public string Name
     {
       get { return name; }
-      set { SetProperty(ref name, value); }
+      set
+      {
+        if (SetProperty(ref name, value))
+        {
+          SaveChanges();
+        }
+      }
     }
+
+    public ICommand PropertiesCommand { get; private set; }
 
     #region IDisposable
 
@@ -118,6 +137,8 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       result.SetModel(forModel);
       return result;
     }
+
+
 
     #region Implementation of INavigationAware
 
