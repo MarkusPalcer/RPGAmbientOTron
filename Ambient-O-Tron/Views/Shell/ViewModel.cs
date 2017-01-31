@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Input;
+using AmbientOTron.Views.Gaming.SoundBoard;
 using Core.Dialogs;
 using Core.Navigation;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace AmbientOTron.Views.Shell
 {
@@ -18,13 +20,17 @@ namespace AmbientOTron.Views.Shell
             this.dialogService = dialogService;
             LibraryEditorNavigationCommand = navigationService.CreateNavigationCommand(new NavigationRequestCollection
             {
-                { MasterRegion, typeof(Editors.LibraryEditor.MasterView) }
+                { ResourcesPane, typeof(Editors.LibraryEditor.MasterView) }
             });
+      
         }
 
         public ICommand LibraryEditorNavigationCommand { get; }
 
-      public const string MasterRegion = "MasterDetail_Master";
-      public const string DetailRegion = "MasterDetail_Detail";
-  }
+
+      public const string ResourcesPane = "RessourcesPane";
+      public const string MainRegion = "MainRegion";
+      public const string LowerPane = "LowerPane";
+      public const string PropertiesPane = "PropertiesPane";
+    }
 }

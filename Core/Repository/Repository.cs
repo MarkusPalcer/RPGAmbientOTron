@@ -27,6 +27,7 @@ namespace Core.Repository
     private readonly Dictionary<string, AudioFile> audioFileCache = new Dictionary<string, AudioFile>();
     private readonly IEventAggregator eventAggregator;
     private readonly Dictionary<string, Library> libraryCache = new Dictionary<string, Library>();
+    private readonly Dictionary<Guid, SoundBoard> soundBoardCache = new Dictionary<Guid, SoundBoard>();
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = $"root.{Constants.LibraryExtension}";
@@ -86,6 +87,21 @@ namespace Core.Repository
         });
     }
 
+    public void Save(SoundBoard model)
+    {
+      var exists = soundBoardCache.ContainsKey(model.Id);
+      soundBoardCache[model.Id] = model;
+
+      if (exists)
+      {
+        eventAggregator.GetEvent<UpdateModelEvent<SoundBoard>>().Publish(model);
+      }
+      else
+      {
+        eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(model);
+      }
+    }
+
     void IRepository.LoadLibrary(string path)
     {
       if (libraryCache.ContainsKey(path))
@@ -132,6 +148,15 @@ namespace Core.Repository
         persistenceModel.Files.Select(x => LoadAudioFile(ResolveLink(x.Path, fullPath), x))
                         .Where(x => x != null)
                         .ForEach(result.Files.Add);
+
+        foreach (var soundBoard in persistenceModel.SoundBoards)
+        {
+          soundBoardCache[soundBoard.Id] = soundBoard;
+          foreach (var sound in soundBoard.Sounds)
+          {
+            UpdateFromDisk(sound);
+          }
+        }
       }
       catch (Exception ex)
       {
@@ -168,6 +193,17 @@ namespace Core.Repository
       UpdateFromDisk(result);
 
       return result;
+    }
+
+    public SoundBoard LoadSoundBoard(Guid id)
+    {
+      SoundBoard result;
+      return soundBoardCache.TryGetValue(id, out result) ? result : null;
+    }
+
+    public IEnumerable<SoundBoard> GetSoundBoards()
+    {
+      return soundBoardCache.Values.ToArray();
     }
 
     private void UpdateFromDisk(AudioFile result)
@@ -207,6 +243,7 @@ namespace Core.Repository
     {
       var rootLibrary = new PersistenceMocels.Library();
       rootLibrary.SatteliteLibraryPaths.AddRange(libraryCache.Values.Select(x => x.Path));
+      rootLibrary.SoundBoards.AddRange(soundBoardCache.Values);
       var rootLibraryString = JsonConvert.SerializeObject(rootLibrary);
 
       foreach (var path in RootLibraryPaths.Select(p => Path.Combine(p, rootLibraryFileName)))

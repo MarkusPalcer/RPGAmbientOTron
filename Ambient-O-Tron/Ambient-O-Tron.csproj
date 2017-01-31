@@ -152,6 +152,19 @@
     <Compile Include="Views\Empty.xaml.cs">
       <DependentUpon>Empty.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Gaming\SoundBoard\AudioFileViewModel.cs" />
+    <Compile Include="Views\Gaming\SoundBoard\SoundBoardPropertiesView.xaml.cs">
+      <DependentUpon>SoundBoardPropertiesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Gaming\SoundBoard\SoundBoardPropertiesViewModel.cs" />
+    <Compile Include="Views\Gaming\SoundBoard\SoundBoardView.xaml.cs">
+      <DependentUpon>SoundBoardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Gaming\SoundBoard\SoundBoardViewModel.cs" />
+    <Compile Include="Views\Navigation\NavigationView.xaml.cs">
+      <DependentUpon>NavigationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Navigation\NavigationViewModel.cs" />
     <Compile Include="Views\Shell\ViewModel.cs" />
     <Compile Include="Views\Editors\LibraryEditor\DetailView.xaml.cs">
       <DependentUpon>DetailView.xaml</DependentUpon>
@@ -210,6 +223,18 @@
     <Page Include="Views\Empty.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Gaming\SoundBoard\SoundBoardPropertiesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Gaming\SoundBoard\SoundBoardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Navigation\NavigationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Shell\View.xaml">
       <SubType>Designer</SubType>

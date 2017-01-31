@@ -13,5 +13,7 @@ namespace Core.Repository.Models
         public List<Library> SatteliteLibraries { get; } = new List<Library>();
 
         public List<AudioFile> Files { get; } = new List<AudioFile>();
+
+    public List<SoundBoard> SoundBoards { get; } = new List<SoundBoard>();
     }
 }

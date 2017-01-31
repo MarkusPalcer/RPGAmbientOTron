@@ -7,8 +7,8 @@
              xmlns:shell="clr-namespace:AmbientOTron.Views.Shell"
              xmlns:dialogs="clr-namespace:Core.Dialogs;assembly=Core"
              mc:Ignorable="d"
-             d:DesignHeight="300"
-             d:DesignWidth="300"
+             d:DesignHeight="800"
+             d:DesignWidth="800"
              d:DataContext="{d:DesignInstance shell:ViewModel}">
     <Grid>
         <DockPanel>
@@ -18,15 +18,29 @@
                               Command="{Binding LibraryEditorNavigationCommand}" />
                 </MenuItem>
             </Menu>
-
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.MasterRegion}" Grid.Column="0" />
+
+                <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.ResourcesPane}" Grid.Column="0" />
                 <GridSplitter Grid.Column="0" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Width="5" />
-                <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.DetailRegion}" Grid.Column="1" />
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="200"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.MainRegion}" Grid.Row="0" Grid.RowSpan="2"  />
+                    <GridSplitter Grid.Row="0" ResizeDirection="Rows" ResizeBehavior="CurrentAndNext" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
+                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.LowerPane}" Grid.Row="1" />
+                </Grid>
+                
+                <GridSplitter Grid.Column="1" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Width="5" Visibility="Visible"/>
+                <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.PropertiesPane}" Grid.Column="2" Visibility="Visible"/>
             </Grid>
         </DockPanel>
 

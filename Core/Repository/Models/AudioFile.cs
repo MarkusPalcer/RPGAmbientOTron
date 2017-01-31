@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Core.Repository.Models
 {
     public class AudioFile 
@@ -6,6 +8,7 @@ namespace Core.Repository.Models
 
         public string Name { get; set; }
 
+        [JsonIgnore]
         public LoadStatus LoadStatus { get; set; } = LoadStatus.Unknown;
     }
 }

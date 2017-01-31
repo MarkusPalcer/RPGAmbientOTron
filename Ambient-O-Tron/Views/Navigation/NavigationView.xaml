@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="AmbientOTron.Views.Navigation.NavigationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AmbientOTron.Views.Navigation"
+             xmlns:behaviors="clr-namespace:Core.WPF.Behaviors;assembly=Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+    </UserControl.Resources>
+    <TreeView ItemsSource="{Binding Groups}">
+        <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                <TextBlock Text="{Binding Name}"></TextBlock>
+            </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+        <TreeView.ItemContainerStyle>
+            <Style>
+                <Setter Property="behaviors:MouseDoubleClick.Command"
+                    Value="{Binding NavigateCommand}"/>
+                <Setter Property="behaviors:MouseDoubleClick.CommandParameter"
+                    Value="{Binding}"/>
+            </Style>
+        </TreeView.ItemContainerStyle>
+    </TreeView>
+</UserControl>
