@@ -41,7 +41,7 @@
                   dd:DragDrop.DropHandler="{Binding}"
                   dd:DragDrop.IsDragSource="True">
             <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:AudioFileViewModel}">
+                <DataTemplate DataType="{x:Type local:AudioSourceViewModel}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>

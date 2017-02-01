@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.Repository.Models;
+using Core.Repository.Models.Sources;
 
 namespace Core.Repository
 {
   public interface IRepository
   {
-    IEnumerable<Library> Libraries { get; }
-    AudioFile GetAudioFileModel(string fileName);
-    void Save(Library model);
-    void LoadLibrary(string path);
-    Library GetLibraryModel(string path);
-    void Save(AudioFile model);
     SoundBoard LoadSoundBoard(Guid id);
     IEnumerable<SoundBoard> GetSoundBoards();
     void Save(SoundBoard model);
+
+    AudioFile GetSource(string fileName);
+
   }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using Core.Repository.Models.Sources;
 
 namespace Core.Audio
 {
@@ -12,9 +13,9 @@ namespace Core.Audio
 
     #region Implementation of IAudioService
 
-    public IPlayback PlayAudioFile(string path)
+    public IPlayback PlayAudioFile(AudioFile path)
     {
-      return new Playback(path);
+      return new Playback(path.Open());
     }
 
     #endregion

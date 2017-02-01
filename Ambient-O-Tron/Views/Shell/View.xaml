@@ -13,10 +13,6 @@
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="View">
-                    <MenuItem Header="Library editor"
-                              Command="{Binding LibraryEditorNavigationCommand}" />
-                </MenuItem>
             </Menu>
             <Grid>
                 <Grid.ColumnDefinitions>
