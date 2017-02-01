@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using log4net.Core;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 
 namespace Core.Audio
 {
@@ -18,7 +20,7 @@ namespace Core.Audio
     private TaskCompletionSource<Unit> taskCompletionSource;
     private BehaviorSubject<double> progressSubject;
 
-    public Playback(string fileName)
+    public Playback(Stream fileName)
     {
       taskCompletionSource = new TaskCompletionSource<Unit>();
 
@@ -30,7 +32,7 @@ namespace Core.Audio
       audioFileReader.ProgressChanged += HandleProgressChanged;
       waveOut.Init(audioFileReader);
       waveOut.PlaybackStopped += HandlePlaybackStopped;
-      
+
       waveOut.Play();
     }
 
@@ -60,7 +62,7 @@ namespace Core.Audio
 
     public TaskAwaiter GetAwaiter()
     {
-      return ((Task)taskCompletionSource.Task).GetAwaiter();
+      return ((Task) taskCompletionSource.Task).GetAwaiter();
     }
 
     public void Stop()
@@ -72,20 +74,42 @@ namespace Core.Audio
 
     #endregion
 
-    private class ProgressReportingAudioFileReader : AudioFileReader
+    private class ProgressReportingAudioFileReader : WaveStream
     {
-      public ProgressReportingAudioFileReader(string fileName) : base(fileName) {}
+      private readonly WaveStream source;
+
+      public ProgressReportingAudioFileReader(Stream fileName)
+      {
+        source = new Mp3FileReader(fileName);
+      }
 
       #region Overrides of AudioFileReader
 
       public override int Read(byte[] buffer, int offset, int count)
       {
-        var read = base.Read(buffer, offset, count);
-        OnProgressChanged(new ProgressChangedEventArgs
-                          {
-                            Progress = (double) Position / (double) Length
-                          });
+        var read = source.Read(buffer, offset, count);
+        OnProgressChanged(
+          new ProgressChangedEventArgs
+          {
+            Progress = (double) Position / (double) Length
+          });
         return read;
+      }
+
+      public override WaveFormat WaveFormat
+      {
+        get { return source.WaveFormat; }
+      }
+
+      public override long Length
+      {
+        get { return source.Length; }
+      }
+
+      public override long Position
+      {
+        get { return source.Position; }
+        set { source.Position = value; }
       }
 
       #endregion

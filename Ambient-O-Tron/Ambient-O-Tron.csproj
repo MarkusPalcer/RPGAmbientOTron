@@ -142,17 +142,10 @@
       <DependentUpon>View.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\MessageBox\ViewModel.cs" />
-    <Compile Include="Views\Editors\LibraryEditor\DetailViewModel.cs" />
-    <Compile Include="Views\Editors\LibraryEditor\FileViewModel.cs" />
-    <Compile Include="Views\Editors\LibraryEditor\LibraryViewModel.cs" />
-    <Compile Include="Views\Editors\LibraryEditor\MasterView.xaml.cs">
-      <DependentUpon>MasterView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Editors\LibraryEditor\MasterViewModel.cs" />
     <Compile Include="Views\Empty.xaml.cs">
       <DependentUpon>Empty.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Gaming\SoundBoard\AudioFileViewModel.cs" />
+    <Compile Include="Views\Gaming\SoundBoard\AudioSourceViewModel.cs" />
     <Compile Include="Views\Gaming\SoundBoard\SoundBoardPropertiesView.xaml.cs">
       <DependentUpon>SoundBoardPropertiesView.xaml</DependentUpon>
     </Compile>
@@ -166,9 +159,6 @@
     </Compile>
     <Compile Include="Views\Navigation\NavigationViewModel.cs" />
     <Compile Include="Views\Shell\ViewModel.cs" />
-    <Compile Include="Views\Editors\LibraryEditor\DetailView.xaml.cs">
-      <DependentUpon>DetailView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Shell\View.xaml.cs">
       <DependentUpon>View.xaml</DependentUpon>
     </Compile>
@@ -209,14 +199,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\MessageBox\View.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Editors\LibraryEditor\DetailView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Editors\LibraryEditor\MasterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -269,7 +251,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Editors\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}</Project>

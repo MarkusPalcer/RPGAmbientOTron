@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Repository.Models.Sources;
 using Newtonsoft.Json;
 
 namespace Core.Repository.Models

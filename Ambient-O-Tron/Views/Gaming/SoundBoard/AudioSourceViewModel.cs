@@ -4,7 +4,7 @@ using System.Windows.Input;
 using Core.Audio;
 using Core.Events;
 using Core.Repository;
-using Core.Repository.Models;
+using Core.Repository.Models.Sources;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -12,18 +12,18 @@ using Prism.Mvvm;
 namespace AmbientOTron.Views.Gaming.SoundBoard
 {
   [Export]
-  public class AudioFileViewModel : BindableBase
+  public class AudioSourceViewModel : BindableBase
   {
     private readonly IAudioService audioService;
     private string name;
 
     [ImportingConstructor]
-    public AudioFileViewModel(IEventAggregator eventAggregator, IRepository repository, IAudioService audioService)
+    public AudioSourceViewModel(IEventAggregator eventAggregator, IRepository repository, IAudioService audioService)
     {
       this.audioService = audioService;
 
       eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>()
-               .Subscribe(SetModel, ThreadOption.UIThread, false, m => m.FullPath == Model.FullPath);
+               .Subscribe(SetModel, ThreadOption.UIThread, false, m => m == Model);
 
       PlayCommand = new DelegateCommand(Play, () => !HasError).ObservesProperty(() => HasError);
     }
@@ -36,12 +36,11 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
     {
       try
       {
-        await audioService.PlayAudioFile(Model.FullPath);
+        await audioService.PlayAudioFile(Model);
       }
       catch (Exception)
       {
-        Model.LoadStatus = LoadStatus.LoadError;
-        OnPropertyChanged(() => HasError);
+        HasError = true;
       }
     }
 
@@ -51,7 +50,13 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       set { SetProperty(ref name, value); }
     }
 
-    public bool HasError => Model.LoadStatus != LoadStatus.FileOk;
+    private bool hasError = true;
+
+    public bool HasError
+    {
+      get { return hasError; }
+      set { SetProperty(ref hasError, value); }
+    }
 
 
     public void SetModel(AudioFile model)
@@ -59,7 +64,7 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       Model = model;
       Name = model.Name;
 
-      OnPropertyChanged(() => HasError);
+      HasError = false;
     }
   }
 }
