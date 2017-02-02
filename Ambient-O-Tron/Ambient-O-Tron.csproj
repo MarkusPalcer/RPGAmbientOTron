@@ -146,6 +146,10 @@
       <DependentUpon>Empty.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Gaming\SoundBoard\AudioSourceViewModel.cs" />
+    <Compile Include="Views\Navigation\NavigationGroup.cs" />
+    <Compile Include="Views\Navigation\NavigationItemViewModel.cs" />
+    <Compile Include="Views\Gaming\SoundBoard\SoundBoardNavigationGroup.cs" />
+    <Compile Include="Views\Gaming\SoundBoard\SoundBoardNavigationViewModel.cs" />
     <Compile Include="Views\Gaming\SoundBoard\SoundBoardPropertiesView.xaml.cs">
       <DependentUpon>SoundBoardPropertiesView.xaml</DependentUpon>
     </Compile>

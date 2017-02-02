@@ -20,6 +20,7 @@ namespace ClientTests.Views.Editors
       uut.Disposable = b2;
       b1.IsDisposed.Should().BeTrue();
       b2.IsDisposed.Should().BeFalse();
+
     }
   }
 }

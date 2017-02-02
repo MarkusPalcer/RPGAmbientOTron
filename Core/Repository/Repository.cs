@@ -4,11 +4,8 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Reactive.Subjects;
-using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using Core.Events;
 using Core.Extensions;
 using Core.Repository.Models;
@@ -105,7 +102,6 @@ namespace Core.Repository
 
         foreach (var sound in soundBoard.Sounds)
         {
-          BehaviorSubject<Status> status;
           sound.Status = CreateOrSetStatus(sound.Hash, Status.NotFound);
         }
       }
