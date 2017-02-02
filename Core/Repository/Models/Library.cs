@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Core.Repository.Models.Sources;
+﻿using System.Collections.Generic;
 
 namespace Core.Repository.Models
 {
@@ -8,5 +6,6 @@ namespace Core.Repository.Models
     public class Library 
     {
         public List<SoundBoard> SoundBoards { get; } = new List<SoundBoard>();
+        public List<string> Files { get; } = new List<string>();
     }
 }

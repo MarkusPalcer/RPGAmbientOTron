@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Repository.Models.Sources;
-using Newtonsoft.Json;
+using Core.Repository.Sounds;
 
 namespace Core.Repository.Models
 {
@@ -11,6 +10,6 @@ namespace Core.Repository.Models
 
     public string Name { get; set; } = @"Unnamed soundboard";
 
-    public List<AudioFile> Sounds { get; set; } = new List<AudioFile>();
+    public List<Sound> Sounds { get; set; } = new List<Sound>();
   }
 }

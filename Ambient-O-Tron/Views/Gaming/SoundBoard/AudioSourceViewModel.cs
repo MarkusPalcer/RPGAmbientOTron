@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using Core.Audio;
 using Core.Events;
 using Core.Repository;
-using Core.Repository.Models.Sources;
+using Core.Repository.Sounds;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -17,26 +19,25 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
     private readonly IAudioService audioService;
     private string name;
 
+    private readonly SerialDisposable statusSubscription = new SerialDisposable();
+
     [ImportingConstructor]
     public AudioSourceViewModel(IEventAggregator eventAggregator, IRepository repository, IAudioService audioService)
     {
       this.audioService = audioService;
-
-      eventAggregator.GetEvent<UpdateModelEvent<AudioFile>>()
-               .Subscribe(SetModel, ThreadOption.UIThread, false, m => m == Model);
 
       PlayCommand = new DelegateCommand(Play, () => !HasError).ObservesProperty(() => HasError);
     }
 
     public ICommand PlayCommand { get; }
 
-    public AudioFile Model { get; set; }
+    public Sound Model { get; set; }
 
     private async void Play()
     {
       try
       {
-        await audioService.PlayAudioFile(Model);
+        await audioService.Play(Model);
       }
       catch (Exception)
       {
@@ -58,13 +59,11 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       set { SetProperty(ref hasError, value); }
     }
 
-
-    public void SetModel(AudioFile model)
+    public void SetModel(Sound model)
     {
       Model = model;
       Name = model.Name;
-
-      HasError = false;
+      statusSubscription.Disposable = model.Status.Select(x => x != Status.Ready).Subscribe(x => HasError = x);
     }
   }
 }
