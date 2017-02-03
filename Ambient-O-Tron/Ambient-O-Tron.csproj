@@ -145,19 +145,19 @@
     <Compile Include="Views\Empty.xaml.cs">
       <DependentUpon>Empty.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Gaming\SoundBoard\AudioSourceViewModel.cs" />
+    <Compile Include="Views\SoundBoard\AudioSourceViewModel.cs" />
     <Compile Include="Views\Navigation\NavigationGroup.cs" />
     <Compile Include="Views\Navigation\NavigationItemViewModel.cs" />
-    <Compile Include="Views\Gaming\SoundBoard\SoundBoardNavigationGroup.cs" />
-    <Compile Include="Views\Gaming\SoundBoard\SoundBoardNavigationViewModel.cs" />
-    <Compile Include="Views\Gaming\SoundBoard\SoundBoardPropertiesView.xaml.cs">
+    <Compile Include="Views\SoundBoard\SoundBoardNavigationGroup.cs" />
+    <Compile Include="Views\SoundBoard\SoundBoardNavigationViewModel.cs" />
+    <Compile Include="Views\SoundBoard\SoundBoardPropertiesView.xaml.cs">
       <DependentUpon>SoundBoardPropertiesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Gaming\SoundBoard\SoundBoardPropertiesViewModel.cs" />
-    <Compile Include="Views\Gaming\SoundBoard\SoundBoardView.xaml.cs">
+    <Compile Include="Views\SoundBoard\SoundBoardPropertiesViewModel.cs" />
+    <Compile Include="Views\SoundBoard\SoundBoardView.xaml.cs">
       <DependentUpon>SoundBoardView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Gaming\SoundBoard\SoundBoardViewModel.cs" />
+    <Compile Include="Views\SoundBoard\SoundBoardViewModel.cs" />
     <Compile Include="Views\Navigation\NavigationView.xaml.cs">
       <DependentUpon>NavigationView.xaml</DependentUpon>
     </Compile>
@@ -210,11 +210,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Gaming\SoundBoard\SoundBoardPropertiesView.xaml">
+    <Page Include="Views\SoundBoard\SoundBoardPropertiesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Gaming\SoundBoard\SoundBoardView.xaml">
+    <Page Include="Views\SoundBoard\SoundBoardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -255,9 +255,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Editors\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{D0DA4A30-8BC7-4BD6-B2D2-24BB3467C404}</Project>
