@@ -14,8 +14,6 @@ using Core.Repository.Sources;
 using log4net;
 using Newtonsoft.Json;
 using Prism.Events;
-using AudioFile = Core.Repository.Sources.AudioFile;
-using Library = Core.Repository.Models.Library;
 
 namespace Core.Repository
 {
@@ -35,7 +33,6 @@ namespace Core.Repository
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = "Data.json";
-
 
     [ImportingConstructor]
     public Repository(IEventAggregator eventAggregator)
@@ -88,9 +85,47 @@ namespace Core.Repository
 
     private async Task ImportFiles(Library model)
     {
-      foreach (var file in model.Files)
+      // Try to read all files in parallel
+      var fileTasks = model.Files.Select(
+        async fileName =>
+        {
+          AudioFile result = null;
+          try
+          {
+            result = await Task.Factory.StartNew(() => new AudioFile(fileName));
+          }
+          catch (Exception ex)
+          {
+            logger.Error($"Error while trying to create source for file '{fileName}'", ex);
+          }
+
+          return new
+          {
+            FileName = fileName,
+            Source = result
+          };
+        })
+        .ToArray();
+
+      // Synchronize
+      var files = await Task.WhenAll(fileTasks);
+
+      // Throw away files that couldn't be loaded and only keep one file per hash
+      files = files.Where(x => x.Source != null).Distinct().ToArray();
+
+      foreach (var file in files)
       {
-        await ResolveFileSource(file);
+        // Ignore files that are not "requested" by other entities
+        BehaviorSubject<Status> status;
+        if (!statuses.TryGetValue(file.Source.Hash, out status))
+        {
+          continue;
+        }
+        
+        // Register file source and set file status
+        knownFiles[file.FileName] = file.Source;
+        knownSources[file.Source.Hash] = file.Source;
+        status.OnNext(Status.Ready);
       }
     }
 
@@ -228,7 +263,6 @@ namespace Core.Repository
       }
 
       CreateOrSetStatus(result.Hash, Status.Ready);
-      
 
       return result;
     }
