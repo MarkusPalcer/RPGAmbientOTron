@@ -4,10 +4,10 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows.Input;
+using AmbientOTron.Views.Gaming.SoundBoard;
 using Core.Navigation;
 using Core.Repository;
 using Core.Repository.Sounds;
-using Core.Repository.Sources;
 using Core.WPF;
 using GongSolutions.Wpf.DragDrop;
 using Prism.Mvvm;
@@ -17,7 +17,7 @@ using DataObject = System.Windows.DataObject;
 using DragDropEffects = System.Windows.DragDropEffects;
 using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
-namespace AmbientOTron.Views.Gaming.SoundBoard
+namespace AmbientOTron.Views.SoundBoard
 {
   [Export]
   public class SoundBoardViewModel : BindableBase, IConfirmNavigationRequest, IDropTarget, IDisposable
@@ -140,8 +140,6 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       result.SetModel(forModel);
       return result;
     }
-
-
 
     #region Implementation of INavigationAware
 

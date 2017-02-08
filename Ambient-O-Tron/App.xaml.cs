@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.Composition;
-using System.Windows;
-using AmbientOTron.Views.Gaming.SoundBoard;
+﻿using System.Windows;
 using AmbientOTron.Views.Navigation;
 using AmbientOTron.Views.Shell;
-using NAudio.Wave;
+using AmbientOTron.Views.SoundBoard;
 using Prism.Regions;
 
 namespace AmbientOTron
@@ -26,7 +24,7 @@ namespace AmbientOTron
 
             bootstrapper.Run();
 
-        bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ViewModel.LowerPane, typeof(SoundBoardView));
+        bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ViewModel.LowerPane, typeof(NewSoundBoardView));
         bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ViewModel.ResourcesPane, typeof(NavigationView));
     }
 

@@ -6,9 +6,10 @@
              xmlns:local="clr-namespace:AmbientOTron.Views.Gaming.SoundBoard"
              xmlns:controls="clr-namespace:AmbientOTron.Controls"
              xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:soundBoard="clr-namespace:AmbientOTron.Views.SoundBoard"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance local:SoundBoardViewModel}"
+             d:DataContext="{d:DesignInstance soundBoard:SoundBoardViewModel}"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch">
     <Grid>

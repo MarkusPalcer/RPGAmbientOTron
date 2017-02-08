@@ -148,6 +148,10 @@
     <Compile Include="Views\SoundBoard\AudioSourceViewModel.cs" />
     <Compile Include="Views\Navigation\NavigationGroup.cs" />
     <Compile Include="Views\Navigation\NavigationItemViewModel.cs" />
+    <Compile Include="Views\SoundBoard\NewSoundBoardView.xaml.cs">
+      <DependentUpon>NewSoundBoardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SoundBoard\NewSoundBoardViewModel.cs" />
     <Compile Include="Views\SoundBoard\SoundBoardNavigationGroup.cs" />
     <Compile Include="Views\SoundBoard\SoundBoardNavigationViewModel.cs" />
     <Compile Include="Views\SoundBoard\SoundBoardPropertiesView.xaml.cs">
@@ -209,6 +213,10 @@
     <Page Include="Views\Empty.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SoundBoard\NewSoundBoardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SoundBoard\SoundBoardPropertiesView.xaml">
       <SubType>Designer</SubType>

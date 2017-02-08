@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using AmbientOTron.Views.SoundBoard;
 
 namespace AmbientOTron.Views.Gaming.SoundBoard
 {

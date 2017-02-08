@@ -1,13 +1,14 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using AmbientOTron.Views.Gaming.SoundBoard;
 using AmbientOTron.Views.Navigation;
 using Core.Events;
 using Core.Navigation;
 using Core.Repository;
 using Prism.Events;
 
-namespace AmbientOTron.Views.Gaming.SoundBoard
+namespace AmbientOTron.Views.SoundBoard
 {
   [Export(typeof(NavigationGroup<>))]
   public class SoundBoardNavigationGroup : NavigationGroup<SoundBoardNavigationViewModel>
@@ -23,8 +24,9 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
 
       Name = "SoundBoards";
       var items = new ObservableCollection<SoundBoardNavigationViewModel>(repository.GetSoundBoards().Select(CreateItemViewModel));
+
       eventAggregator.GetEvent<AddModelEvent<Core.Repository.Models.SoundBoard>>()
-                     .Subscribe(newModel => items.Add(CreateItemViewModel(newModel)), ThreadOption.UIThread);
+                     .Subscribe(x => items.Add(CreateItemViewModel(x)), ThreadOption.UIThread, true);
 
       Items = items;
     }
