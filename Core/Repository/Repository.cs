@@ -27,9 +27,9 @@ namespace Core.Repository
     private readonly IEventAggregator eventAggregator;
     private readonly Dictionary<Guid, SoundBoard> soundBoardCache = new Dictionary<Guid, SoundBoard>();
     private readonly Dictionary<string, ISource> knownFiles = new Dictionary<string, ISource>();
-    private readonly Dictionary<string, Sound> knownSounds = new Dictionary<string, Sound>();
     private readonly Dictionary<string, ISource> knownSources = new Dictionary<string, ISource>();
     private readonly Dictionary<string, BehaviorSubject<Status>> statuses = new Dictionary<string, BehaviorSubject<Status>>();
+    private readonly Dictionary<string, Cache> caches = new Dictionary<string, Cache>();
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = "Data.json";
@@ -74,12 +74,28 @@ namespace Core.Repository
           var model = JsonConvert.DeserializeObject<Library>(File.ReadAllText(fullPath));
 
           ImportSoundBoards(model);
+
+          foreach (var cache in model.Caches)
+          {
+            await ImportCache(cache);
+          }
+
           await ImportFiles(model);
         }
         catch (Exception ex)
         {
           logger.Warn($"Could not load library from {fullPath}", ex);
         }
+      }
+
+      if (!caches.ContainsKey(Environment.CurrentDirectory))
+      {
+        await ImportCache(
+          new Cache
+          {
+            Folder = Environment.CurrentDirectory,
+            Name = "Main cache"
+          });
       }
     }
 
@@ -142,6 +158,38 @@ namespace Core.Repository
       }
     }
 
+    private async Task ImportCache(Cache model)
+    {
+      if (!Directory.Exists(model.Folder))
+      {
+        return;
+      }
+
+      foreach (var sound in model.Sounds)
+      {
+        sound.Status = CreateOrSetStatus(sound.Hash, Status.NotFound);
+      }
+
+      var knownHashes = new HashSet<string>(model.Sounds.Select(x => x.Hash));
+
+      foreach (var fileName in Directory.EnumerateFiles(model.Folder, "*.mp3", SearchOption.AllDirectories))
+      {
+        var source = await ResolveFileSource(fileName);
+
+        if (source == null)
+        {
+          continue;
+        }
+
+        if (!knownHashes.Contains(source.Hash))
+        {
+          model.Sounds.Add(ResolveSound(source, new FileInfo(fileName).Name));
+        }
+      }
+
+      caches.Add(model.Folder, model);
+    }
+
     public SoundBoard LoadSoundBoard(Guid id)
     {
       SoundBoard result;
@@ -158,6 +206,7 @@ namespace Core.Repository
       var rootLibrary = new Library();
       rootLibrary.SoundBoards.AddRange(soundBoardCache.Values);
       rootLibrary.Files.AddRange(knownFiles.Keys);
+      rootLibrary.Caches.AddRange(caches.Values);
 
       var rootLibraryString = JsonConvert.SerializeObject(rootLibrary, Formatting.Indented, new JsonSerializerSettings
       {
@@ -172,7 +221,7 @@ namespace Core.Repository
       }
       catch (Exception ex)
       {
-        logger.Warn($"Error while writing root library to '{path}'", ex);
+        logger.Warn($"Error while writing library to '{path}'", ex);
       }
     }
 
@@ -219,21 +268,13 @@ namespace Core.Repository
 
     private Sound ResolveSound(ISource source, string defaultName)
     {
-      Sound result;
-      if (knownSounds.TryGetValue(source.Hash, out result))
-      {
-        return result;
-      }
-
-      result = new Sound
+      var result = new Sound
       {
         Name = defaultName,
         Hash = source.Hash
       };
 
       result.Status = statuses[result.Hash];
-
-      knownSounds[source.Hash] = result;
 
       return result;
     }
