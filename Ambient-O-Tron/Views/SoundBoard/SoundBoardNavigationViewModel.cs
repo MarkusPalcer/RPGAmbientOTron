@@ -17,23 +17,16 @@ namespace AmbientOTron.Views.SoundBoard
       eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard>>().Subscribe(_ => UpdateFromModel());
     }
 
-    private void UpdateFromModel()
-    {
-      Name = Model.Name;
-    }
-
-    public override void SetModel(Core.Repository.Models.SoundBoard newModel)
+    protected override void UpdateFromModel()
     {
       NavigateCommand = navigationService.CreateNavigationCommand<SoundBoardView>(
         Shell.ViewModel.LowerPane,
         new NavigationParameters
         {
-          {"id", newModel.Id}
+                {"id", Model.Id}
         });
 
-      Model = newModel;
-
-      UpdateFromModel();
+      Name = Model.Name;
     }
   }
 }

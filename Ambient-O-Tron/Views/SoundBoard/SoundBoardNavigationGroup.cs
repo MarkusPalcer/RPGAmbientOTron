@@ -33,9 +33,10 @@ namespace AmbientOTron.Views.SoundBoard
 
     private SoundBoardNavigationViewModel CreateItemViewModel(Core.Repository.Models.SoundBoard model)
     {
-      var result = new SoundBoardNavigationViewModel(navigationService, eventAggregator);
-      result.SetModel(model);
-      return result;
+      return new SoundBoardNavigationViewModel(navigationService, eventAggregator)
+      {
+        Model = model
+      };
     }
   }
 }

@@ -29,7 +29,7 @@ namespace AmbientOTron.Views.Cache
     private CacheNavigationViewModel CreateItemViewModel(Core.Repository.Models.Cache model)
     {
       var result = itemFactory.CreateExport().Value;
-      result.SetModel(model);
+      result.Model = model;
       return result;
     }
   }

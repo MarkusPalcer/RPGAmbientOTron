@@ -11,5 +11,15 @@ namespace Core.Repository.Sounds
 
     [JsonIgnore]
     public IObservable<Status> Status { get; internal set; }
+
+    public Sound Clone()
+    {
+      return new Sound()
+      {
+        Hash = Hash,
+        Name = Name,
+        Status = Status
+      };
+    }
   }
 }

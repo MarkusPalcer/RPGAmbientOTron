@@ -20,13 +20,7 @@ namespace AmbientOTron.Views.Cache
                      .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, c => c.Folder == Model.Folder);
     }
 
-    public override void SetModel(Core.Repository.Models.Cache newModel)
-    {
-      Model = newModel;
-      UpdateFromModel();
-    }
-
-    private void UpdateFromModel()
+    protected override void UpdateFromModel()
     {
       Name = Model.Name;
 
@@ -47,9 +41,10 @@ namespace AmbientOTron.Views.Cache
 
     private SoundNavigationViewModel CreateItemViewModel(Sound sound)
     {
-      var result = new SoundNavigationViewModel();
-      result.SetModel(sound);
-      return result;
+      return new SoundNavigationViewModel
+      {
+        Model = sound
+      };
     }
   }
 }

@@ -46,7 +46,8 @@ namespace AmbientOTron.Views.SoundBoard
       dragDropHelper = new DragDropHelper
       {
         {DragDropHelper.IsFileDrop, DropFile},
-        {dropInfo => dropInfo.Data is AudioSourceViewModel, ReorderEntries, _ => DragDropEffects.Move}
+        {dropInfo => dropInfo.Data is AudioSourceViewModel, ReorderEntries, _ => DragDropEffects.Move},
+        {dropInfo => dropInfo.Data is Sound, DropModel, _ => DragDropEffects.Copy }
       };
 
       PropertiesCommand =
@@ -120,6 +121,19 @@ namespace AmbientOTron.Views.SoundBoard
 
         Files.Add(CreateSourceViewModel(source));
       }
+
+      SaveChanges();
+    }
+
+    private void DropModel(IDropInfo dropInfo)
+    {
+      var droppedModel = dropInfo.Data as Sound;
+      if (droppedModel == null)
+      {
+        return;
+      }
+
+      Files.Add(CreateSourceViewModel(droppedModel.Clone()));
 
       SaveChanges();
     }

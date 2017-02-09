@@ -1,12 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Prism.Mvvm;
 
 namespace AmbientOTron.Views.Navigation
 {
-  public abstract class NavigationItemViewModel<TModel, TChildren> : BindableBase, INavigationEntry<TChildren>
+  public interface IWithModel
+  {
+    object Model { get; }
+  }
+
+  public interface IWithModel<out TModel>  : IWithModel
+  {
+    new TModel Model { get; }
+  }
+
+  public abstract class NavigationItemViewModel<TModel, TChildren> : BindableBase, INavigationEntry<TChildren>, IWithModel<TModel>
+    where TModel : class
   {
     private string name;
 
@@ -32,12 +41,25 @@ namespace AmbientOTron.Views.Navigation
       protected set { SetProperty(ref navigateCommand, value); }
     }
 
-    public TModel Model;
+    protected abstract void UpdateFromModel();
 
-    public abstract void SetModel(TModel newModel);
+    private TModel model = null;
+
+    public TModel Model
+    {
+      get { return model; }
+      set
+      {
+        model = value;
+        UpdateFromModel();
+      }
+    }
+
+    object IWithModel.Model => model;
   }
 
   public abstract class NavigationItemViewModelWithoutChildren<TModel> : NavigationItemViewModel<TModel, object>
+    where TModel : class
   {
   }
 
