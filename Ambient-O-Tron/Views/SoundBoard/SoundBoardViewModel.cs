@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows.Input;
@@ -47,7 +48,7 @@ namespace AmbientOTron.Views.SoundBoard
       {
         {DragDropHelper.IsFileDrop, DropFile},
         {dropInfo => dropInfo.Data is AudioSourceViewModel, ReorderEntries, _ => DragDropEffects.Move},
-        {dropInfo => dropInfo.Data is Sound, DropModel, _ => DragDropEffects.Copy }
+        {dropInfo => dropInfo.Data is Sound, DropModel }
       };
 
       PropertiesCommand =
@@ -114,6 +115,11 @@ namespace AmbientOTron.Views.SoundBoard
 
       foreach (var file in newFiles)
       {
+        if (!File.Exists(file))
+        {
+          continue;
+        }
+
         var source = await repository.ImportFile(file);
 
         if (Files.Any(x => x.Model == source))

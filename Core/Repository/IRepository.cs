@@ -21,5 +21,7 @@ namespace Core.Repository
     Task<Sound> ImportFile(string fileName);
       
     IEnumerable<Cache> GetCaches();
+
+    Task ImportCache(string cacheFolder);
   }
 }

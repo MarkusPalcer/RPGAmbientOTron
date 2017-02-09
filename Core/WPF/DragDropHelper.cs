@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using GongSolutions.Wpf.DragDrop;
@@ -105,8 +106,31 @@ namespace Core.WPF
     public static bool IsFileDrop(IDropInfo dropInfo)
     {
       var dataObject = dropInfo.Data as DataObject;
-        
-      return (dataObject?.GetDataPresent(DataFormats.FileDrop) == true);
+
+      if (dataObject?.GetDataPresent(DataFormats.FileDrop) == true)
+      {
+        var data = (string[]) dataObject.GetData(DataFormats.FileDrop);
+        return data?.Any(File.Exists) ?? false;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    public static bool IsFolderDrop(IDropInfo dropInfo)
+    {
+      var dataObject = dropInfo.Data as DataObject;
+
+      if (dataObject?.GetDataPresent(DataFormats.FileDrop) == true)
+      {
+        var data = (string[])dataObject.GetData(DataFormats.FileDrop);
+        return data?.Any(Directory.Exists) ?? false;
+      }
+      else
+      {
+        return false;
+      }
     }
   }
 }

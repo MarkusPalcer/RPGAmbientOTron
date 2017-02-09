@@ -13,7 +13,9 @@
     <TreeView ItemsSource="{Binding Groups}"
                   dd:DragDrop.IsDragSource="True"
                   dd:DragDrop.DragHandler="{Binding}"
-               behaviors:TreeViewHelper.SelectedItem="{Binding Path=SelectedItem}">
+                  dd:DragDrop.IsDropTarget="True"
+                  dd:DragDrop.DropHandler="{Binding}"
+              >
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate ItemsSource="{Binding Items}">
                 <TextBlock Text="{Binding Name}"></TextBlock>

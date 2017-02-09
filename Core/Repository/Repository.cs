@@ -171,6 +171,8 @@ namespace Core.Repository
         return;
       }
 
+      eventAggregator.GetEvent<AddModelEvent<Cache>>().Publish(model);
+
       foreach (var fileName in Directory.EnumerateFiles(model.Folder, "*.mp3", SearchOption.AllDirectories))
       {
         var source = await ResolveFileSource(fileName);
@@ -181,11 +183,11 @@ namespace Core.Repository
         }
 
         model.Sounds.Add(ResolveSound(source, new FileInfo(fileName).Name));
+
+        eventAggregator.GetEvent<UpdateModelEvent<Cache>>().Publish(model);
       }
 
       caches.Add(model.Folder, model);
-
-      eventAggregator.GetEvent<AddModelEvent<Cache>>().Publish(model);
     }
 
     public SoundBoard LoadSoundBoard(Guid id)
@@ -267,6 +269,23 @@ namespace Core.Repository
     public IEnumerable<Cache> GetCaches()
     {
       return caches.Values.ToArray();
+    }
+
+    public async Task ImportCache(string cacheFolder)
+    {
+      using (await semaphore.ProtectAsync())
+      {
+        if (caches.ContainsKey(cacheFolder))
+          return;
+
+        await ImportCache(
+          new Cache
+          {
+            Folder = cacheFolder,
+            Name = new DirectoryInfo(cacheFolder).Name
+
+          });
+      }
     }
 
     private Sound ResolveSound(ISource source, string defaultName)

@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Threading;
 using AmbientOTron.Views.Navigation;
 using AmbientOTron.Views.Sounds;
 using Core.Events;
+using Core.Extensions;
 using Core.Repository.Sounds;
 using Prism.Events;
 
@@ -12,6 +14,8 @@ namespace AmbientOTron.Views.Cache
   [Export]
   public class CacheNavigationViewModel : NavigationItemViewModel<Core.Repository.Models.Cache, SoundNavigationViewModel>
   {
+    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
+
     [ImportingConstructor]
     public CacheNavigationViewModel(IEventAggregator eventAggregator)
     {
@@ -20,21 +24,29 @@ namespace AmbientOTron.Views.Cache
                      .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, c => c.Folder == Model.Folder);
     }
 
-    protected override void UpdateFromModel()
+    protected override async void UpdateFromModel()
     {
-      Name = Model.Name;
-
-      var toRemove = Items.ToDictionary(x => x.Model.Hash);
-
-      foreach (var sound in Model.Sounds)
+      using (await semaphore.ProtectAsync())
       {
-        if (toRemove.ContainsKey(sound.Hash))
+        Name = Model.Name;
+
+        var toRemove = Items.ToDictionary(x => x.Model.Hash);
+
+        foreach (var sound in Model.Sounds)
         {
-          toRemove.Remove(sound.Hash);
+          if (toRemove.ContainsKey(sound.Hash))
+          {
+            toRemove.Remove(sound.Hash);
+          }
+          else
+          {
+            Items.Add(CreateItemViewModel(sound));
+          }
         }
-        else
+
+        foreach (var removeValue in toRemove.Values)
         {
-          Items.Add(CreateItemViewModel(sound));
+          Items.Remove(removeValue);
         }
       }
     }
