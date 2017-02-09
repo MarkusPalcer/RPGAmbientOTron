@@ -7,7 +7,7 @@ namespace AmbientOTron
     public partial class MainWindow
     {
         [ImportingConstructor]
-        public MainWindow(View view)
+        public MainWindow(ShellView view)
         {
             InitializeComponent();
             Content = view;

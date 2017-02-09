@@ -1,8 +1,5 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Input;
-using AmbientOTron.Views.Gaming.SoundBoard;
-using Core.Dialogs;
-using Core.Navigation;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -10,16 +7,15 @@ using Prism.Regions;
 namespace AmbientOTron.Views.Shell
 {
     [Export]
-    public class ViewModel : BindableBase
+    public class ShellViewModel : BindableBase
     {
-        private readonly IDialogService dialogService;
-
         [ImportingConstructor]
-        public ViewModel(INavigationService navigationService, IDialogService dialogService)
+        public ShellViewModel(IRegionManager regionManager)
         {
-            this.dialogService = dialogService;
-      
+          ClosePropertiesCommand = new DelegateCommand(() => regionManager.Regions[PropertiesPane].RemoveAll());
         }
+
+      public ICommand ClosePropertiesCommand { get; }
 
       public const string ResourcesPane = "RessourcesPane";
       public const string MainRegion = "MainRegion";

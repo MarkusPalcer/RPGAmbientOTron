@@ -3,18 +3,18 @@ using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using System.Windows.Media;
 using Core.Audio;
-using Core.Events;
 using Core.Repository;
 using Core.Repository.Sounds;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 
-namespace AmbientOTron.Views.Gaming.SoundBoard
+namespace AmbientOTron.Views.SoundBoard
 {
   [Export]
-  public class AudioSourceViewModel : BindableBase
+  public class SoundBoardEntryViewModel : BindableBase
   {
     private readonly IAudioService audioService;
     private string name;
@@ -22,7 +22,7 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
     private readonly SerialDisposable statusSubscription = new SerialDisposable();
 
     [ImportingConstructor]
-    public AudioSourceViewModel(IEventAggregator eventAggregator, IRepository repository, IAudioService audioService)
+    public SoundBoardEntryViewModel(IEventAggregator eventAggregator, IRepository repository, IAudioService audioService)
     {
       this.audioService = audioService;
 
@@ -31,13 +31,13 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
 
     public ICommand PlayCommand { get; }
 
-    public Sound Model { get; set; }
+    public Core.Repository.Models.SoundBoard.Entry Model { get; set; }
 
     private async void Play()
     {
       try
       {
-        await audioService.Play(Model);
+        await audioService.Play(Model.Sound);
       }
       catch (Exception)
       {
@@ -59,11 +59,13 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       set { SetProperty(ref hasError, value); }
     }
 
-    public void SetModel(Sound model)
+    public Color Color => Model.Color;
+
+    public void SetModel(Core.Repository.Models.SoundBoard.Entry model)
     {
       Model = model;
-      Name = model.Name;
-      statusSubscription.Disposable = model.Status.Select(x => x != Status.Ready).Subscribe(x => HasError = x);
+      Name = model.Sound.Name;
+      statusSubscription.Disposable = model.Sound.Status.Select(x => x != Status.Ready).Subscribe(x => HasError = x);
     }
   }
 }

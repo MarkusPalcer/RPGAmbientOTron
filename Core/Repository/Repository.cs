@@ -157,9 +157,9 @@ namespace Core.Repository
       {
         soundBoardCache[soundBoard.Id] = soundBoard;
 
-        foreach (var sound in soundBoard.Sounds)
+        foreach (var sound in soundBoard.Entries)
         {
-          sound.Status = CreateOrSetStatus(sound.Hash, Status.NotFound);
+          sound.Sound.Status = CreateOrSetStatus(sound.Sound.Hash, Status.NotFound);
         }
       }
     }

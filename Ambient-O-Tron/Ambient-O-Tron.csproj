@@ -148,7 +148,7 @@
     </Compile>
     <Compile Include="Views\Cache\CacheNavigationGroup.cs" />
     <Compile Include="Views\Navigation\INavitagionItem.cs" />
-    <Compile Include="Views\SoundBoard\AudioSourceViewModel.cs" />
+    <Compile Include="Views\SoundBoard\SoundBoardEntryViewModel.cs" />
     <Compile Include="Views\Navigation\NavigationGroup.cs" />
     <Compile Include="Views\Navigation\NavigationItemViewModelWithoutChildren.cs" />
     <Compile Include="Views\SoundBoard\NewSoundBoardView.xaml.cs">
@@ -169,9 +169,9 @@
       <DependentUpon>NavigationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Navigation\NavigationViewModel.cs" />
-    <Compile Include="Views\Shell\ViewModel.cs" />
-    <Compile Include="Views\Shell\View.xaml.cs">
-      <DependentUpon>View.xaml</DependentUpon>
+    <Compile Include="Views\Shell\ShellViewModel.cs" />
+    <Compile Include="Views\Shell\ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Sounds\SoundNavigationViewModel.cs" />
     <Page Include="Controls\IconContainer.xaml">
@@ -234,7 +234,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Shell\View.xaml">
+    <Page Include="Views\Shell\ShellView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

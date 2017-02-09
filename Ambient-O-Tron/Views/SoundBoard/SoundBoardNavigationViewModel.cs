@@ -20,7 +20,7 @@ namespace AmbientOTron.Views.SoundBoard
     protected override void UpdateFromModel()
     {
       NavigateCommand = navigationService.CreateNavigationCommand<SoundBoardView>(
-        Shell.ViewModel.LowerPane,
+        Shell.ShellViewModel.LowerPane,
         new NavigationParameters
         {
                 {"id", Model.Id}

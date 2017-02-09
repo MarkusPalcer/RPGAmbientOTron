@@ -3,10 +3,10 @@
 namespace AmbientOTron.Views.Shell
 {
   [Export]
-  public partial class View
+  public partial class ShellView
   {
     [ImportingConstructor]
-    public View(ViewModel viewModel)
+    public ShellView(ShellViewModel viewModel)
     {
       InitializeComponent();
       DataContext = viewModel;

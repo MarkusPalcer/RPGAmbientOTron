@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:AmbientOTron.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
+             Padding="5,5,10,5"
              d:DataContext="{d:DesignInstance local:NewSoundBoardViewModel}">
     <Grid>
         <Rectangle StrokeThickness="2" Stroke="DarkGray" RadiusX="10" RadiusY="10" StrokeDashArray="2 2" />

@@ -13,6 +13,26 @@
                 Value="10,0,0,0" />
     </Style>
 
+    <Style x:Key="IconOnlyButtonStyle16"
+           BasedOn="{StaticResource {x:Type Button}}"
+           TargetType="Button">
+        <Setter Property="Height"
+                Value="16" />
+        <Setter Property="Width"
+                Value="16" />
+        <Setter Property="Margin"
+                Value="10,0,0,0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        
+    </Style>
+
+    <ControlTemplate x:Key="BorderlessIconButtonTemplate" TargetType="{x:Type ButtonBase}">
+        <Border x:Name="border" BorderThickness="0" Background="Transparent" SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </Border>
+    </ControlTemplate>
+
     <Viewbox x:Key="IconicMediaStopLarge" Stretch="Uniform" x:Shared="False">
         <Canvas Width="128" Height="128">
             <Canvas>

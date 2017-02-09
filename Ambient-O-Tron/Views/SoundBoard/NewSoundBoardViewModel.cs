@@ -44,7 +44,7 @@ namespace AmbientOTron.Views.SoundBoard
 
       repository.Save(newModel);
       navigationService.NavigateAsync<SoundBoardView>(
-        ViewModel.LowerPane,
+        ShellViewModel.LowerPane,
         new NavigationParameters
         {
           {"id", newModel.Id}
