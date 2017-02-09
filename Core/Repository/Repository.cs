@@ -3,28 +3,36 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Reactive.Subjects;
+using System.Threading;
+using System.Threading.Tasks;
 using Core.Events;
+using Core.Extensions;
 using Core.Repository.Models;
-using Core.Repository.Models.Sources;
+using Core.Repository.Sounds;
+using Core.Repository.Sources;
 using log4net;
 using Newtonsoft.Json;
 using Prism.Events;
-using AudioFile = Core.Repository.Models.Sources.AudioFile;
-using Library = Core.Repository.Models.Library;
 
 namespace Core.Repository
 {
   [Export(typeof(IRepository))]
+  [Export(typeof(IInternalRepository))]
   [PartCreationPolicy(CreationPolicy.Shared)]
-  public class Repository : IRepository, IDisposable
+  public class Repository : IRepository, IInternalRepository, IDisposable
   {
+    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
+
     private readonly IEventAggregator eventAggregator;
     private readonly Dictionary<Guid, SoundBoard> soundBoardCache = new Dictionary<Guid, SoundBoard>();
-    private readonly Dictionary<string, AudioFile> knownFiles = new Dictionary<string, AudioFile>();
+    private readonly Dictionary<string, ISource> knownFiles = new Dictionary<string, ISource>();
+    private readonly Dictionary<string, ISource> knownSources = new Dictionary<string, ISource>();
+    private readonly Dictionary<string, BehaviorSubject<Status>> statuses = new Dictionary<string, BehaviorSubject<Status>>();
+    private readonly Dictionary<string, Cache> caches = new Dictionary<string, Cache>();
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = "Data.json";
-
 
     [ImportingConstructor]
     public Repository(IEventAggregator eventAggregator)
@@ -49,30 +57,29 @@ namespace Core.Repository
       }
     }
 
-    public AudioFile GetSource(string fileName)
+    private async void Init()
     {
-      // Currently there is only one source that can be referenced from a file
-      if (knownFiles.ContainsKey(fileName))
+      using (await semaphore.ProtectAsync())
       {
-        return knownFiles[fileName];
+        await LoadLibrary();
+
+        if (!caches.ContainsKey(Environment.CurrentDirectory))
+        {
+          await ImportCache(
+            new Cache
+            {
+              Folder = Environment.CurrentDirectory,
+              Name = "Program folder"
+            });
+        }
       }
 
-      var result = new AudioFile()
-      {
-        FullPath = fileName,
-        Name = new FileInfo(fileName).Name,
-      };
 
-      return result;
     }
 
-    private void Init()
+    private async Task LoadLibrary()
     {
-      LoadLibrary(Path.Combine(Environment.CurrentDirectory, rootLibraryFileName));
-    }
-
-    private void LoadLibrary(string fullPath)
-    {
+      var fullPath = Path.Combine(Environment.CurrentDirectory, rootLibraryFileName);
       if (!File.Exists(fullPath))
       {
         logger.Info($"Library {fullPath} does not exist.");
@@ -83,15 +90,104 @@ namespace Core.Repository
       {
         var model = JsonConvert.DeserializeObject<Library>(File.ReadAllText(fullPath));
 
-        foreach (var soundBoard in model.SoundBoards)
+        ImportSoundBoards(model);
+
+        foreach (var cache in model.Caches)
         {
-          soundBoardCache[soundBoard.Id] = soundBoard;
+          await ImportCache(cache);
         }
+
+        await ImportFiles(model);
       }
       catch (Exception ex)
       {
         logger.Warn($"Could not load library from {fullPath}", ex);
       }
+    }
+
+    private async Task ImportFiles(Library model)
+    {
+      // Try to read all files in parallel
+      var fileTasks = model.Files.Select(
+        async fileName =>
+        {
+          AudioFile result = null;
+          try
+          {
+            result = await Task.Factory.StartNew(() => new AudioFile(fileName));
+          }
+          catch (Exception ex)
+          {
+            logger.Error($"Error while trying to create source for file '{fileName}'", ex);
+          }
+
+          return new
+          {
+            FileName = fileName,
+            Source = result
+          };
+        })
+        .ToArray();
+
+      // Synchronize
+      var files = await Task.WhenAll(fileTasks);
+
+      // Throw away files that couldn't be loaded and only keep one file per hash
+      files = files.Where(x => x.Source != null).Distinct().ToArray();
+
+      foreach (var file in files)
+      {
+        // Ignore files that are not "requested" by other entities
+        BehaviorSubject<Status> status;
+        if (!statuses.TryGetValue(file.Source.Hash, out status))
+        {
+          continue;
+        }
+
+        // Register file source and set file status
+        knownFiles[file.FileName] = file.Source;
+        knownSources[file.Source.Hash] = file.Source;
+        status.OnNext(Status.Ready);
+      }
+    }
+
+    private void ImportSoundBoards(Library model)
+    {
+      foreach (var soundBoard in model.SoundBoards)
+      {
+        soundBoardCache[soundBoard.Id] = soundBoard;
+
+        foreach (var sound in soundBoard.Sounds)
+        {
+          sound.Status = CreateOrSetStatus(sound.Hash, Status.NotFound);
+        }
+      }
+    }
+
+    private async Task ImportCache(Cache model)
+    {
+      if (!Directory.Exists(model.Folder))
+      {
+        return;
+      }
+
+      eventAggregator.GetEvent<AddModelEvent<Cache>>().Publish(model);
+
+      foreach (var fileName in Directory.EnumerateFiles(model.Folder, "*.mp3", SearchOption.AllDirectories))
+      {
+        var source = await ResolveFileSource(fileName);
+
+        if (source == null)
+        {
+          continue;
+        }
+
+        model.Sounds.Add(ResolveSound(source, new FileInfo(fileName).Name));
+
+        eventAggregator.GetEvent<UpdateModelEvent<Cache>>().Publish(model);
+      }
+
+      caches.Add(model.Folder, model);
     }
 
     public SoundBoard LoadSoundBoard(Guid id)
@@ -105,10 +201,13 @@ namespace Core.Repository
       return soundBoardCache.Values.ToArray();
     }
 
-    private void SaveRootLibraries()
+    private void SaveLibrary()
     {
       var rootLibrary = new Library();
       rootLibrary.SoundBoards.AddRange(soundBoardCache.Values);
+      rootLibrary.Files.AddRange(knownFiles.Keys);
+      rootLibrary.Caches.AddRange(caches.Values);
+
       var rootLibraryString = JsonConvert.SerializeObject(rootLibrary, Formatting.Indented, new JsonSerializerSettings
       {
         TypeNameHandling = TypeNameHandling.Auto,
@@ -122,11 +221,9 @@ namespace Core.Repository
       }
       catch (Exception ex)
       {
-        logger.Warn($"Error while writing root library to '{path}'", ex);
+        logger.Warn($"Error while writing library to '{path}'", ex);
       }
     }
-
-    #region Implementation of IDisposable
 
     /// <summary>
     ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -147,12 +244,106 @@ namespace Core.Repository
     {
       if (disposing)
       {
-        SaveRootLibraries();
+        SaveLibrary();
       }
 
       // Release unmanaged resources here
     }
 
-    #endregion
+    ISource IInternalRepository.GetSource(Sound sound)
+    {
+      ISource result;
+      return knownSources.TryGetValue(sound.Hash, out result) ? result : null;
+    }
+
+    public async Task<Sound> ImportFile(string fileName)
+    {
+      using (await semaphore.ProtectAsync())
+      {
+        var source = await ResolveFileSource(fileName);
+
+        return source == null ? null : ResolveSound(source, new FileInfo(fileName).Name);
+      }
+    }
+
+    public IEnumerable<Cache> GetCaches()
+    {
+      return caches.Values.ToArray();
+    }
+
+    public async Task ImportCache(string cacheFolder)
+    {
+      using (await semaphore.ProtectAsync())
+      {
+        if (caches.ContainsKey(cacheFolder))
+          return;
+
+        await ImportCache(
+          new Cache
+          {
+            Folder = cacheFolder,
+            Name = new DirectoryInfo(cacheFolder).Name
+
+          });
+      }
+    }
+
+    private Sound ResolveSound(ISource source, string defaultName)
+    {
+      var result = new Sound
+      {
+        Name = defaultName,
+        Hash = source.Hash
+      };
+
+      result.Status = statuses[result.Hash];
+
+      return result;
+    }
+
+    private async Task<ISource> ResolveFileSource(string fileName)
+    {
+      ISource result;
+      if (knownFiles.TryGetValue(fileName, out result))
+      {
+        return result;
+      }
+
+      try
+      {
+        result = await Task.Factory.StartNew(() => new AudioFile(fileName));
+        knownFiles[fileName] = result;
+        knownSources[result.Hash] = result;
+      }
+      catch (Exception ex)
+      {
+        logger.Error($"Error while trying to create source for file '{fileName}'", ex);
+      }
+
+      if (result == null)
+      {
+        return null;
+      }
+
+      CreateOrSetStatus(result.Hash, Status.Ready);
+
+      return result;
+    }
+
+    private IObservable<Status> CreateOrSetStatus(string hash, Status newValue)
+    {
+      BehaviorSubject<Status> result;
+      if (!statuses.TryGetValue(hash, out result))
+      {
+        result = new BehaviorSubject<Status>(newValue);
+        statuses[hash] = result;
+      }
+      else
+      {
+        result.OnNext(newValue);
+      }
+
+      return result;
+    }
   }
 }

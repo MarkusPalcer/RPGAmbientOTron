@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows.Input;
+using AmbientOTron.Views.Gaming.SoundBoard;
 using Core.Navigation;
 using Core.Repository;
-using Core.Repository.Models.Sources;
+using Core.Repository.Sounds;
 using Core.WPF;
 using GongSolutions.Wpf.DragDrop;
 using Prism.Mvvm;
@@ -16,7 +18,7 @@ using DataObject = System.Windows.DataObject;
 using DragDropEffects = System.Windows.DragDropEffects;
 using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
-namespace AmbientOTron.Views.Gaming.SoundBoard
+namespace AmbientOTron.Views.SoundBoard
 {
   [Export]
   public class SoundBoardViewModel : BindableBase, IConfirmNavigationRequest, IDropTarget, IDisposable
@@ -45,7 +47,8 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       dragDropHelper = new DragDropHelper
       {
         {DragDropHelper.IsFileDrop, DropFile},
-        {dropInfo => dropInfo.Data is AudioSourceViewModel, ReorderEntries, _ => DragDropEffects.Move}
+        {dropInfo => dropInfo.Data is AudioSourceViewModel, ReorderEntries, _ => DragDropEffects.Move},
+        {dropInfo => dropInfo.Data is Sound, DropModel }
       };
 
       PropertiesCommand =
@@ -104,7 +107,7 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       SaveChanges();
     }
 
-    private void DropFile(IDropInfo dropInfo)
+    private async void DropFile(IDropInfo dropInfo)
     {
       var newFiles = (string[]) ((DataObject) dropInfo.Data).GetData(DataFormats.FileDrop);
       if (newFiles == null)
@@ -112,13 +115,31 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
 
       foreach (var file in newFiles)
       {
-        var source = repository.GetSource(file);
+        if (!File.Exists(file))
+        {
+          continue;
+        }
+
+        var source = await repository.ImportFile(file);
 
         if (Files.Any(x => x.Model == source))
           continue;
 
         Files.Add(CreateSourceViewModel(source));
       }
+
+      SaveChanges();
+    }
+
+    private void DropModel(IDropInfo dropInfo)
+    {
+      var droppedModel = dropInfo.Data as Sound;
+      if (droppedModel == null)
+      {
+        return;
+      }
+
+      Files.Add(CreateSourceViewModel(droppedModel.Clone()));
 
       SaveChanges();
     }
@@ -130,7 +151,7 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       Files.AddRange(model.Sounds.Select(CreateSourceViewModel));
     }
 
-    private AudioSourceViewModel CreateSourceViewModel(AudioFile forModel)
+    private AudioSourceViewModel CreateSourceViewModel(Sound forModel)
     {
       var export = audioFileViewModelFactory.CreateExport();
       disposables.Add(export);
@@ -139,8 +160,6 @@ namespace AmbientOTron.Views.Gaming.SoundBoard
       result.SetModel(forModel);
       return result;
     }
-
-
 
     #region Implementation of INavigationAware
 

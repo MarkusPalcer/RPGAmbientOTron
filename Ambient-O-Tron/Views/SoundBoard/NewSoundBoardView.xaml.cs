@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.Composition;
 
-namespace AmbientOTron.Views.Gaming.SoundBoard
+namespace AmbientOTron.Views.SoundBoard
 {
   [Export]
-  public partial class SoundBoardView 
+  public partial class NewSoundBoardView 
   {
     [ImportingConstructor]
-    public SoundBoardView(SoundBoardViewModel viewModel)
+    public NewSoundBoardView(NewSoundBoardViewModel viewModel)
     {
       InitializeComponent();
       DataContext = viewModel;

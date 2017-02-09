@@ -1,9 +1,11 @@
-﻿using Core.Repository.Models.Sources;
+﻿using System.Threading.Tasks;
+using Core.Repository.Sounds;
+using Core.Repository.Sources;
 
 namespace Core.Audio
 {
   public interface IAudioService
   {
-    IPlayback PlayAudioFile(AudioFile path);
+    IPlayback Play(Sound model);
   }
 } 
