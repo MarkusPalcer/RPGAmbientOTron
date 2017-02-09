@@ -11,10 +11,12 @@ namespace AmbientOTron.Views.Cache
   [Export(typeof(NavigationGroup<>))]
   public class CacheNavigationGroup:NavigationGroup<CacheNavigationViewModel>
   {
+    private readonly ExportFactory<CacheNavigationViewModel> itemFactory;
 
     [ImportingConstructor]
-    public CacheNavigationGroup(IRepository repository, IEventAggregator eventAggregator)
+    public CacheNavigationGroup(IRepository repository, IEventAggregator eventAggregator, ExportFactory<CacheNavigationViewModel> itemFactory)
     {
+      this.itemFactory = itemFactory;
       Name = "Caches";
       var items = new ObservableCollection<CacheNavigationViewModel>(repository.GetCaches().Select(CreateItemViewModel));
 
@@ -26,7 +28,7 @@ namespace AmbientOTron.Views.Cache
 
     private CacheNavigationViewModel CreateItemViewModel(Core.Repository.Models.Cache model)
     {
-      var result = new CacheNavigationViewModel();
+      var result = itemFactory.CreateExport().Value;
       result.SetModel(model);
       return result;
     }

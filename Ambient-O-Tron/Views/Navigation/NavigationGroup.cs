@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace AmbientOTron.Views.Navigation
 {
-  public class NavigationGroup<TItem>
+  public class NavigationGroup<TItem> : INavigationEntry<TItem>
   {
     public string Name { get; set; }
-    public IEnumerable<TItem> Items { get; set; } 
+    public ObservableCollection<TItem> Items { get; set; }
+    public ICommand NavigateCommand { get; } = null;
   }
 }
