@@ -59,43 +59,49 @@ namespace Core.Repository
 
     private async void Init()
     {
-      var fullPath = Path.Combine(Environment.CurrentDirectory, rootLibraryFileName);
-
       using (await semaphore.ProtectAsync())
       {
-        if (!File.Exists(fullPath))
+        await LoadLibrary();
+
+        if (!caches.ContainsKey(Environment.CurrentDirectory))
         {
-          logger.Info($"Library {fullPath} does not exist.");
-          return;
-        }
-
-        try
-        {
-          var model = JsonConvert.DeserializeObject<Library>(File.ReadAllText(fullPath));
-
-          ImportSoundBoards(model);
-
-          foreach (var cache in model.Caches)
-          {
-            await ImportCache(cache);
-          }
-
-          await ImportFiles(model);
-        }
-        catch (Exception ex)
-        {
-          logger.Warn($"Could not load library from {fullPath}", ex);
+          await ImportCache(
+            new Cache
+            {
+              Folder = Environment.CurrentDirectory,
+              Name = "Program folder"
+            });
         }
       }
 
-      if (!caches.ContainsKey(Environment.CurrentDirectory))
+
+    }
+
+    private async Task LoadLibrary()
+    {
+      var fullPath = Path.Combine(Environment.CurrentDirectory, rootLibraryFileName);
+      if (!File.Exists(fullPath))
       {
-        await ImportCache(
-          new Cache
-          {
-            Folder = Environment.CurrentDirectory,
-            Name = "Main cache"
-          });
+        logger.Info($"Library {fullPath} does not exist.");
+        return;
+      }
+
+      try
+      {
+        var model = JsonConvert.DeserializeObject<Library>(File.ReadAllText(fullPath));
+
+        ImportSoundBoards(model);
+
+        foreach (var cache in model.Caches)
+        {
+          await ImportCache(cache);
+        }
+
+        await ImportFiles(model);
+      }
+      catch (Exception ex)
+      {
+        logger.Warn($"Could not load library from {fullPath}", ex);
       }
     }
 
@@ -137,7 +143,7 @@ namespace Core.Repository
         {
           continue;
         }
-        
+
         // Register file source and set file status
         knownFiles[file.FileName] = file.Source;
         knownSources[file.Source.Hash] = file.Source;
@@ -165,13 +171,6 @@ namespace Core.Repository
         return;
       }
 
-      foreach (var sound in model.Sounds)
-      {
-        sound.Status = CreateOrSetStatus(sound.Hash, Status.NotFound);
-      }
-
-      var knownHashes = new HashSet<string>(model.Sounds.Select(x => x.Hash));
-
       foreach (var fileName in Directory.EnumerateFiles(model.Folder, "*.mp3", SearchOption.AllDirectories))
       {
         var source = await ResolveFileSource(fileName);
@@ -181,13 +180,12 @@ namespace Core.Repository
           continue;
         }
 
-        if (!knownHashes.Contains(source.Hash))
-        {
-          model.Sounds.Add(ResolveSound(source, new FileInfo(fileName).Name));
-        }
+        model.Sounds.Add(ResolveSound(source, new FileInfo(fileName).Name));
       }
 
       caches.Add(model.Folder, model);
+
+      eventAggregator.GetEvent<AddModelEvent<Cache>>().Publish(model);
     }
 
     public SoundBoard LoadSoundBoard(Guid id)
@@ -264,6 +262,11 @@ namespace Core.Repository
 
         return source == null ? null : ResolveSound(source, new FileInfo(fileName).Name);
       }
+    }
+
+    public IEnumerable<Cache> GetCaches()
+    {
+      return caches.Values.ToArray();
     }
 
     private Sound ResolveSound(ISource source, string defaultName)

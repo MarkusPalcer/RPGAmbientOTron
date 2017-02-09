@@ -19,5 +19,7 @@ namespace Core.Repository
     void Save(SoundBoard model);
 
     Task<Sound> ImportFile(string fileName);
+      
+    IEnumerable<Cache> GetCaches();
   }
 }

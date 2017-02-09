@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="Controls\ProgressCircle.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Views\Cache\CacheNavigationViewModel.cs" />
     <Compile Include="Views\Dialogs\MessageBox\Extensions.cs" />
     <Compile Include="Views\Dialogs\MessageBox\View.xaml.cs">
       <DependentUpon>View.xaml</DependentUpon>
@@ -145,6 +146,7 @@
     <Compile Include="Views\Empty.xaml.cs">
       <DependentUpon>Empty.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Cache\CacheNavigationGroup.cs" />
     <Compile Include="Views\SoundBoard\AudioSourceViewModel.cs" />
     <Compile Include="Views\Navigation\NavigationGroup.cs" />
     <Compile Include="Views\Navigation\NavigationItemViewModel.cs" />
