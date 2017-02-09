@@ -37,32 +37,44 @@
             </StackPanel>
         </Grid>
 
-        <ListView ItemsSource="{Binding Files}" Grid.Row="1" 
+        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled" Grid.Row="1" >
+            <ItemsControl ItemsSource="{Binding Files}" 
                   dd:DragDrop.IsDropTarget="True"
                   dd:DragDrop.DropHandler="{Binding}"
                   dd:DragDrop.IsDragSource="True">
-            <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:AudioSourceViewModel}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:AudioSourceViewModel}">
+                        <Grid Width="200" Height="60" Margin="5">
+                            <Rectangle Fill="Khaki" RadiusY="5" RadiusX="5"></Rectangle>
 
-                        <Button Padding="5"
-                                Grid.Row="0"
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Button Grid.Row="0"
                                 HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
                                 Style="{StaticResource IconButtonStyle32}"
                                 ToolTip="Preview"
                                 Command="{Binding PlayCommand}">
-                            <controls:IconContainer IconName="IconicMediaPlay" />
-                        </Button>
+                                    <controls:IconContainer IconName="IconicMediaPlay" />
+                                </Button>
 
-                        <TextBlock Grid.Row="1" Text="{Binding Name}" />
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                                <TextBlock Grid.Row="1" Text="{Binding Name}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextAlignment="Center"/>
+                            </Grid>
+
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
 
