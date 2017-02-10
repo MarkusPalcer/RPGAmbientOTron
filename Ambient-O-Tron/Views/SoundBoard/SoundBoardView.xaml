@@ -28,11 +28,11 @@
 
             <StackPanel Orientation="Horizontal" Grid.Column="1">
                 <Button VerticalAlignment="Center"
-                        Style="{StaticResource IconOnlyButtonStyle16}"
+                        Style="{StaticResource IconButtonStyle16}"
                         ToolTip="Edit properties"
                         Template="{StaticResource BorderlessIconButtonTemplate}"
                         Command="{Binding PropertiesCommand}">
-                    <controls:IconContainer IconName="IconicPencil" />
+                    <controls:IconContainer IconName="IconicCog" />
                 </Button>
             </StackPanel>
         </Grid>
@@ -58,10 +58,12 @@
 
                             <Button HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    Style="{StaticResource IconOnlyButtonStyle16}"
+                                    Margin="10,5,5,0"
+                                    Style="{StaticResource IconButtonStyle16}"
+                                    Template="{StaticResource BorderlessIconButtonTemplate}"
                                     ToolTip="Edit properties"
                                     Command="{Binding PropertyCommand}">
-                                <controls:IconContainer IconName="IconicMediaPlay" />
+                                <controls:IconContainer IconName="IconicCog" />
                             </Button>
                             
                             <Grid Margin="5">
@@ -74,6 +76,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Style="{StaticResource IconButtonStyle32}"
+                                        
                                         ToolTip="Preview"
                                         Command="{Binding PlayCommand}">
                                     <controls:IconContainer IconName="IconicMediaPlay" />

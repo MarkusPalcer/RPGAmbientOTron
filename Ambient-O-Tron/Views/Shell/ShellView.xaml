@@ -44,7 +44,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="0">
                         <Button VerticalAlignment="Center"
-                                Style="{StaticResource IconOnlyButtonStyle16}"
+                                Style="{StaticResource IconButtonStyle16}"
                                 ToolTip="Close properties pane"
                                 Command="{Binding ClosePropertiesCommand}" Template="{DynamicResource BorderlessIconButtonTemplate}">
                             <controls:IconContainer IconName="IconicX" />
