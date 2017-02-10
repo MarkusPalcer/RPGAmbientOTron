@@ -27,11 +27,11 @@
             <TextBlock FontSize="16" Text="{Binding Name}" Grid.Column="0"/>
 
             <StackPanel Orientation="Horizontal" Grid.Column="1">
-                <Button         VerticalAlignment="Center"
-                                Style="{StaticResource IconOnlyButtonStyle16}"
-                                ToolTip="Edit properties"
-                                Template="{StaticResource BorderlessIconButtonTemplate}"
-                                Command="{Binding PropertiesCommand}">
+                <Button VerticalAlignment="Center"
+                        Style="{StaticResource IconOnlyButtonStyle16}"
+                        ToolTip="Edit properties"
+                        Template="{StaticResource BorderlessIconButtonTemplate}"
+                        Command="{Binding PropertiesCommand}">
                     <controls:IconContainer IconName="IconicPencil" />
                 </Button>
             </StackPanel>
@@ -56,6 +56,14 @@
                                 </Rectangle.Fill>
                             </Rectangle>
 
+                            <Button HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Style="{StaticResource IconOnlyButtonStyle16}"
+                                    ToolTip="Edit properties"
+                                    Command="{Binding PropertyCommand}">
+                                <controls:IconContainer IconName="IconicMediaPlay" />
+                            </Button>
+                            
                             <Grid Margin="5">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
@@ -63,11 +71,11 @@
                                 </Grid.RowDefinitions>
 
                                 <Button Grid.Row="0"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Style="{StaticResource IconButtonStyle32}"
-                                    ToolTip="Preview"
-                                    Command="{Binding PlayCommand}">
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource IconButtonStyle32}"
+                                        ToolTip="Preview"
+                                        Command="{Binding PlayCommand}">
                                     <controls:IconContainer IconName="IconicMediaPlay" />
                                 </Button>
 

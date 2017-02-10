@@ -127,6 +127,7 @@
     <Compile Include="Repository\Sources\Source.cs" />
     <Compile Include="WPF\Behaviors\MouseDoubleClick.cs" />
     <Compile Include="WPF\Behaviors\TreeViewHelper.cs" />
+    <Compile Include="WPF\Commands\OpenPopupCommand.cs" />
     <Compile Include="WPF\DragDropHelper.cs" />
     <Compile Include="WPF\ValueConverters\BooleanToAnyConverter.cs" />
     <Compile Include="WPF\ValueConverters\EnumToAnyConverter.cs" />

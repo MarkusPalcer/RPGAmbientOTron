@@ -196,9 +196,12 @@ namespace Core.Repository
       return soundBoardCache.TryGetValue(id, out result) ? result : null;
     }
 
-    public IEnumerable<SoundBoard> GetSoundBoards()
+    public async Task<IEnumerable<SoundBoard>> GetSoundBoards()
     {
-      return soundBoardCache.Values.ToArray();
+      using (await semaphore.ProtectAsync())
+      {
+        return soundBoardCache.Values.ToArray();
+      }
     }
 
     private void SaveLibrary()

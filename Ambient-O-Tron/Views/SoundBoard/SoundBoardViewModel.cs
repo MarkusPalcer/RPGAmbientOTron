@@ -83,7 +83,7 @@ namespace AmbientOTron.Views.SoundBoard
       get { return name; }
       set
       {
-        if (SetProperty(ref name, value))
+        if (SetProperty(ref name, value) && model.Name != value)
         {
           SaveChanges();
         }
