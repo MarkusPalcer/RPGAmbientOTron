@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Input;
-using AmbientOTron.Views.Gaming.SoundBoard;
 using AmbientOTron.Views.Shell;
 using Core.Navigation;
 using Core.Repository;

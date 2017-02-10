@@ -1,4 +1,3 @@
-using AmbientOTron.Views.Gaming.SoundBoard;
 using AmbientOTron.Views.Navigation;
 using Core.Events;
 using Core.Navigation;
@@ -7,7 +6,7 @@ using Prism.Regions;
 
 namespace AmbientOTron.Views.SoundBoard
 {
-  public class SoundBoardNavigationViewModel : NavigationItemViewModelWithoutChildren<Core.Repository.Models.SoundBoard>
+  public class SoundBoardNavigationViewModel : NavigationItemViewModel<Core.Repository.Models.SoundBoard>
   {
     private readonly INavigationService navigationService;
 

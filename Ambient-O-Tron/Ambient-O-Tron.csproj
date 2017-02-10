@@ -178,7 +178,7 @@
     <Compile Include="Views\SoundBoard\SoundBoardEntryPropertyViewModel.cs" />
     <Compile Include="Views\SoundBoard\SoundBoardEntryViewModel.cs" />
     <Compile Include="Views\Navigation\NavigationGroup.cs" />
-    <Compile Include="Views\Navigation\NavigationItemViewModelWithoutChildren.cs" />
+    <Compile Include="Views\Navigation\NavigationItemViewModel.cs" />
     <Compile Include="Views\SoundBoard\NewSoundBoardView.xaml.cs">
       <DependentUpon>NewSoundBoardView.xaml</DependentUpon>
     </Compile>

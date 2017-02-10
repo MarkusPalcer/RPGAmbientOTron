@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
-using AmbientOTron.Views.Gaming.SoundBoard;
 using AmbientOTron.Views.Navigation;
 using Core.Events;
 using Core.Navigation;

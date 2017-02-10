@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows.Input;
-using AmbientOTron.Views.Gaming.SoundBoard;
 using Core.Navigation;
 using Core.Repository;
 using Core.Repository.Sounds;
