@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Input;
-using AmbientOTron.Views.Gaming.SoundBoard;
 using AmbientOTron.Views.Shell;
 using Core.Navigation;
 using Core.Repository;
@@ -44,7 +43,7 @@ namespace AmbientOTron.Views.SoundBoard
 
       repository.Save(newModel);
       navigationService.NavigateAsync<SoundBoardView>(
-        ViewModel.LowerPane,
+        ShellViewModel.LowerPane,
         new NavigationParameters
         {
           {"id", newModel.Id}

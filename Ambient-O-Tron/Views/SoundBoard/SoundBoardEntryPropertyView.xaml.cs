@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.Composition;
+using System.Windows;
 
 namespace AmbientOTron.Views.SoundBoard
 {
   [Export]
-  public partial class SoundBoardView 
+  public partial class SoundBoardEntryPropertyView 
   {
     [ImportingConstructor]
-    public SoundBoardView(SoundBoardViewModel viewModel)
+    public SoundBoardEntryPropertyView(SoundBoardEntryPropertyViewModel viewModel)
     {
       InitializeComponent();
       DataContext = viewModel;

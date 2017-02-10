@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AmbientOTron.Views.Shell.View"
+﻿<UserControl x:Class="AmbientOTron.Views.Shell.ShellView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,10 +6,11 @@
              xmlns:region="clr-namespace:Prism.Regions;assembly=Prism.Wpf"
              xmlns:shell="clr-namespace:AmbientOTron.Views.Shell"
              xmlns:dialogs="clr-namespace:Core.Dialogs;assembly=Core"
+             xmlns:controls="clr-namespace:AmbientOTron.Controls"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance shell:ViewModel}">
+             d:DataContext="{d:DesignInstance shell:ShellViewModel}">
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
@@ -18,10 +19,10 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
 
-                <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.ResourcesPane}" Grid.Column="0" />
+                <ContentControl region:RegionManager.RegionName="{x:Static shell:ShellViewModel.ResourcesPane}" Grid.Column="0"/>
                 <GridSplitter Grid.Column="0" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Width="5" />
 
                 <Grid Grid.Column="1">
@@ -30,13 +31,29 @@
                         <RowDefinition Height="200"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.MainRegion}" Grid.Row="0" Grid.RowSpan="2"  />
+                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ShellViewModel.MainRegion}" Grid.Row="0" Grid.RowSpan="2"/>
                     <GridSplitter Grid.Row="0" ResizeDirection="Rows" ResizeBehavior="CurrentAndNext" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
-                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.LowerPane}" Grid.Row="1" />
+                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ShellViewModel.LowerPane}" Grid.Row="1" />
                 </Grid>
-                
+
                 <GridSplitter Grid.Column="1" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Width="5" Visibility="Visible"/>
-                <ContentControl region:RegionManager.RegionName="{x:Static shell:ViewModel.PropertiesPane}" Grid.Column="2" Visibility="Visible"/>
+                <Grid Grid.Column="2" Margin="0,5,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="0">
+                        <Button VerticalAlignment="Center"
+                                Style="{StaticResource IconButtonStyle16}"
+                                ToolTip="Close properties pane"
+                                Command="{Binding ClosePropertiesCommand}" Template="{DynamicResource BorderlessIconButtonTemplate}">
+                            <controls:IconContainer IconName="IconicX" />
+                        </Button>
+                    </StackPanel>
+
+                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ShellViewModel.PropertiesPane}" Grid.Row="1" Visibility="Visible"/>
+                </Grid>
+
             </Grid>
         </DockPanel>
 

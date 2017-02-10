@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 
-namespace AmbientOTron.Views.Gaming.SoundBoard
+namespace AmbientOTron.Views.SoundBoard
 {
   [Export]
   public partial class SoundBoardPropertiesView

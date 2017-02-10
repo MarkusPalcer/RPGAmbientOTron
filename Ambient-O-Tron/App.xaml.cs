@@ -24,8 +24,8 @@ namespace AmbientOTron
 
             bootstrapper.Run();
 
-        bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ViewModel.LowerPane, typeof(NewSoundBoardView));
-        bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ViewModel.ResourcesPane, typeof(NavigationView));
+        bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ShellViewModel.LowerPane, typeof(NewSoundBoardView));
+        bootstrapper.Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion(ShellViewModel.ResourcesPane, typeof(NavigationView));
     }
 
         #region Overrides of Application

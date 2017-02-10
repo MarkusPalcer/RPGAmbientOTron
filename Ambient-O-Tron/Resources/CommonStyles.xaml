@@ -11,4 +11,8 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="Margin" Value="-5,10,0,0" />
+    </Style>
 </ResourceDictionary>

@@ -58,7 +58,7 @@ namespace AmbientOTron.Views.Navigation
     object IWithModel.Model => model;
   }
 
-  public abstract class NavigationItemViewModelWithoutChildren<TModel> : NavigationItemViewModel<TModel, object>
+  public abstract class NavigationItemViewModel<TModel> : NavigationItemViewModel<TModel, object>
     where TModel : class
   {
   }

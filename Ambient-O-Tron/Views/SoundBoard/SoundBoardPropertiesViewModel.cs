@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using AmbientOTron.Views.SoundBoard;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace AmbientOTron.Views.Gaming.SoundBoard
+namespace AmbientOTron.Views.SoundBoard
 {
   [Export]
   public class SoundBoardPropertiesViewModel : BindableBase, IConfirmNavigationRequest, IDisposable

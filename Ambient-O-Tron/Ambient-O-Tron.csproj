@@ -121,6 +121,30 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -148,9 +172,13 @@
     </Compile>
     <Compile Include="Views\Cache\CacheNavigationGroup.cs" />
     <Compile Include="Views\Navigation\INavitagionItem.cs" />
-    <Compile Include="Views\SoundBoard\AudioSourceViewModel.cs" />
+    <Compile Include="Views\SoundBoard\SoundBoardEntryPropertyView.xaml.cs">
+      <DependentUpon>SoundBoardEntryPropertyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SoundBoard\SoundBoardEntryPropertyViewModel.cs" />
+    <Compile Include="Views\SoundBoard\SoundBoardEntryViewModel.cs" />
     <Compile Include="Views\Navigation\NavigationGroup.cs" />
-    <Compile Include="Views\Navigation\NavigationItemViewModelWithoutChildren.cs" />
+    <Compile Include="Views\Navigation\NavigationItemViewModel.cs" />
     <Compile Include="Views\SoundBoard\NewSoundBoardView.xaml.cs">
       <DependentUpon>NewSoundBoardView.xaml</DependentUpon>
     </Compile>
@@ -169,9 +197,9 @@
       <DependentUpon>NavigationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Navigation\NavigationViewModel.cs" />
-    <Compile Include="Views\Shell\ViewModel.cs" />
-    <Compile Include="Views\Shell\View.xaml.cs">
-      <DependentUpon>View.xaml</DependentUpon>
+    <Compile Include="Views\Shell\ShellViewModel.cs" />
+    <Compile Include="Views\Shell\ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Sounds\SoundNavigationViewModel.cs" />
     <Page Include="Controls\IconContainer.xaml">
@@ -222,6 +250,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SoundBoard\SoundBoardEntryPropertyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SoundBoard\SoundBoardPropertiesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -234,7 +266,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Shell\View.xaml">
+    <Page Include="Views\Shell\ShellView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
