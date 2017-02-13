@@ -42,19 +42,10 @@ namespace Core.Repository
       Init();
     }
 
-    public void Save(SoundBoard model)
+    public void Add(SoundBoard model)
     {
-      var exists = soundBoardCache.ContainsKey(model.Id);
       soundBoardCache[model.Id] = model;
-
-      if (exists)
-      {
-        eventAggregator.GetEvent<UpdateModelEvent<SoundBoard>>().Publish(model);
-      }
-      else
-      {
-        eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(model);
-      }
+      eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(model);
     }
 
     private async void Init()

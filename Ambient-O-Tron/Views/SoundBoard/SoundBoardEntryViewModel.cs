@@ -4,6 +4,8 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using AmbientOTron.Views.Properties;
+using AmbientOTron.Views.Shell;
 using Core.Audio;
 using Core.Events;
 using Core.Navigation;
@@ -20,13 +22,20 @@ namespace AmbientOTron.Views.SoundBoard
   public class SoundBoardEntryViewModel : BindableBase, IDisposable
   {
     private readonly IAudioService audioService;
+    private readonly CompositeDisposable disposables = new CompositeDisposable();
     private readonly INavigationService navigationService;
 
     private readonly SerialDisposable statusSubscription = new SerialDisposable();
-    private readonly CompositeDisposable disposables = new CompositeDisposable();
+
+    private bool hasError = true;
+    private ICommand propertyCommand;
 
     [ImportingConstructor]
-    public SoundBoardEntryViewModel(IEventAggregator eventAggregator, IRepository repository, IAudioService audioService, INavigationService navigationService)
+    public SoundBoardEntryViewModel(
+      IEventAggregator eventAggregator,
+      IRepository repository,
+      IAudioService audioService,
+      INavigationService navigationService)
     {
       this.audioService = audioService;
       this.navigationService = navigationService;
@@ -34,11 +43,12 @@ namespace AmbientOTron.Views.SoundBoard
       PlayCommand = new DelegateCommand(Play, () => !HasError).ObservesProperty(() => HasError);
 
       disposables.Add(statusSubscription);
-      disposables.Add(eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard.Entry>>().Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, m => m == Model));
+      disposables.Add(
+        eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard.Entry>>()
+                       .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, m => m == Model));
     }
 
     public ICommand PlayCommand { get; }
-    private ICommand propertyCommand;
 
     public ICommand PropertyCommand
     {
@@ -47,6 +57,25 @@ namespace AmbientOTron.Views.SoundBoard
     }
 
     public Core.Repository.Models.SoundBoard.Entry Model { get; set; }
+
+    public string Name => Model.Sound.Name;
+
+    public bool HasError
+    {
+      get { return hasError; }
+      set { SetProperty(ref hasError, value); }
+    }
+
+    public Color Color => Model.Color;
+
+    /// <summary>
+    ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
 
     private async void Play()
     {
@@ -60,29 +89,16 @@ namespace AmbientOTron.Views.SoundBoard
       }
     }
 
-    public string Name => Model.Sound.Name;
-
-    private bool hasError = true;
-
-    public bool HasError
-    {
-      get { return hasError; }
-      set { SetProperty(ref hasError, value); }
-    }
-
-    public Color Color => Model.Color;
-
     public void SetModel(Core.Repository.Models.SoundBoard.Entry model)
     {
       Model = model;
       statusSubscription.Disposable = model.Sound.Status.Select(x => x != Status.Ready).Subscribe(x => HasError = x);
-      PropertyCommand =
-  navigationService.CreateNavigationCommand<SoundBoardEntryPropertyView>(
-    Shell.ShellViewModel.PropertiesPane,
-    new NavigationParameters
-    {
-            {"model", Model}
-    });
+      PropertyCommand = navigationService.CreateNavigationCommand<PropertiesView>(
+        ShellViewModel.PropertiesPane,
+        new NavigationParameters
+        {
+          {"model", Model}
+        });
       UpdateFromModel();
     }
 
@@ -93,16 +109,7 @@ namespace AmbientOTron.Views.SoundBoard
     }
 
     /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-    /// </summary>
-    public void Dispose()
-    {
-      this.Dispose(true);
-      GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Releases unmanaged and - optionally - managed resources.
+    ///   Releases unmanaged and - optionally - managed resources.
     /// </summary>
     /// <param name="disposing">
     ///   <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.
@@ -110,9 +117,7 @@ namespace AmbientOTron.Views.SoundBoard
     protected virtual void Dispose(bool disposing)
     {
       if (disposing)
-      {
         disposables.Dispose();
-      }
 
       // Release unmanaged resources here
     }
