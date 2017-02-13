@@ -16,7 +16,7 @@ namespace Core.Repository
   {
     SoundBoard LoadSoundBoard(Guid id);
     Task<IEnumerable<SoundBoard>> GetSoundBoards();
-    void Save(SoundBoard model);
+    void Add(SoundBoard model);
 
     Task<Sound> ImportFile(string fileName);
       

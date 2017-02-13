@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reflection;
 using AmbientOTron.Views.Properties.PropertyViewModels;
 using Core.Events;
 using Core.Extensions;
+using Core.Repository;
 using Core.Repository.Attributes;
+using log4net;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -16,15 +17,28 @@ using Prism.Regions;
 namespace AmbientOTron.Views.Properties
 {
   [Export]
-  public abstract class PropertiesViewModel : BindableBase, INavigationAware, IDisposable
+  [PartCreationPolicy(CreationPolicy.NonShared)]
+  public class PropertiesViewModel : BindableBase, INavigationAware, IDisposable
   {
+    public struct KnownPropertyType
+    {
+      public Type Type;
+      public Func<PropertyInfo, object, PropertyViewModel> ViewModelFactory;
+    }
+
     private readonly IEventAggregator eventAggregator;
 
     private readonly SerialDisposable modelUpdateSubscription = new SerialDisposable();
 
-    protected PropertiesViewModel(IEventAggregator eventAggregator)
+    private readonly IDictionary<Type, KnownPropertyType> knownPropertyTypes;
+
+    private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
+
+    [ImportingConstructor]
+    protected PropertiesViewModel(IEventAggregator eventAggregator, [ImportMany] IEnumerable<KnownPropertyType> knownPropertyTypes)
     {
       this.eventAggregator = eventAggregator;
+      this.knownPropertyTypes = knownPropertyTypes.ToDictionary(x => x.Type);
     }
 
     private string typeName;
@@ -47,17 +61,48 @@ namespace AmbientOTron.Views.Properties
       }
     }
 
-    protected abstract void InitializeProperties();
-
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
       Model = navigationContext.Parameters["model"];
 
       var modelType = Model.GetType();
+
+      logger.InfoFormat("Creating property pane for {1}", modelType.FullName);
+
       TypeName = modelType.GetCustomAttributes(typeof(TypeNameAttribute), false).OfType<TypeNameAttribute>().FirstOrDefault()?.Name ??
                      modelType.Name;
 
-      InitializeProperties();
+      var props = new List<PropertyViewModel>();
+
+      foreach (var property in modelType.GetProperties())
+      {
+        var propertyAttribute = property.GetCustomAttributes<PropertyAttribute>().FirstOrDefault();
+
+        if (propertyAttribute == null)
+        {
+          continue;
+        }
+
+        KnownPropertyType knownType;
+        if (!knownPropertyTypes.TryGetValue(property.PropertyType, out knownType))
+        {
+          logger.Warn($"No view present for properties of type {property.PropertyType.Name} (property {modelType.FullName}.{property.Name})");
+          continue;
+        }
+
+        try
+        {
+          var viewModel = knownType.ViewModelFactory(property, Model);
+          viewModel.Name = propertyAttribute.Name ?? property.Name;
+          props.Add(viewModel);
+        }
+        catch (Exception ex)
+        {
+          logger.Error($"Could not create view model of type {property.PropertyType.Name} (property {modelType.FullName}.{property.Name}", ex);
+        }
+      }
+
+      Properties = props;
 
       typeof(PropertiesViewModel).GetMethod("HookupUpdateEvent")
                                .MakeGenericMethod(modelType)
@@ -69,6 +114,7 @@ namespace AmbientOTron.Views.Properties
 
     protected Action SendModelUpdate;
 
+    // ReSharper disable once UnusedMember.Global Used through reflection
     public void HookupUpdateEvent<TModel>()
     {
       modelUpdateSubscription.Disposable =

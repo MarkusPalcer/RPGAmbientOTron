@@ -33,7 +33,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock FontSize="16">
-            <Run Text="{Binding TypeName}" />
+            <Run Text="{Binding TypeName, Mode=OneWay}" />
             <Run> properties</Run>
         </TextBlock>
 
