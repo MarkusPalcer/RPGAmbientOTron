@@ -109,11 +109,13 @@
     <Compile Include="Events\UpdateModelEvent.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\SemaphoreSlimExtensions.cs" />
+    <Compile Include="Extensions\SymbolExtensions.cs" />
     <Compile Include="Logging\LoggerFacade.cs" />
     <Compile Include="Navigation\INavigationService.cs" />
     <Compile Include="Navigation\NavigationRequest.cs" />
     <Compile Include="Navigation\NavigationRequestCollection.cs" />
     <Compile Include="Navigation\NavigationService.cs" />
+    <Compile Include="Repository\Attributes\TypeNameAttribute.cs" />
     <Compile Include="Repository\Models\Cache.cs" />
     <Compile Include="Repository\Sounds\Sound.cs" />
     <Compile Include="Repository\Sources\AudioFile.cs" />

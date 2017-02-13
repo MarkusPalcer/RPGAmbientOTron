@@ -1,16 +1,15 @@
-﻿<UserControl x:Class="AmbientOTron.Views.SoundBoard.SoundBoardEntryPropertyView"
+﻿<UserControl x:Class="AmbientOTron.Views.Properties.PropertiesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AmbientOTron.Views.SoundBoard"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:commands="clr-namespace:Core.WPF.Commands;assembly=Core"
+             xmlns:local="clr-namespace:AmbientOTron.Views.Properties"
              xmlns:propertyViewModels="clr-namespace:AmbientOTron.Views.Properties.PropertyViewModels"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              Padding="5"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance local:SoundBoardEntryPropertyViewModel}">
+             d:DataContext="{d:DesignInstance local:PropertiesViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type propertyViewModels:StringPropertyViewModel}">
@@ -34,7 +33,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock FontSize="16">
-            <Run Text="{Binding TypeName, Mode=OneWay}" />
+            <Run Text="{Binding TypeName}" />
             <Run> properties</Run>
         </TextBlock>
 
@@ -51,3 +50,6 @@
         </ScrollViewer>
     </Grid>
 </UserControl>
+
+
+

@@ -172,6 +172,13 @@
     </Compile>
     <Compile Include="Views\Cache\CacheNavigationGroup.cs" />
     <Compile Include="Views\Navigation\INavitagionItem.cs" />
+    <Compile Include="Views\Properties\PropertyViewModels\ColorPropertyViewModel.cs" />
+    <Compile Include="Views\Properties\PropertiesView.xaml.cs">
+      <DependentUpon>PropertiesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\PropertiesViewModel.cs" />
+    <Compile Include="Views\Properties\PropertyViewModels\PropertyViewModel.cs" />
+    <Compile Include="Views\Properties\PropertyViewModels\StringPropertyViewModel.cs" />
     <Compile Include="Views\SoundBoard\SoundBoardEntryPropertyView.xaml.cs">
       <DependentUpon>SoundBoardEntryPropertyView.xaml</DependentUpon>
     </Compile>
@@ -245,6 +252,10 @@
     <Page Include="Views\Empty.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Properties\PropertiesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SoundBoard\NewSoundBoardView.xaml">
       <SubType>Designer</SubType>
