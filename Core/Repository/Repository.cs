@@ -20,6 +20,7 @@ namespace Core.Repository
   [Export(typeof(IRepository))]
   [Export(typeof(IInternalRepository))]
   [PartCreationPolicy(CreationPolicy.Shared)]
+  [Export]
   public class Repository : IRepository, IInternalRepository, IDisposable
   {
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
@@ -30,25 +31,30 @@ namespace Core.Repository
     private readonly Dictionary<string, ISource> knownSources = new Dictionary<string, ISource>();
     private readonly Dictionary<string, BehaviorSubject<Status>> statuses = new Dictionary<string, BehaviorSubject<Status>>();
     private readonly Dictionary<string, Cache> caches = new Dictionary<string, Cache>();
+    private readonly List<Ambience> ambiences = new List<Ambience>();
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = "Data.json";
+    private readonly JsonSerializerSettings jsonSerializerSettings;
 
     [ImportingConstructor]
     public Repository(IEventAggregator eventAggregator)
     {
       this.eventAggregator = eventAggregator;
-
-      Init();
+      jsonSerializerSettings = new JsonSerializerSettings
+      {
+        TypeNameHandling = TypeNameHandling.Auto,
+      };
     }
 
     public void Add(SoundBoard model)
     {
       soundBoardCache[model.Id] = model;
+      // TODO: Create extension for publishing/subscribing to events
       eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(model);
     }
 
-    private async void Init()
+    public async void Init()
     {
       using (await semaphore.ProtectAsync())
       {
@@ -79,9 +85,11 @@ namespace Core.Repository
 
       try
       {
-        var model = JsonConvert.DeserializeObject<Library>(File.ReadAllText(fullPath));
+        var model = JsonConvert.DeserializeObject<Library>(File.ReadAllText(fullPath), jsonSerializerSettings);
 
         ImportSoundBoards(model);
+
+        ImportAmbiences(model);
 
         foreach (var cache in model.Caches)
         {
@@ -93,6 +101,15 @@ namespace Core.Repository
       catch (Exception ex)
       {
         logger.Warn($"Could not load library from {fullPath}", ex);
+      }
+    }
+
+    private void ImportAmbiences(Library model)
+    {
+      foreach (var ambience in model.Ambiences)
+      {
+        ambiences.Add(ambience);
+        eventAggregator.GetEvent<AddModelEvent<Ambience>>().Publish(ambience);
       }
     }
 
@@ -152,6 +169,8 @@ namespace Core.Repository
         {
           sound.Sound.Status = CreateOrSetStatus(sound.Sound.Hash, Status.NotFound);
         }
+
+        eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(soundBoard);
       }
     }
 
@@ -201,11 +220,9 @@ namespace Core.Repository
       rootLibrary.SoundBoards.AddRange(soundBoardCache.Values);
       rootLibrary.Files.AddRange(knownFiles.Keys);
       rootLibrary.Caches.AddRange(caches.Values);
+      rootLibrary.Ambiences.AddRange(ambiences);
 
-      var rootLibraryString = JsonConvert.SerializeObject(rootLibrary, Formatting.Indented, new JsonSerializerSettings
-      {
-        TypeNameHandling = TypeNameHandling.Auto,
-      });
+      var rootLibraryString = JsonConvert.SerializeObject(rootLibrary, Formatting.Indented, jsonSerializerSettings);
 
       var path = Path.Combine(Environment.CurrentDirectory, rootLibraryFileName);
 
@@ -280,6 +297,12 @@ namespace Core.Repository
 
           });
       }
+    }
+
+    public void Add(Ambience newModel)
+    {
+      ambiences.Add(newModel);
+      eventAggregator.GetEvent<AddModelEvent<Ambience>>().Publish(newModel);
     }
 
     private Sound ResolveSound(ISource source, string defaultName)

@@ -63,7 +63,7 @@ namespace AmbientOTron.Views.Properties
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      Model = navigationContext.Parameters["model"];
+      Model = navigationContext.GetModel<object>();
 
       var modelType = Model.GetType();
 

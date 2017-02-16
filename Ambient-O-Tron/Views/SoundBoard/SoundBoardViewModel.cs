@@ -6,10 +6,10 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
 using Core.Events;
+using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
 using Core.Repository.Sounds;
@@ -173,10 +173,7 @@ namespace AmbientOTron.Views.SoundBoard
 
       PropertiesCommand = navigationService.CreateNavigationCommand<PropertiesView>(
         ShellViewModel.PropertiesPane,
-        new NavigationParameters
-        {
-          {"model", model}
-        });
+        new NavigationParameters().WithModel(model));
 
       updateSubscription.Disposable =
         eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard>>()

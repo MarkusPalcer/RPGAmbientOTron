@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using Core.Repository.Attributes;
 using Core.Repository.Sounds;
+using Newtonsoft.Json;
 
 namespace Core.Repository.Models
 {
@@ -22,6 +23,7 @@ namespace Core.Repository.Models
       public Sound Sound { get; set; }
 
       [Property]
+      [JsonIgnore]
       public string Name
       {
         get { return Sound.Name; }

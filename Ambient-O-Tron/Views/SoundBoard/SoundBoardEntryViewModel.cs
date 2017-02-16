@@ -8,6 +8,7 @@ using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
 using Core.Audio;
 using Core.Events;
+using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
 using Core.Repository.Sounds;
@@ -95,10 +96,7 @@ namespace AmbientOTron.Views.SoundBoard
       statusSubscription.Disposable = model.Sound.Status.Select(x => x != Status.Ready).Subscribe(x => HasError = x);
       PropertyCommand = navigationService.CreateNavigationCommand<PropertiesView>(
         ShellViewModel.PropertiesPane,
-        new NavigationParameters
-        {
-          {"model", Model}
-        });
+        new NavigationParameters().WithModel(Model));
       UpdateFromModel();
     }
 

@@ -14,7 +14,10 @@ namespace Core.Repository
 
   public interface IRepository
   {
+    // TODO: Replace direct access by Update-/AddModelEvents only
+
     SoundBoard LoadSoundBoard(Guid id);
+
     Task<IEnumerable<SoundBoard>> GetSoundBoards();
     void Add(SoundBoard model);
 
@@ -23,5 +26,6 @@ namespace Core.Repository
     IEnumerable<Cache> GetCaches();
 
     Task ImportCache(string cacheFolder);
+    void Add(Ambience newModel);
   }
 }
