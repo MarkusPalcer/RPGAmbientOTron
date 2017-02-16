@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using AmbientOTron.Views.Navigation;
 using Core.Events;
+using Core.Extensions;
 using Core.Repository;
 using Prism.Events;
 
@@ -20,8 +21,8 @@ namespace AmbientOTron.Views.Cache
       Name = "Caches";
       var items = new ObservableCollection<CacheNavigationViewModel>(repository.GetCaches().Select(CreateItemViewModel));
 
-      eventAggregator.GetEvent<AddModelEvent<Core.Repository.Models.Cache>>()
-                     .Subscribe(x => items.Add(CreateItemViewModel(x)), ThreadOption.UIThread, true);
+      eventAggregator.OnModelAdd<Core.Repository.Models.Cache>(
+        x => items.Add(CreateItemViewModel(x)));
 
       Items = items;
     }

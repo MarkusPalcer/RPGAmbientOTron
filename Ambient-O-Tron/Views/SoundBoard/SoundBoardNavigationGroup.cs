@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using AmbientOTron.Views.Navigation;
 using Core.Events;
+using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
 using Prism.Events;
@@ -33,16 +34,12 @@ namespace AmbientOTron.Views.SoundBoard
     private async void InitAsync()
     {
       Items.AddRange((await repository.GetSoundBoards()).Select(CreateItemViewModel));
-      eventAggregator.GetEvent<AddModelEvent<Core.Repository.Models.SoundBoard>>()
-                     .Subscribe(x => Items.Add(CreateItemViewModel(x)), ThreadOption.UIThread, true);
+      eventAggregator.OnModelAdd<Core.Repository.Models.SoundBoard>(x => Items.Add(CreateItemViewModel(x)));
     }
 
     private SoundBoardNavigationViewModel CreateItemViewModel(Core.Repository.Models.SoundBoard model)
     {
-      return new SoundBoardNavigationViewModel(navigationService, eventAggregator)
-      {
-        Model = model
-      };
+      return new SoundBoardNavigationViewModel(navigationService, eventAggregator, model);
     }
   }
 }

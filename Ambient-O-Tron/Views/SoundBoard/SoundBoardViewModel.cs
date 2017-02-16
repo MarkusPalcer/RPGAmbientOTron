@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Input;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
-using Core.Events;
 using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
@@ -95,7 +94,7 @@ namespace AmbientOTron.Views.SoundBoard
 
       model.Name = Name;
       model.Entries = Files.Select(x => x.Model).ToList();
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard>>().Publish(model);
+      eventAggregator.ModelUpdated(model);
     }
 
     private void ReorderEntries(IDropInfo dropInfo)
@@ -147,7 +146,7 @@ namespace AmbientOTron.Views.SoundBoard
       SaveChanges();
     }
 
-    private void LoadFromModel()
+    private void UpdateFromModel()
     {
       Name = model.Name;
       Files.Clear();
@@ -175,11 +174,9 @@ namespace AmbientOTron.Views.SoundBoard
         ShellViewModel.PropertiesPane,
         new NavigationParameters().WithModel(model));
 
-      updateSubscription.Disposable =
-        eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard>>()
-                       .Subscribe(_ => LoadFromModel(), ThreadOption.UIThread, true, m => m.Id == model.Id);
+      updateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
 
-      LoadFromModel();
+      UpdateFromModel();
     }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)

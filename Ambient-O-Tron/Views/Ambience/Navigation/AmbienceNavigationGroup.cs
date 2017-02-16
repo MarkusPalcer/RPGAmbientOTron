@@ -2,7 +2,7 @@
 using System.ComponentModel.Composition;
 using AmbientOTron.Views.Ambience.Navigation;
 using AmbientOTron.Views.Navigation;
-using Core.Events;
+using Core.Extensions;
 using Prism.Events;
 
 namespace AmbientOTron.Views.Ambience
@@ -20,8 +20,7 @@ namespace AmbientOTron.Views.Ambience
       Name = "Ambiences";
 
       Items = new ObservableCollection<AmbienceNavigationViewModel>();
-      eventAggregator.GetEvent<AddModelEvent<Core.Repository.Models.Ambience>>()
-               .Subscribe(x => Items.Add(CreateItemViewModel(x)), ThreadOption.UIThread, true);
+      eventAggregator.OnModelAdd<Core.Repository.Models.Ambience>(x => Items.Add(CreateItemViewModel(x)));
     }
 
     private AmbienceNavigationViewModel CreateItemViewModel(Core.Repository.Models.Ambience ambience)

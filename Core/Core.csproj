@@ -108,6 +108,7 @@
     <Compile Include="Events\AddModelEvent.cs" />
     <Compile Include="Events\UpdateModelEvent.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\EventAggregatorExtensions.cs" />
     <Compile Include="Extensions\NavigationExtensions.cs" />
     <Compile Include="Extensions\SemaphoreSlimExtensions.cs" />
     <Compile Include="Extensions\SymbolExtensions.cs" />

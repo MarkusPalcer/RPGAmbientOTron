@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using AmbientOTron.Views.Ambience.Entries;
 using Core.Events;
+using Core.Extensions;
 using Core.Repository;
 using Core.Repository.Models;
 using Core.WPF;
@@ -39,14 +40,14 @@ namespace AmbientOTron.Views.Ambience
         Sound = (obj.Data as Core.Repository.Sounds.Sound)?.Clone()
       });
 
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.Ambience>>().Publish(model);
+      eventAggregator.ModelUpdated(model);
     }
 
     private void CopyLoop(IDropInfo obj)
     {
       model.Entries.Add((obj.Data as Loop)?.Clone());
 
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.Ambience>>().Publish(model);
+      eventAggregator.ModelUpdated(model);
     }
 
     private async void AddFiles(IDropInfo dropInfo)
@@ -72,7 +73,7 @@ namespace AmbientOTron.Views.Ambience
           });
       }
 
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.Ambience>>().Publish(model);
+      eventAggregator.ModelUpdated(model);
     }
 
     public void DragOver(IDropInfo dropInfo)

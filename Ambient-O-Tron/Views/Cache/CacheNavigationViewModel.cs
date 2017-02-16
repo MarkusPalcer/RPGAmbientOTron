@@ -20,8 +20,7 @@ namespace AmbientOTron.Views.Cache
     public CacheNavigationViewModel(IEventAggregator eventAggregator)
     {
       Items = new ObservableCollection<SoundNavigationViewModel>();
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.Cache>>()
-                     .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, c => c.Folder == Model.Folder);
+      eventAggregator.OnModelUpdate(Model, UpdateFromModel);
     }
 
     protected override async void UpdateFromModel()

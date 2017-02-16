@@ -1,5 +1,5 @@
 using AmbientOTron.Views.Navigation;
-using Core.Events;
+using Core.Extensions;
 using Core.Navigation;
 using Prism.Events;
 using Prism.Regions;
@@ -10,10 +10,11 @@ namespace AmbientOTron.Views.SoundBoard
   {
     private readonly INavigationService navigationService;
 
-    public SoundBoardNavigationViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+    public SoundBoardNavigationViewModel(INavigationService navigationService, IEventAggregator eventAggregator, Core.Repository.Models.SoundBoard model)
     {
       this.navigationService = navigationService;
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard>>().Subscribe(_ => UpdateFromModel());
+      Model = model;
+      eventAggregator.OnModelUpdate(model, UpdateFromModel);
     }
 
     protected override void UpdateFromModel()

@@ -43,9 +43,7 @@ namespace AmbientOTron.Views.Ambience
 
       loopCreator = new NewLoopViewModel(Model, eventAggregator, repository);
 
-      modelUpdateSubscription.Disposable =
-        eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.Ambience>>()
-                       .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, m => ReferenceEquals(m, Model));
+      modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(Model, UpdateFromModel);
 
       UpdateFromModel();
     }

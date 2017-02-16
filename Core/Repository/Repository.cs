@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Events;
 using Core.Extensions;
 using Core.Repository.Models;
 using Core.Repository.Sounds;
@@ -50,8 +49,7 @@ namespace Core.Repository
     public void Add(SoundBoard model)
     {
       soundBoardCache[model.Id] = model;
-      // TODO: Create extension for publishing/subscribing to events
-      eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(model);
+      eventAggregator.ModelAdded(model);
     }
 
     public async void Init()
@@ -109,7 +107,7 @@ namespace Core.Repository
       foreach (var ambience in model.Ambiences)
       {
         ambiences.Add(ambience);
-        eventAggregator.GetEvent<AddModelEvent<Ambience>>().Publish(ambience);
+        eventAggregator.ModelAdded(ambience);
       }
     }
 
@@ -170,7 +168,7 @@ namespace Core.Repository
           sound.Sound.Status = CreateOrSetStatus(sound.Sound.Hash, Status.NotFound);
         }
 
-        eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(soundBoard);
+        eventAggregator.ModelAdded(soundBoard);
       }
     }
 
@@ -181,7 +179,7 @@ namespace Core.Repository
         return;
       }
 
-      eventAggregator.GetEvent<AddModelEvent<Cache>>().Publish(model);
+      eventAggregator.ModelAdded(model);
 
       foreach (var fileName in Directory.EnumerateFiles(model.Folder, "*.mp3", SearchOption.AllDirectories))
       {
@@ -194,7 +192,7 @@ namespace Core.Repository
 
         model.Sounds.Add(ResolveSound(source, new FileInfo(fileName).Name));
 
-        eventAggregator.GetEvent<UpdateModelEvent<Cache>>().Publish(model);
+        eventAggregator.ModelUpdated(model);
       }
 
       caches.Add(model.Folder, model);
@@ -302,7 +300,7 @@ namespace Core.Repository
     public void Add(Ambience newModel)
     {
       ambiences.Add(newModel);
-      eventAggregator.GetEvent<AddModelEvent<Ambience>>().Publish(newModel);
+      eventAggregator.ModelAdded(newModel);
     }
 
     private Sound ResolveSound(ISource source, string defaultName)

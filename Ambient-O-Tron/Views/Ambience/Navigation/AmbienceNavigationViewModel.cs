@@ -21,8 +21,7 @@ namespace AmbientOTron.Views.Ambience.Navigation
     public AmbienceNavigationViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
     {
       this.navigationService = navigationService;
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.Ambience>>()
-                     .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, m => ReferenceEquals(m, Model));
+      eventAggregator.OnModelUpdate(Model, UpdateFromModel);
     }
 
     protected override void UpdateFromModel()

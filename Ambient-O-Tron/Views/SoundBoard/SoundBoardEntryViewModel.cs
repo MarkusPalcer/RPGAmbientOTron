@@ -44,9 +44,7 @@ namespace AmbientOTron.Views.SoundBoard
       PlayCommand = new DelegateCommand(Play, () => !HasError).ObservesProperty(() => HasError);
 
       disposables.Add(statusSubscription);
-      disposables.Add(
-        eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard.Entry>>()
-                       .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, m => m == Model));
+      disposables.Add(eventAggregator.OnModelUpdate(Model, UpdateFromModel));
     }
 
     public ICommand PlayCommand { get; }

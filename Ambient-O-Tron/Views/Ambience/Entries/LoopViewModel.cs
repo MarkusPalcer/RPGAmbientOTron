@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
 using AmbientOTron.Views.Ambience.Entries;
 using Core.Events;
+using Core.Extensions;
 using Core.Repository.Models;
 using Prism.Events;
 
@@ -28,9 +29,7 @@ namespace AmbientOTron.Views.Ambience
       this.model = newModel;
       UpdateFromModel();
 
-      modelUpdateSubscription.Disposable =
-        eventAggregator.GetEvent<UpdateModelEvent<Loop>>()
-                       .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, m => ReferenceEquals(m, model));
+      modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
     }
 
     private void UpdateFromModel()
