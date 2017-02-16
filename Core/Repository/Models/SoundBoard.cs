@@ -10,8 +10,6 @@ namespace Core.Repository.Models
   [TypeName("Sound Board")]
   public class SoundBoard
   {
-    public Guid Id { get; set; } = Guid.NewGuid();
-
     [Property]
     public string Name { get; set; } = @"Unnamed soundboard";
 

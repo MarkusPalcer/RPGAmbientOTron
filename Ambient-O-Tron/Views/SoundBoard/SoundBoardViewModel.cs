@@ -160,15 +160,15 @@ namespace AmbientOTron.Views.SoundBoard
 
       var result = export.Value;
       result.SetModel(forModel);
+
       return result;
     }
 
     #region Implementation of INavigationAware
 
     public void OnNavigatedTo(NavigationContext navigationContext)
-    {
-      var id = navigationContext.Parameters?["id"] as Guid? ?? Guid.Empty;
-      model = repository.LoadSoundBoard(id) ?? new Core.Repository.Models.SoundBoard();
+    { 
+      model = navigationContext.GetModel<Core.Repository.Models.SoundBoard>();
 
       PropertiesCommand = navigationService.CreateNavigationCommand<PropertiesView>(
         ShellViewModel.PropertiesPane,

@@ -7,7 +7,6 @@ using System.Windows.Media;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
 using Core.Audio;
-using Core.Events;
 using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;

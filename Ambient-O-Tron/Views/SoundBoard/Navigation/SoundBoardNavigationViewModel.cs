@@ -27,10 +27,7 @@ namespace AmbientOTron.Views.SoundBoard.Navigation
     {
       NavigateCommand = navigationService.CreateNavigationCommand<SoundBoardView>(
         ShellViewModel.LowerPane,
-        new NavigationParameters
-        {
-          {"id", Model.Id}
-        });
+        new NavigationParameters().WithModel(newModel));
       eventAggregator.OnModelUpdate(newModel, UpdateFromModel);
     }
 

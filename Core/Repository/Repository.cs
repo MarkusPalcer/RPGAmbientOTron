@@ -25,7 +25,7 @@ namespace Core.Repository
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
     private readonly IEventAggregator eventAggregator;
-    private readonly Dictionary<Guid, SoundBoard> soundBoardCache = new Dictionary<Guid, SoundBoard>();
+    private readonly HashSet<SoundBoard> soundBoardCache = new HashSet<SoundBoard>();
     private readonly Dictionary<string, ISource> knownFiles = new Dictionary<string, ISource>();
     private readonly Dictionary<string, ISource> knownSources = new Dictionary<string, ISource>();
     private readonly Dictionary<string, BehaviorSubject<Status>> statuses = new Dictionary<string, BehaviorSubject<Status>>();
@@ -48,7 +48,7 @@ namespace Core.Repository
 
     public void Add(SoundBoard model)
     {
-      soundBoardCache[model.Id] = model;
+      soundBoardCache.Add(model);
       eventAggregator.ModelAdded(model);
     }
 
@@ -161,7 +161,7 @@ namespace Core.Repository
     {
       foreach (var soundBoard in model.SoundBoards)
       {
-        soundBoardCache[soundBoard.Id] = soundBoard;
+        soundBoardCache.Add(soundBoard);
 
         foreach (var sound in soundBoard.Entries)
         {
@@ -198,16 +198,11 @@ namespace Core.Repository
       caches.Add(model.Folder, model);
     }
 
-    public SoundBoard LoadSoundBoard(Guid id)
-    {
-      SoundBoard result;
-      return soundBoardCache.TryGetValue(id, out result) ? result : null;
-    }
-    
+   
     private void SaveLibrary()
     {
       var rootLibrary = new Library();
-      rootLibrary.SoundBoards.AddRange(soundBoardCache.Values);
+      rootLibrary.SoundBoards.AddRange(soundBoardCache);
       rootLibrary.Files.AddRange(knownFiles.Keys);
       rootLibrary.Caches.AddRange(caches.Values);
       rootLibrary.Ambiences.AddRange(ambiences);

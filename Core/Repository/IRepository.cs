@@ -13,8 +13,6 @@ namespace Core.Repository
 
   public interface IRepository
   {
-    SoundBoard LoadSoundBoard(Guid id);
-
     void Add(SoundBoard model);
 
     Task<Sound> ImportFile(string fileName);

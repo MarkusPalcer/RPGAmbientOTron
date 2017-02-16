@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Input;
 using AmbientOTron.Views.Shell;
+using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
 using Prism.Commands;
@@ -45,10 +46,7 @@ namespace AmbientOTron.Views.SoundBoard
 
       navigationService.NavigateAsync<SoundBoardView>(
         ShellViewModel.LowerPane,
-        new NavigationParameters
-        {
-          {"id", newModel.Id}
-        });
+        new NavigationParameters().WithModel(newModel));
     }
   }
 }
