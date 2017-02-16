@@ -203,15 +203,7 @@ namespace Core.Repository
       SoundBoard result;
       return soundBoardCache.TryGetValue(id, out result) ? result : null;
     }
-
-    public async Task<IEnumerable<SoundBoard>> GetSoundBoards()
-    {
-      using (await semaphore.ProtectAsync())
-      {
-        return soundBoardCache.Values.ToArray();
-      }
-    }
-
+    
     private void SaveLibrary()
     {
       var rootLibrary = new Library();
@@ -273,11 +265,6 @@ namespace Core.Repository
 
         return source == null ? null : ResolveSound(source, new FileInfo(fileName).Name);
       }
-    }
-
-    public IEnumerable<Cache> GetCaches()
-    {
-      return caches.Values.ToArray();
     }
 
     public async Task ImportCache(string cacheFolder)

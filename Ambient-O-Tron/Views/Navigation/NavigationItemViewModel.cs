@@ -43,6 +43,8 @@ namespace AmbientOTron.Views.Navigation
 
     protected abstract void UpdateFromModel();
 
+    protected virtual void OnModelSet(TModel newModel) { }
+
     private TModel model = null;
 
     public TModel Model
@@ -51,6 +53,7 @@ namespace AmbientOTron.Views.Navigation
       set
       {
         model = value;
+        OnModelSet(value);
         UpdateFromModel();
       }
     }
