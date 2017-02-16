@@ -1,12 +1,11 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using AmbientOTron.Views.Navigation;
 using Core.Extensions;
 using Core.Repository;
 using Prism.Events;
 
-namespace AmbientOTron.Views.Cache
+namespace AmbientOTron.Views.Cache.Navigation
 {
   [Export(typeof(NavigationGroup<>))]
   public class CacheNavigationGroup:NavigationGroup<CacheNavigationViewModel>

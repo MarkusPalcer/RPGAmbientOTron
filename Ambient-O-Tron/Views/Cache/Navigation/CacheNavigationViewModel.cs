@@ -3,12 +3,11 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using AmbientOTron.Views.Navigation;
-using AmbientOTron.Views.Sounds;
 using Core.Extensions;
 using Core.Repository.Sounds;
 using Prism.Events;
 
-namespace AmbientOTron.Views.Cache
+namespace AmbientOTron.Views.Cache.Navigation
 {
   [Export]
   public class CacheNavigationViewModel : NavigationItemViewModel<Core.Repository.Models.Cache, SoundNavigationViewModel>

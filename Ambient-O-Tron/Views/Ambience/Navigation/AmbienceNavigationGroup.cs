@@ -1,11 +1,10 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using AmbientOTron.Views.Ambience.Navigation;
 using AmbientOTron.Views.Navigation;
 using Core.Extensions;
 using Prism.Events;
 
-namespace AmbientOTron.Views.Ambience
+namespace AmbientOTron.Views.Ambience.Navigation
 {
   [Export(typeof(NavigationGroup<>))]
   public class AmbienceNavigationGroup : NavigationGroup<AmbienceNavigationViewModel>

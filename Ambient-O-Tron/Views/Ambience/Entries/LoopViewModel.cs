@@ -1,13 +1,11 @@
 using System;
 using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
-using AmbientOTron.Views.Ambience.Entries;
-using Core.Events;
 using Core.Extensions;
 using Core.Repository.Models;
 using Prism.Events;
 
-namespace AmbientOTron.Views.Ambience
+namespace AmbientOTron.Views.Ambience.Entries
 {
   [Export]
   public class LoopViewModel : AmbienceEntryViewModel, IDisposable
