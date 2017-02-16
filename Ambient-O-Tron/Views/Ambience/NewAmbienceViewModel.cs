@@ -1,11 +1,10 @@
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 using AmbientOTron.Views.Shell;
-using AmbientOTron.Views.SoundBoard;
 using Core.Extensions;
 using Core.Navigation;
-using Core.Repository;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 
@@ -15,13 +14,13 @@ namespace AmbientOTron.Views.Ambience
   public class NewAmbienceViewModel : BindableBase
   {
     private readonly INavigationService navigationService;
-    private readonly IRepository repository;
+    private readonly IEventAggregator eventAggregator;
 
     [ImportingConstructor]
-    public NewAmbienceViewModel(INavigationService navigationService, IRepository repository)
+    public NewAmbienceViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
     {
       this.navigationService = navigationService;
-      this.repository = repository;
+      this.eventAggregator = eventAggregator;
 
       SaveCommand = new DelegateCommand(Save, () => !string.IsNullOrEmpty(Name)).ObservesProperty(() => Name);
     }
@@ -43,7 +42,7 @@ namespace AmbientOTron.Views.Ambience
         Name = name,
       };
 
-      repository.Add(newModel);
+      eventAggregator.ModelAdded(newModel);
 
       navigationService.NavigateAsync<AmbienceView>(
         ShellViewModel.MainRegion,

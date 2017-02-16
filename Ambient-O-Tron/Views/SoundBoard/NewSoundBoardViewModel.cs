@@ -3,8 +3,8 @@ using System.Windows.Input;
 using AmbientOTron.Views.Shell;
 using Core.Extensions;
 using Core.Navigation;
-using Core.Repository;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 
@@ -14,13 +14,13 @@ namespace AmbientOTron.Views.SoundBoard
   public class NewSoundBoardViewModel : BindableBase
   {
     private readonly INavigationService navigationService;
-    private readonly IRepository repository;
+    private readonly IEventAggregator eventAggregator;
 
     [ImportingConstructor]
-    public NewSoundBoardViewModel(INavigationService navigationService, IRepository repository)
+    public NewSoundBoardViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
     {
       this.navigationService = navigationService;
-      this.repository = repository;
+      this.eventAggregator = eventAggregator;
 
       SaveCommand = new DelegateCommand(Save, () => !string.IsNullOrEmpty(Name)).ObservesProperty(() => Name);
     }
@@ -42,7 +42,7 @@ namespace AmbientOTron.Views.SoundBoard
         Name = name,
       };
 
-      repository.Add(newModel);
+      eventAggregator.ModelAdded(newModel);
 
       navigationService.NavigateAsync<SoundBoardView>(
         ShellViewModel.LowerPane,

@@ -44,12 +44,9 @@ namespace Core.Repository
       {
         TypeNameHandling = TypeNameHandling.Auto,
       };
-    }
 
-    public void Add(SoundBoard model)
-    {
-      soundBoardCache.Add(model);
-      eventAggregator.ModelAdded(model);
+      eventAggregator.OnModelAdd<SoundBoard>(model => soundBoardCache.Add(model));
+      eventAggregator.OnModelAdd<Ambience>(newModel => ambiences.Add(newModel));
     }
 
     public async void Init()
@@ -277,12 +274,6 @@ namespace Core.Repository
 
           });
       }
-    }
-
-    public void Add(Ambience newModel)
-    {
-      ambiences.Add(newModel);
-      eventAggregator.ModelAdded(newModel);
     }
 
     private Sound ResolveSound(ISource source, string defaultName)
