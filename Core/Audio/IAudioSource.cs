@@ -4,6 +4,6 @@ namespace Core.Audio
 {
   public interface IAudioSource
   {
-    WaveStream Audio { get; }
+    ISampleProvider Audio { get; }
   }
 }

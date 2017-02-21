@@ -102,9 +102,10 @@
     <Compile Include="Audio\IAudioService.cs" />
     <Compile Include="Audio\IAudioSource.cs" />
     <Compile Include="Audio\IPlayback.cs" />
-    <Compile Include="Audio\LoopSource.cs" />
+    <Compile Include="Audio\ModelSpecificWaveProviders\LoopWaveProvider.cs" />
     <Compile Include="Audio\NoPlayback.cs" />
     <Compile Include="Audio\Playback.cs" />
+    <Compile Include="Audio\NAudio\WaveProviderToWaveStream.cs" />
     <Compile Include="Dialogs\DialogService.cs" />
     <Compile Include="Dialogs\IDialogService.cs" />
     <Compile Include="Dialogs\IDialogView.cs" />

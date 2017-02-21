@@ -10,6 +10,8 @@ using Prism.Events;
 namespace Core.Audio
 {
   [Export(typeof(IAudioService))]
+  [Export]
+  [PartCreationPolicy(CreationPolicy.Shared)]
   public class AudioService : IAudioService
   {
     private readonly IInternalRepository repository;
@@ -17,9 +19,12 @@ namespace Core.Audio
 
     private readonly NoPlayback noPlayback = new NoPlayback();
 
-    private readonly WaveOut outputDevice;
-    private readonly WaveMixerStream32 rootMixer;
+    private WaveOut outputDevice;
+    private MixingSampleProvider rootMixer;
 
+    public const int TemporarayBufferSize = 1024;
+
+    internal static WaveFormat DefaultWaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
 
     [ImportingConstructor]
     internal AudioService(IInternalRepository repository, ExportFactory<AmbienceSource> ambienceSourceFactory, IEventAggregator eventAggregator)
@@ -27,13 +32,7 @@ namespace Core.Audio
       this.repository = repository;
       this.ambienceSourceFactory = ambienceSourceFactory;
 
-      rootMixer = new WaveMixerStream32
-      {
-        AutoStop = false
-      };
 
-      outputDevice = new WaveOut();
-      outputDevice.Init(rootMixer);
 
       eventAggregator.OnModelAdd<Ambience>(Initialize);
     }
@@ -53,11 +52,23 @@ namespace Core.Audio
     #endregion
 
 
+    public void Init()
+    {
+      rootMixer = new MixingSampleProvider(DefaultWaveFormat)
+      {
+        ReadFully = true
+      };
+
+      outputDevice = new WaveOut();
+      outputDevice.Init(rootMixer);
+      outputDevice.Play();
+    }
+
     private void Initialize(Ambience model)
     {
       var source = ambienceSourceFactory.CreateExport().Value;
       source.SetModel(model);
-      rootMixer.AddInputStream(source.Audio);
+      rootMixer.AddMixerInput(source.Audio);
     }
   }
 }

@@ -104,6 +104,9 @@ namespace Core.Repository
       foreach (var ambience in model.Ambiences)
       {
         ambiences.Add(ambience);
+
+        ambience.Entries.OfType<Loop>().ForEach(x => x.Sound.Status = CreateOrSetStatus(x.Sound.Hash, Status.NotFound));
+
         eventAggregator.ModelAdded(ambience);
       }
     }

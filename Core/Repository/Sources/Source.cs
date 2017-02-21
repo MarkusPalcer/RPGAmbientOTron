@@ -1,11 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using Core.Audio;
+using NAudio.Wave;
 
 namespace Core.Repository.Sources
 {
   public abstract class Source : ISource
   {
+    private readonly WeakReference<byte[]> cache = new WeakReference<byte[]>(null);
+    private WaveFormat format;
+
     private readonly Func<Stream> open;
 
     protected Source(Func<Stream> open)
@@ -19,9 +24,26 @@ namespace Core.Repository.Sources
 
     public string Hash { get; }
 
-    public Stream Open()
+    public WaveStream Open()
     {
-      return open();
+      lock (cache)
+      {
+        byte[] data;
+        if (cache.TryGetTarget(out data))
+        {
+          return new RawSourceWaveStream(new MemoryStream(data), format);
+        }
+
+        using (var src = new Mp3FileReader(open()))
+        {
+          data = new byte[src.Length];
+          cache.SetTarget(data);
+          src.Read(data, 0, data.Length);
+          format = src.WaveFormat;
+
+          return new RawSourceWaveStream(new MemoryStream(data), format);
+        }
+      }
     }
 
     protected bool Equals(Source other)
@@ -37,7 +59,7 @@ namespace Core.Repository.Sources
         return true;
       if (obj.GetType() != GetType())
         return false;
-      return Equals((Source) obj);
+      return Equals((Source)obj);
     }
 
     public override int GetHashCode()
