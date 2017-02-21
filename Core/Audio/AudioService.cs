@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using Core.Audio.ModelSpecificWaveProviders;
 using Core.Extensions;
 using Core.Repository;
 using Core.Repository.Models;
@@ -15,7 +16,7 @@ namespace Core.Audio
   public class AudioService : IAudioService
   {
     private readonly IInternalRepository repository;
-    private readonly ExportFactory<AmbienceSource> ambienceSourceFactory;
+    private readonly ExportFactory<AmbienceWaveProvider> ambienceSourceFactory;
 
     private readonly NoPlayback noPlayback = new NoPlayback();
 
@@ -27,7 +28,7 @@ namespace Core.Audio
     internal static WaveFormat DefaultWaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
 
     [ImportingConstructor]
-    internal AudioService(IInternalRepository repository, ExportFactory<AmbienceSource> ambienceSourceFactory, IEventAggregator eventAggregator)
+    internal AudioService(IInternalRepository repository, ExportFactory<AmbienceWaveProvider> ambienceSourceFactory, IEventAggregator eventAggregator)
     {
       this.repository = repository;
       this.ambienceSourceFactory = ambienceSourceFactory;

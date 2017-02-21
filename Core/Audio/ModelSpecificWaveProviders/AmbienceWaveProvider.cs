@@ -7,10 +7,10 @@ using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Prism.Events;
 
-namespace Core.Audio
+namespace Core.Audio.ModelSpecificWaveProviders
 {
   [Export]
-  public class AmbienceSource : IWaveProvider
+  public class AmbienceWaveProvider : IWaveProvider
   {
     private readonly ExportFactory<LoopWaveProvider> loopSourceExportFactory;
     private readonly IEventAggregator eventAggregator;
@@ -20,7 +20,7 @@ namespace Core.Audio
     private readonly SampleToWaveProvider output;
 
     [ImportingConstructor]
-    public AmbienceSource(ExportFactory<LoopWaveProvider> loopSourceExportFactory, IEventAggregator eventAggregator)
+    public AmbienceWaveProvider(ExportFactory<LoopWaveProvider> loopSourceExportFactory, IEventAggregator eventAggregator)
     {
       this.loopSourceExportFactory = loopSourceExportFactory;
       this.eventAggregator = eventAggregator;

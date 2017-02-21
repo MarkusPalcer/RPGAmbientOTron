@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Threading;
@@ -10,7 +9,7 @@ using Core.Repository.Models;
 using Core.Repository.Sounds;
 using NAudio.Wave;
 
-namespace Core.Audio
+namespace Core.Audio.ModelSpecificWaveProviders
 {
   [Export]
   public class LoopWaveProvider : IWaveProvider

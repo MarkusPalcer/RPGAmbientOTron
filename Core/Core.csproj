@@ -97,7 +97,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\AmbienceSource.cs" />
+    <Compile Include="Audio\ModelSpecificWaveProviders\AmbienceWaveProvider.cs" />
     <Compile Include="Audio\AudioService.cs" />
     <Compile Include="Audio\IAudioService.cs" />
     <Compile Include="Audio\IAudioSource.cs" />
