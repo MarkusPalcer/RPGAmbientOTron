@@ -1,9 +1,11 @@
 using System;
 using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
+using System.Windows.Input;
 using AmbientOTron.Views.Navigation;
 using Core.Extensions;
 using Core.Repository.Models;
+using Prism.Commands;
 using Prism.Events;
 
 namespace AmbientOTron.Views.Ambience.Entries
@@ -14,14 +16,27 @@ namespace AmbientOTron.Views.Ambience.Entries
     private readonly SerialDisposable modelUpdateSubscription = new SerialDisposable();
     private readonly IEventAggregator eventAggregator;
     private Loop model;
+    private readonly DelegateCommand togglePlaybackCommand;
 
     [ImportingConstructor]
     public LoopViewModel(IEventAggregator eventAggregator)
     {
       this.eventAggregator = eventAggregator;
+
+      togglePlaybackCommand = new DelegateCommand(
+        () =>
+        {
+          model.IsPlaying = !model.IsPlaying;
+          eventAggregator.ModelUpdated(model);
+        },
+        () => model != null);
     }
 
+    public ICommand TogglePlaybackCommand => togglePlaybackCommand;
+
     public override string Name => model.Name;
+
+    public bool IsPlaying => model.IsPlaying;
 
     public Loop Model
     {
@@ -29,6 +44,7 @@ namespace AmbientOTron.Views.Ambience.Entries
       set
       {
         model = value;
+        togglePlaybackCommand.RaiseCanExecuteChanged();
         UpdateFromModel();
 
         modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
@@ -40,6 +56,7 @@ namespace AmbientOTron.Views.Ambience.Entries
     private void UpdateFromModel()
     {
       OnPropertyChanged(() => Name);
+      OnPropertyChanged(() => IsPlaying);
     }
 
     /// <summary>

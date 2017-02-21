@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:AmbientOTron.Views.Ambience"
              xmlns:controls="clr-namespace:AmbientOTron.Controls"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             xmlns:soundBoard="clr-namespace:AmbientOTron.Views.SoundBoard"
              xmlns:entries="clr-namespace:AmbientOTron.Views.Ambience.Entries"
              Padding="5,5,10,10"
              mc:Ignorable="d" 
@@ -51,15 +50,18 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!--<Button Grid.Row="0"
+                    <Button Grid.Row="0"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Style="{StaticResource IconButtonStyle32}"
                                         
                                         ToolTip="Preview"
-                                        Command="{Binding PlayCommand}">
-                        <controls:IconContainer IconName="IconicMediaPlay" />
-                    </Button>-->
+                                        Command="{Binding TogglePlaybackCommand}">
+                        <Grid>
+                            <controls:IconContainer IconName="IconicMediaPlay" Visibility="{Binding IsPlaying, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"  />
+                            <controls:IconContainer IconName="IconicMediaStop" Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"  />
+                        </Grid>
+                    </Button>
 
                     <TextBlock Grid.Row="1" Text="{Binding Name}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextAlignment="Center"/>
                 </Grid>
@@ -102,3 +104,6 @@
         </ScrollViewer>
     </Grid>
 </UserControl>
+
+
+
