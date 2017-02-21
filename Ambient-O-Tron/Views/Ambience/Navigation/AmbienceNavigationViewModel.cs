@@ -1,10 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
 using System.ComponentModel.Composition;
-using System.Linq;
 using AmbientOTron.Views.Navigation;
 using Core.Extensions;
 using Core.Navigation;
 using Core.Repository.Models;
+using Core.Util;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -12,21 +12,24 @@ using Prism.Regions;
 namespace AmbientOTron.Views.Ambience.Navigation
 {
    [Export]
-  public class AmbienceNavigationViewModel : NavigationItemViewModel<Core.Repository.Models.Ambience, BindableBase>
+  public class AmbienceNavigationViewModel : NavigationItemViewModel<AmbienceModel, BindableBase>
   {
     private readonly INavigationService navigationService;
     private readonly IEventAggregator eventAggregator;
-    private readonly ExportFactory<LoopNavigationViewModel> loopViewModelFactory;
+    private readonly DynamicVisitor<AmbienceModel.Entry> dynamicVisitor;
+
 
     [ImportingConstructor]
     public AmbienceNavigationViewModel(INavigationService navigationService, IEventAggregator eventAggregator, ExportFactory<LoopNavigationViewModel> loopViewModelFactory)
     {
       this.navigationService = navigationService;
       this.eventAggregator = eventAggregator;
-      this.loopViewModelFactory = loopViewModelFactory;
+
+      dynamicVisitor = new DynamicVisitor<AmbienceModel.Entry>();
+      dynamicVisitor.Register(CreateItemViewModelFactory<Loop, LoopNavigationViewModel,object>(loopViewModelFactory));
     }
 
-    protected override void OnModelSet(Core.Repository.Models.Ambience newModel)
+    protected override void OnModelSet(AmbienceModel newModel)
     {
       NavigateCommand = navigationService.CreateNavigationCommand<AmbienceView>(
         Shell.ShellViewModel.MainRegion,
@@ -40,27 +43,21 @@ namespace AmbientOTron.Views.Ambience.Navigation
 
       Items.Clear();
 
-      Items.AddRange(
-        Model.Entries.OfType<Loop>().Select(CreateLoopViewModel));
+      Model.Entries.ForEach(dynamicVisitor.Visit);
     }
 
-    private LoopNavigationViewModel CreateLoopViewModel(Loop model)
+    private Action<TModel> CreateItemViewModelFactory<TModel, TViewModel, TChildren>(ExportFactory<TViewModel> factory)
+      where TViewModel:NavigationItemViewModel<TModel, TChildren> 
+      where TModel : class
     {
-      var export = loopViewModelFactory.CreateExport();
-      var result = export.Value;
+      return m =>
+      {
+        var export = factory.CreateExport();
+        var result = export.Value;
 
-      result.Model = model;
-      return result;
-    }
-  }
-
-
-  [Export]
-  public class LoopNavigationViewModel : NavigationItemViewModel<Loop>
-  {
-    protected override void UpdateFromModel()
-    {
-      Name = Model.Name;
+        result.Model = m;
+        Items.Add(result);
+      };
     }
   }
 }

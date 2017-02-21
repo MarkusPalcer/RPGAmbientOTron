@@ -5,28 +5,24 @@ using Newtonsoft.Json;
 
 namespace Core.Repository.Models
 {
-  public interface IAmbienceEntryVisitor
-  {
-    void Visit(Loop model);
-  }
-
-  public class Ambience
+  public class AmbienceModel
   {
     [Property]
     public string Name { get; set; }
 
     public List<Entry> Entries { get; set; } = new List<Entry>();
 
+    [JsonIgnore]
+    public bool IsPlaying { get; set; } = false;
+
     public abstract class Entry
     {
       public abstract string Name { get; set; }
-
-      public abstract void Accept(IAmbienceEntryVisitor visitor);
     }
   }
 
   [TypeName("Looped Sound")]
-  public class Loop : Ambience.Entry
+  public class Loop : AmbienceModel.Entry
   {
     public Sound Sound { get; set; }
 
@@ -34,10 +30,8 @@ namespace Core.Repository.Models
     [JsonIgnore] 
     public override string Name { get { return Sound.Name; } set { Sound.Name = value; } }
 
-    public override void Accept(IAmbienceEntryVisitor visitor)
-    {
-      visitor.Visit(this);
-    }
+    [Property]
+    public bool IsPlaying { get; set; } = true;
 
     public Loop Clone()
     {

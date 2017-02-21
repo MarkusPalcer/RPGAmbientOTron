@@ -169,6 +169,7 @@
     </Compile>
     <Compile Include="Views\Ambience\AmbienceViewModel.cs" />
     <Compile Include="Views\Ambience\Entries\LoopViewModel.cs" />
+    <Compile Include="Views\Ambience\Navigation\LoopNavigationViewModel.cs" />
     <Compile Include="Views\Ambience\NewLoopViewModel.cs" />
     <Compile Include="Views\Ambience\NewAmbienceView.xaml.cs">
       <DependentUpon>NewAmbienceView.xaml</DependentUpon>

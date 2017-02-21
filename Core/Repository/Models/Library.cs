@@ -9,6 +9,6 @@ namespace Core.Repository.Models
         public List<string> Files { get; } = new List<string>();
     public List<Cache> Caches { get; set; } = new List<Cache>();
 
-    public List<Ambience> Ambiences { get; set; } = new List<Ambience>();
+    public List<AmbienceModel> Ambiences { get; set; } = new List<AmbienceModel>();
   }
 }

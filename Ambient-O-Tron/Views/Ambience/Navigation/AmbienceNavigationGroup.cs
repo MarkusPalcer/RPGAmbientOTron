@@ -19,10 +19,10 @@ namespace AmbientOTron.Views.Ambience.Navigation
       Name = "Ambiences";
 
       Items = new ObservableCollection<AmbienceNavigationViewModel>();
-      eventAggregator.OnModelAdd<Core.Repository.Models.Ambience>(x => Items.Add(CreateItemViewModel(x)));
+      eventAggregator.OnModelAdd<Core.Repository.Models.AmbienceModel>(x => Items.Add(CreateItemViewModel(x)));
     }
 
-    private AmbienceNavigationViewModel CreateItemViewModel(Core.Repository.Models.Ambience model)
+    private AmbienceNavigationViewModel CreateItemViewModel(Core.Repository.Models.AmbienceModel model)
     {
       var export = itemFactory.CreateExport();
       export.Value.Model = model;

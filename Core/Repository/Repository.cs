@@ -10,6 +10,7 @@ using Core.Extensions;
 using Core.Repository.Models;
 using Core.Repository.Sounds;
 using Core.Repository.Sources;
+using Core.Util;
 using log4net;
 using Newtonsoft.Json;
 using Prism.Events;
@@ -30,7 +31,7 @@ namespace Core.Repository
     private readonly Dictionary<string, ISource> knownSources = new Dictionary<string, ISource>();
     private readonly Dictionary<string, BehaviorSubject<Status>> statuses = new Dictionary<string, BehaviorSubject<Status>>();
     private readonly Dictionary<string, Cache> caches = new Dictionary<string, Cache>();
-    private readonly List<Ambience> ambiences = new List<Ambience>();
+    private readonly List<AmbienceModel> ambiences = new List<AmbienceModel>();
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = "Data.json";
@@ -46,7 +47,7 @@ namespace Core.Repository
       };
 
       eventAggregator.OnModelAdd<SoundBoard>(model => soundBoardCache.Add(model));
-      eventAggregator.OnModelAdd<Ambience>(newModel => ambiences.Add(newModel));
+      eventAggregator.OnModelAdd<AmbienceModel>(newModel => ambiences.Add(newModel));
     }
 
     public async void Init()
@@ -101,12 +102,12 @@ namespace Core.Repository
 
     private void ImportAmbiences(Library model)
     {
+      var visitor = new DynamicVisitor<AmbienceModel.Entry>();
+      visitor.Register((Loop x) => x.Sound.Status = CreateOrSetStatus(x.Sound.Hash, Status.NotFound));
+
       foreach (var ambience in model.Ambiences)
       {
-        ambiences.Add(ambience);
-
-        ambience.Entries.OfType<Loop>().ForEach(x => x.Sound.Status = CreateOrSetStatus(x.Sound.Hash, Status.NotFound));
-
+        ambience.Entries.ForEach(visitor.Visit);
         eventAggregator.ModelAdded(ambience);
       }
     }

@@ -4,10 +4,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
 using AmbientOTron.Views.Ambience.Entries;
-using Core.Events;
+using AmbientOTron.Views.Navigation;
 using Core.Extensions;
 using Core.Repository;
 using Core.Repository.Models;
+using Core.Util;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -16,7 +17,7 @@ namespace AmbientOTron.Views.Ambience
 {
   [Export]
   [PartCreationPolicy(CreationPolicy.NonShared)]
-  public class AmbienceViewModel : BindableBase, INavigationAware, IAmbienceEntryVisitor, IDisposable
+  public class AmbienceViewModel : BindableBase, INavigationAware, IDisposable
   {
     private readonly SerialDisposable modelUpdateSubscription = new SerialDisposable();
     private readonly IEventAggregator eventAggregator;
@@ -24,6 +25,7 @@ namespace AmbientOTron.Views.Ambience
     private readonly IRepository repository;
     private readonly List<IDisposable> viewModelDisposables = new List<IDisposable>();
     private AmbienceEntryViewModel loopCreator;
+    private readonly DynamicVisitor<AmbienceModel.Entry> entryViewModelCreator = new DynamicVisitor<AmbienceModel.Entry>();
 
     [ImportingConstructor]
     public AmbienceViewModel(IEventAggregator eventAggregator, ExportFactory<LoopViewModel> loopViewModelFactory, IRepository repository)
@@ -31,6 +33,20 @@ namespace AmbientOTron.Views.Ambience
       this.eventAggregator = eventAggregator;
       this.loopViewModelFactory = loopViewModelFactory;
       this.repository = repository;
+
+      entryViewModelCreator.Register(CreateViewModelFactory<Loop,LoopViewModel>(loopViewModelFactory));
+    }
+
+    private Action<TModel> CreateViewModelFactory<TModel, TViewModel>(ExportFactory<TViewModel> exportFactory)
+      where TViewModel: AmbienceEntryViewModel, IWithModel<TModel>
+    {
+      return m =>
+      {
+        var viewModelExport = exportFactory.CreateExport();
+        viewModelExport.Value.Model = m;
+        Entries.Add(viewModelExport.Value);
+        viewModelDisposables.Add(viewModelExport);
+      };
     }
 
     public ObservableCollection<AmbienceEntryViewModel> Entries { get; } = new ObservableCollection<AmbienceEntryViewModel>();
@@ -39,13 +55,14 @@ namespace AmbientOTron.Views.Ambience
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      Model = navigationContext.GetModel<Core.Repository.Models.Ambience>();
+      Model = navigationContext.GetModel<AmbienceModel>();
 
       loopCreator = new NewLoopViewModel(Model, eventAggregator, repository);
 
       modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(Model, UpdateFromModel);
 
-      UpdateFromModel();
+      Model.IsPlaying = true;
+      eventAggregator.ModelUpdated(Model);
     }
 
     private void UpdateFromModel()
@@ -58,37 +75,32 @@ namespace AmbientOTron.Views.Ambience
 
       foreach (var entry in Model.Entries)
       {
-        entry.Accept(this);
+        entryViewModelCreator.Visit(entry);
       }
 
       Entries.Add(loopCreator);
     }
 
-    public Core.Repository.Models.Ambience Model { get; set; }
+    public AmbienceModel Model { get; set; }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
     {
       return true;
     }
 
-    public void OnNavigatedFrom(NavigationContext navigationContext) {}
-
-    #region Creation of entry view models
-    public void Visit(Loop model)
+    public void OnNavigatedFrom(NavigationContext navigationContext)
     {
-      var viewModelExport = loopViewModelFactory.CreateExport();
-      viewModelExport.Value.SetModel(model);
-      Entries.Add(viewModelExport.Value);
-      viewModelDisposables.Add(viewModelExport);
+      Model.IsPlaying = false;
+      eventAggregator.ModelUpdated(Model);
     }
-    #endregion
+
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
     public void Dispose()
     {
-      this.Dispose(true);
+      Dispose(true);
       GC.SuppressFinalize(this);
     }
 

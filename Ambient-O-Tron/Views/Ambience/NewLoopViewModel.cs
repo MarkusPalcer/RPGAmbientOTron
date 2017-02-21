@@ -14,12 +14,12 @@ namespace AmbientOTron.Views.Ambience
 {
   public class NewLoopViewModel : AmbienceEntryViewModel, IDropTarget
   {
-    private readonly Core.Repository.Models.Ambience model;
+    private readonly AmbienceModel model;
     private readonly IEventAggregator eventAggregator;
     private readonly IRepository repository;
     private readonly DragDropHelper dragDropHelper;
 
-    public NewLoopViewModel(Core.Repository.Models.Ambience model, IEventAggregator eventAggregator, IRepository repository)
+    public NewLoopViewModel(AmbienceModel model, IEventAggregator eventAggregator, IRepository repository)
     {
       this.model = model;
       this.eventAggregator = eventAggregator;

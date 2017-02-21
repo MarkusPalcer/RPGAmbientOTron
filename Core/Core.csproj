@@ -103,6 +103,7 @@
     <Compile Include="Audio\IAudioSource.cs" />
     <Compile Include="Audio\IPlayback.cs" />
     <Compile Include="Audio\ModelSpecificWaveProviders\LoopWaveProvider.cs" />
+    <Compile Include="Audio\ModelSpecificWaveProviders\ModelSpecificWaveProvider.cs" />
     <Compile Include="Audio\NoPlayback.cs" />
     <Compile Include="Audio\Playback.cs" />
     <Compile Include="Audio\NAudio\WaveProviderToWaveStream.cs" />
@@ -124,7 +125,7 @@
     <Compile Include="Navigation\NavigationService.cs" />
     <Compile Include="Repository\Attributes\PropertyAttribute.cs" />
     <Compile Include="Repository\Attributes\TypeNameAttribute.cs" />
-    <Compile Include="Repository\Models\Ambience.cs" />
+    <Compile Include="Repository\Models\AmbienceModel.cs" />
     <Compile Include="Repository\Models\Cache.cs" />
     <Compile Include="Repository\Sounds\Sound.cs" />
     <Compile Include="Repository\Sources\AudioFile.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="Repository\Sounds\Status.cs" />
     <Compile Include="Repository\Sources\ISource.cs" />
     <Compile Include="Repository\Sources\Source.cs" />
+    <Compile Include="Util\DynamicVisitor.cs" />
     <Compile Include="WPF\Behaviors\MouseDoubleClick.cs" />
     <Compile Include="WPF\Behaviors\TreeViewHelper.cs" />
     <Compile Include="WPF\Commands\OpenPopupCommand.cs" />

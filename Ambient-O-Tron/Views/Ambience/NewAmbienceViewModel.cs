@@ -37,7 +37,7 @@ namespace AmbientOTron.Views.Ambience
 
     private void Save()
     {
-      var newModel = new Core.Repository.Models.Ambience
+      var newModel = new Core.Repository.Models.AmbienceModel
       {
         Name = name,
       };

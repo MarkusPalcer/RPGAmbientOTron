@@ -8,27 +8,30 @@ using Core.Repository;
 using Core.Repository.Models;
 using Core.Repository.Sounds;
 using NAudio.Wave;
+using Prism.Events;
 
 namespace Core.Audio.ModelSpecificWaveProviders
 {
   [Export]
-  public class LoopWaveProvider : IWaveProvider
+  public class LoopWaveProvider : ModelSpecificWaveProvider<Loop>
   {
     private readonly IInternalRepository repository;
     private IWaveProvider waveProviderImplementation;
     private WaveStream sourceStream;
-    private byte[] internalBuffer;
+    private readonly byte[] internalBuffer;
     private readonly SemaphoreSlim semaphore =new SemaphoreSlim(1);
 
     [ImportingConstructor]
-    internal LoopWaveProvider(IInternalRepository repository)
+    internal LoopWaveProvider(IInternalRepository repository, IEventAggregator eventAggregator) : base(eventAggregator)
     {
       this.repository = repository;
       internalBuffer = new byte[AudioService.TemporarayBufferSize];
+      WaveFormat = AudioService.DefaultWaveFormat;
     }
 
-    public void SetModel(Loop model)
+    public override void SetModel(Loop model)
     {
+      base.SetModel(model);
       model.Sound.Status.DistinctUntilChanged().Where(x => x == Status.Ready).Subscribe(_ => Dispatcher.CurrentDispatcher.Invoke(() => ReloadSound(model.Sound)));
     }
 
@@ -46,11 +49,11 @@ namespace Core.Audio.ModelSpecificWaveProviders
       }
     }
 
-    public int Read(byte[] buffer, int offset, int count)
+    public override int Read(byte[] buffer, int offset, int count)
     {
       using (semaphore.Protect())
       {
-        if (waveProviderImplementation == null)
+        if (waveProviderImplementation == null || !Model.IsPlaying)
         {
           Array.Clear(buffer, offset, count);
           return count;
@@ -79,7 +82,5 @@ namespace Core.Audio.ModelSpecificWaveProviders
         return totalBytesRead;
       }
     }
-
-    public WaveFormat WaveFormat => AudioService.DefaultWaveFormat;
   }
 }

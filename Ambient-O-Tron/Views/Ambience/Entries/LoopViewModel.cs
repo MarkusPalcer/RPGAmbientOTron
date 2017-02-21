@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
+using AmbientOTron.Views.Navigation;
 using Core.Extensions;
 using Core.Repository.Models;
 using Prism.Events;
@@ -8,7 +9,7 @@ using Prism.Events;
 namespace AmbientOTron.Views.Ambience.Entries
 {
   [Export]
-  public class LoopViewModel : AmbienceEntryViewModel, IDisposable
+  public class LoopViewModel : AmbienceEntryViewModel, IDisposable, IWithModel<Loop>
   {
     private readonly SerialDisposable modelUpdateSubscription = new SerialDisposable();
     private readonly IEventAggregator eventAggregator;
@@ -22,13 +23,19 @@ namespace AmbientOTron.Views.Ambience.Entries
 
     public override string Name => model.Name;
 
-    public void SetModel(Loop newModel)
+    public Loop Model
     {
-      this.model = newModel;
-      UpdateFromModel();
+      get { return model; }
+      set
+      {
+        model = value;
+        UpdateFromModel();
 
-      modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
+        modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
+      }
     }
+
+    object IWithModel.Model => Model;
 
     private void UpdateFromModel()
     {
@@ -40,7 +47,7 @@ namespace AmbientOTron.Views.Ambience.Entries
     /// </summary>
     public void Dispose()
     {
-      this.Dispose(true);
+      Dispose(true);
       GC.SuppressFinalize(this);
     }
 
@@ -59,5 +66,7 @@ namespace AmbientOTron.Views.Ambience.Entries
 
       // Release unmanaged resources here
     }
+
+    
   }
 }

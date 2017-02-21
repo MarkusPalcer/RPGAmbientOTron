@@ -33,9 +33,7 @@ namespace Core.Audio
       this.repository = repository;
       this.ambienceSourceFactory = ambienceSourceFactory;
 
-
-
-      eventAggregator.OnModelAdd<Ambience>(Initialize);
+      eventAggregator.OnModelAdd<AmbienceModel>(Initialize);
     }
 
     #region Implementation of IAudioService
@@ -65,7 +63,7 @@ namespace Core.Audio
       outputDevice.Play();
     }
 
-    private void Initialize(Ambience model)
+    private void Initialize(AmbienceModel model)
     {
       var source = ambienceSourceFactory.CreateExport().Value;
       source.SetModel(model);
