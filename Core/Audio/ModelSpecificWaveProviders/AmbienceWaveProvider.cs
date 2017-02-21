@@ -42,14 +42,14 @@ namespace Core.Audio.ModelSpecificWaveProviders
         var newItem = factory.CreateExport().Value;
         newItem.SetModel(model);
         entrySources[model] = new WaveToSampleProvider(newItem);
-        mixer.AddMixerInput(newItem);
+        mixer.AddMixerInput(entrySources[model]);
       };
     }
 
     protected override void UpdateFromModel(AmbienceModel model)
     {
       var oldEntries = new HashSet<AmbienceModel.Entry>(entrySources.Keys);
-      var newEntries = new HashSet<AmbienceModel.Entry>(model.Entries);
+      var newEntries = new HashSet<AmbienceModel.Entry>(model.IsPlaying ? model.Entries : Enumerable.Empty<AmbienceModel.Entry>());
 
       foreach (var entry in newEntries.ToArray())
       {
