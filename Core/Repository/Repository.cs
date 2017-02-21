@@ -6,11 +6,11 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Events;
 using Core.Extensions;
 using Core.Repository.Models;
 using Core.Repository.Sounds;
 using Core.Repository.Sources;
+using Core.Util;
 using log4net;
 using Newtonsoft.Json;
 using Prism.Events;
@@ -20,35 +20,37 @@ namespace Core.Repository
   [Export(typeof(IRepository))]
   [Export(typeof(IInternalRepository))]
   [PartCreationPolicy(CreationPolicy.Shared)]
+  [Export]
   public class Repository : IRepository, IInternalRepository, IDisposable
   {
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
     private readonly IEventAggregator eventAggregator;
-    private readonly Dictionary<Guid, SoundBoard> soundBoardCache = new Dictionary<Guid, SoundBoard>();
+    private readonly HashSet<SoundBoard> soundBoardCache = new HashSet<SoundBoard>();
     private readonly Dictionary<string, ISource> knownFiles = new Dictionary<string, ISource>();
     private readonly Dictionary<string, ISource> knownSources = new Dictionary<string, ISource>();
     private readonly Dictionary<string, BehaviorSubject<Status>> statuses = new Dictionary<string, BehaviorSubject<Status>>();
     private readonly Dictionary<string, Cache> caches = new Dictionary<string, Cache>();
+    private readonly List<AmbienceModel> ambiences = new List<AmbienceModel>();
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
     private readonly string rootLibraryFileName = "Data.json";
+    private readonly JsonSerializerSettings jsonSerializerSettings;
 
     [ImportingConstructor]
     public Repository(IEventAggregator eventAggregator)
     {
       this.eventAggregator = eventAggregator;
+      jsonSerializerSettings = new JsonSerializerSettings
+      {
+        TypeNameHandling = TypeNameHandling.Auto,
+      };
 
-      Init();
+      eventAggregator.OnModelAdd<SoundBoard>(model => soundBoardCache.Add(model));
+      eventAggregator.OnModelAdd<AmbienceModel>(newModel => ambiences.Add(newModel));
     }
 
-    public void Add(SoundBoard model)
-    {
-      soundBoardCache[model.Id] = model;
-      eventAggregator.GetEvent<AddModelEvent<SoundBoard>>().Publish(model);
-    }
-
-    private async void Init()
+    public async void Init()
     {
       using (await semaphore.ProtectAsync())
       {
@@ -79,9 +81,11 @@ namespace Core.Repository
 
       try
       {
-        var model = JsonConvert.DeserializeObject<Library>(File.ReadAllText(fullPath));
+        var model = JsonConvert.DeserializeObject<Library>(File.ReadAllText(fullPath), jsonSerializerSettings);
 
         ImportSoundBoards(model);
+
+        ImportAmbiences(model);
 
         foreach (var cache in model.Caches)
         {
@@ -93,6 +97,18 @@ namespace Core.Repository
       catch (Exception ex)
       {
         logger.Warn($"Could not load library from {fullPath}", ex);
+      }
+    }
+
+    private void ImportAmbiences(Library model)
+    {
+      var visitor = new DynamicVisitor<AmbienceModel.Entry>();
+      visitor.Register((Loop x) => x.Sound.Status = CreateOrSetStatus(x.Sound.Hash, Status.NotFound));
+
+      foreach (var ambience in model.Ambiences)
+      {
+        ambience.Entries.ForEach(visitor.Visit);
+        eventAggregator.ModelAdded(ambience);
       }
     }
 
@@ -146,12 +162,14 @@ namespace Core.Repository
     {
       foreach (var soundBoard in model.SoundBoards)
       {
-        soundBoardCache[soundBoard.Id] = soundBoard;
+        soundBoardCache.Add(soundBoard);
 
         foreach (var sound in soundBoard.Entries)
         {
           sound.Sound.Status = CreateOrSetStatus(sound.Sound.Hash, Status.NotFound);
         }
+
+        eventAggregator.ModelAdded(soundBoard);
       }
     }
 
@@ -162,7 +180,7 @@ namespace Core.Repository
         return;
       }
 
-      eventAggregator.GetEvent<AddModelEvent<Cache>>().Publish(model);
+      eventAggregator.ModelAdded(model);
 
       foreach (var fileName in Directory.EnumerateFiles(model.Folder, "*.mp3", SearchOption.AllDirectories))
       {
@@ -175,37 +193,22 @@ namespace Core.Repository
 
         model.Sounds.Add(ResolveSound(source, new FileInfo(fileName).Name));
 
-        eventAggregator.GetEvent<UpdateModelEvent<Cache>>().Publish(model);
+        eventAggregator.ModelUpdated(model);
       }
 
       caches.Add(model.Folder, model);
     }
 
-    public SoundBoard LoadSoundBoard(Guid id)
-    {
-      SoundBoard result;
-      return soundBoardCache.TryGetValue(id, out result) ? result : null;
-    }
-
-    public async Task<IEnumerable<SoundBoard>> GetSoundBoards()
-    {
-      using (await semaphore.ProtectAsync())
-      {
-        return soundBoardCache.Values.ToArray();
-      }
-    }
-
+   
     private void SaveLibrary()
     {
       var rootLibrary = new Library();
-      rootLibrary.SoundBoards.AddRange(soundBoardCache.Values);
+      rootLibrary.SoundBoards.AddRange(soundBoardCache);
       rootLibrary.Files.AddRange(knownFiles.Keys);
       rootLibrary.Caches.AddRange(caches.Values);
+      rootLibrary.Ambiences.AddRange(ambiences);
 
-      var rootLibraryString = JsonConvert.SerializeObject(rootLibrary, Formatting.Indented, new JsonSerializerSettings
-      {
-        TypeNameHandling = TypeNameHandling.Auto,
-      });
+      var rootLibraryString = JsonConvert.SerializeObject(rootLibrary, Formatting.Indented, jsonSerializerSettings);
 
       var path = Path.Combine(Environment.CurrentDirectory, rootLibraryFileName);
 
@@ -258,11 +261,6 @@ namespace Core.Repository
 
         return source == null ? null : ResolveSound(source, new FileInfo(fileName).Name);
       }
-    }
-
-    public IEnumerable<Cache> GetCaches()
-    {
-      return caches.Values.ToArray();
     }
 
     public async Task ImportCache(string cacheFolder)

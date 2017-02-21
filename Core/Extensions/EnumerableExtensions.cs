@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Extensions
 {
-    public static class EnumerableExtensions
+  public static class EnumerableExtensions
     {
         public static void ForEach<T>(this IEnumerable<T> src, Action<T> action)
         {

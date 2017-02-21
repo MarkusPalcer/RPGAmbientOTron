@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using NAudio.Wave;
 
 namespace Core.Repository.Sources
 {
@@ -6,6 +7,6 @@ namespace Core.Repository.Sources
   {
     string Hash { get; }
 
-    Stream Open();
+    WaveStream Open();
   }
 }

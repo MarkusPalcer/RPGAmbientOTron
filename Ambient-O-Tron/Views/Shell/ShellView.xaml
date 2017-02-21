@@ -31,7 +31,7 @@
                         <RowDefinition Height="200"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ShellViewModel.MainRegion}" Grid.Row="0" Grid.RowSpan="2"/>
+                    <ContentControl region:RegionManager.RegionName="{x:Static shell:ShellViewModel.MainRegion}" Grid.Row="0" />
                     <GridSplitter Grid.Row="0" ResizeDirection="Rows" ResizeBehavior="CurrentAndNext" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
                     <ContentControl region:RegionManager.RegionName="{x:Static shell:ShellViewModel.LowerPane}" Grid.Row="1" />
                 </Grid>

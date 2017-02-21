@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.Composition;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 using AmbientOTron.Views.Shell;
 using Core.Extensions;
@@ -8,16 +8,16 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace AmbientOTron.Views.SoundBoard
+namespace AmbientOTron.Views.Ambience
 {
   [Export]
-  public class NewSoundBoardViewModel : BindableBase
+  public class NewAmbienceViewModel : BindableBase
   {
     private readonly INavigationService navigationService;
     private readonly IEventAggregator eventAggregator;
 
     [ImportingConstructor]
-    public NewSoundBoardViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+    public NewAmbienceViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
     {
       this.navigationService = navigationService;
       this.eventAggregator = eventAggregator;
@@ -37,15 +37,15 @@ namespace AmbientOTron.Views.SoundBoard
 
     private void Save()
     {
-      var newModel = new Core.Repository.Models.SoundBoard
+      var newModel = new Core.Repository.Models.AmbienceModel
       {
         Name = name,
       };
 
       eventAggregator.ModelAdded(newModel);
 
-      navigationService.NavigateAsync<SoundBoardView>(
-        ShellViewModel.LowerPane,
+      navigationService.NavigateAsync<AmbienceView>(
+        ShellViewModel.MainRegion,
         new NavigationParameters().WithModel(newModel));
     }
   }

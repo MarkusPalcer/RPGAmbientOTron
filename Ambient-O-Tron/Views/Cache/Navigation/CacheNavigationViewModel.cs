@@ -3,25 +3,28 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using AmbientOTron.Views.Navigation;
-using AmbientOTron.Views.Sounds;
-using Core.Events;
 using Core.Extensions;
 using Core.Repository.Sounds;
 using Prism.Events;
 
-namespace AmbientOTron.Views.Cache
+namespace AmbientOTron.Views.Cache.Navigation
 {
   [Export]
   public class CacheNavigationViewModel : NavigationItemViewModel<Core.Repository.Models.Cache, SoundNavigationViewModel>
   {
+    private readonly IEventAggregator eventAggregator;
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
     [ImportingConstructor]
     public CacheNavigationViewModel(IEventAggregator eventAggregator)
     {
+      this.eventAggregator = eventAggregator;
       Items = new ObservableCollection<SoundNavigationViewModel>();
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.Cache>>()
-                     .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, c => c.Folder == Model.Folder);
+    }
+
+    protected override void OnModelSet(Core.Repository.Models.Cache newModel)
+    {
+      eventAggregator.OnModelUpdate(Model, UpdateFromModel);
     }
 
     protected override async void UpdateFromModel()

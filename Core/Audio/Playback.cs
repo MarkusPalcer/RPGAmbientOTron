@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using log4net.Core;
 using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 
 namespace Core.Audio
 {
@@ -15,12 +12,12 @@ namespace Core.Audio
   /// </summary>
   internal class Playback : IPlayback
   {
-    private WaveOut waveOut;
-    private ProgressReportingAudioFileReader audioFileReader;
-    private TaskCompletionSource<Unit> taskCompletionSource;
-    private BehaviorSubject<double> progressSubject;
+    private readonly WaveOut waveOut;
+    private readonly ProgressReportingAudioFileReader audioFileReader;
+    private readonly TaskCompletionSource<Unit> taskCompletionSource;
+    private readonly BehaviorSubject<double> progressSubject;
 
-    public Playback(Stream fileName)
+    public Playback(WaveStream source)
     {
       taskCompletionSource = new TaskCompletionSource<Unit>();
 
@@ -28,7 +25,7 @@ namespace Core.Audio
       Progress = progressSubject;
 
       waveOut = new WaveOut();
-      audioFileReader = new ProgressReportingAudioFileReader(fileName);
+      audioFileReader = new ProgressReportingAudioFileReader(source);
       audioFileReader.ProgressChanged += HandleProgressChanged;
       waveOut.Init(audioFileReader);
       waveOut.PlaybackStopped += HandlePlaybackStopped;
@@ -78,9 +75,9 @@ namespace Core.Audio
     {
       private readonly WaveStream source;
 
-      public ProgressReportingAudioFileReader(Stream fileName)
+      public ProgressReportingAudioFileReader(WaveStream source)
       {
-        source = new Mp3FileReader(fileName);
+        this.source = source;
       }
 
       #region Overrides of AudioFileReader

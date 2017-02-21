@@ -63,7 +63,7 @@ namespace AmbientOTron.Views.Properties
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      Model = navigationContext.Parameters["model"];
+      Model = navigationContext.GetModel<object>();
 
       var modelType = Model.GetType();
 
@@ -117,15 +117,11 @@ namespace AmbientOTron.Views.Properties
     // ReSharper disable once UnusedMember.Global Used through reflection
     public void HookupUpdateEvent<TModel>()
     {
-      modelUpdateSubscription.Disposable =
-        eventAggregator.GetEvent<UpdateModelEvent<TModel>>()
-                       .Subscribe(
-                         _ => Properties.ForEach(x => x.Update()),
-                         ThreadOption.UIThread,
-                         true,
-                         m => ReferenceEquals(m, Model));
+      modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(
+        Model,
+        () => Properties.ForEach(x => x.Update()));
 
-      SendModelUpdate = () => eventAggregator.GetEvent<UpdateModelEvent<TModel>>().Publish((TModel)Model);
+      SendModelUpdate = () => eventAggregator.ModelUpdated((TModel) Model);
     }
 
     public virtual bool IsNavigationTarget(NavigationContext navigationContext)
@@ -143,7 +139,7 @@ namespace AmbientOTron.Views.Properties
     /// </summary>
     public void Dispose()
     {
-      this.Dispose(true);
+      Dispose(true);
       GC.SuppressFinalize(this);
     }
 

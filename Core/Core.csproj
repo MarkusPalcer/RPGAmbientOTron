@@ -13,8 +13,8 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -97,10 +97,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\ModelSpecificWaveProviders\AmbienceWaveProvider.cs" />
     <Compile Include="Audio\AudioService.cs" />
     <Compile Include="Audio\IAudioService.cs" />
+    <Compile Include="Audio\IAudioSource.cs" />
     <Compile Include="Audio\IPlayback.cs" />
+    <Compile Include="Audio\ModelSpecificWaveProviders\LoopWaveProvider.cs" />
+    <Compile Include="Audio\ModelSpecificWaveProviders\ModelSpecificWaveProvider.cs" />
+    <Compile Include="Audio\NoPlayback.cs" />
     <Compile Include="Audio\Playback.cs" />
+    <Compile Include="Audio\NAudio\WaveProviderToWaveStream.cs" />
     <Compile Include="Dialogs\DialogService.cs" />
     <Compile Include="Dialogs\IDialogService.cs" />
     <Compile Include="Dialogs\IDialogView.cs" />
@@ -108,6 +114,8 @@
     <Compile Include="Events\AddModelEvent.cs" />
     <Compile Include="Events\UpdateModelEvent.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\EventAggregatorExtensions.cs" />
+    <Compile Include="Extensions\NavigationExtensions.cs" />
     <Compile Include="Extensions\SemaphoreSlimExtensions.cs" />
     <Compile Include="Extensions\SymbolExtensions.cs" />
     <Compile Include="Logging\LoggerFacade.cs" />
@@ -117,6 +125,7 @@
     <Compile Include="Navigation\NavigationService.cs" />
     <Compile Include="Repository\Attributes\PropertyAttribute.cs" />
     <Compile Include="Repository\Attributes\TypeNameAttribute.cs" />
+    <Compile Include="Repository\Models\AmbienceModel.cs" />
     <Compile Include="Repository\Models\Cache.cs" />
     <Compile Include="Repository\Sounds\Sound.cs" />
     <Compile Include="Repository\Sources\AudioFile.cs" />
@@ -128,6 +137,7 @@
     <Compile Include="Repository\Sounds\Status.cs" />
     <Compile Include="Repository\Sources\ISource.cs" />
     <Compile Include="Repository\Sources\Source.cs" />
+    <Compile Include="Util\DynamicVisitor.cs" />
     <Compile Include="WPF\Behaviors\MouseDoubleClick.cs" />
     <Compile Include="WPF\Behaviors\TreeViewHelper.cs" />
     <Compile Include="WPF\Commands\OpenPopupCommand.cs" />

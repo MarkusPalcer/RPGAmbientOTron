@@ -6,10 +6,9 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
-using Core.Events;
+using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
 using Core.Repository.Sounds;
@@ -95,7 +94,7 @@ namespace AmbientOTron.Views.SoundBoard
 
       model.Name = Name;
       model.Entries = Files.Select(x => x.Model).ToList();
-      eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard>>().Publish(model);
+      eventAggregator.ModelUpdated(model);
     }
 
     private void ReorderEntries(IDropInfo dropInfo)
@@ -147,7 +146,7 @@ namespace AmbientOTron.Views.SoundBoard
       SaveChanges();
     }
 
-    private void LoadFromModel()
+    private void UpdateFromModel()
     {
       Name = model.Name;
       Files.Clear();
@@ -161,28 +160,23 @@ namespace AmbientOTron.Views.SoundBoard
 
       var result = export.Value;
       result.SetModel(forModel);
+
       return result;
     }
 
     #region Implementation of INavigationAware
 
     public void OnNavigatedTo(NavigationContext navigationContext)
-    {
-      var id = navigationContext.Parameters?["id"] as Guid? ?? Guid.Empty;
-      model = repository.LoadSoundBoard(id) ?? new Core.Repository.Models.SoundBoard();
+    { 
+      model = navigationContext.GetModel<Core.Repository.Models.SoundBoard>();
 
       PropertiesCommand = navigationService.CreateNavigationCommand<PropertiesView>(
         ShellViewModel.PropertiesPane,
-        new NavigationParameters
-        {
-          {"model", model}
-        });
+        new NavigationParameters().WithModel(model));
 
-      updateSubscription.Disposable =
-        eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard>>()
-                       .Subscribe(_ => LoadFromModel(), ThreadOption.UIThread, true, m => m.Id == model.Id);
+      updateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
 
-      LoadFromModel();
+      UpdateFromModel();
     }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)

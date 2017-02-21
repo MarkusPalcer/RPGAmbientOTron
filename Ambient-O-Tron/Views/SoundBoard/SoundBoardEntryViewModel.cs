@@ -7,7 +7,7 @@ using System.Windows.Media;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
 using Core.Audio;
-using Core.Events;
+using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
 using Core.Repository.Sounds;
@@ -43,9 +43,7 @@ namespace AmbientOTron.Views.SoundBoard
       PlayCommand = new DelegateCommand(Play, () => !HasError).ObservesProperty(() => HasError);
 
       disposables.Add(statusSubscription);
-      disposables.Add(
-        eventAggregator.GetEvent<UpdateModelEvent<Core.Repository.Models.SoundBoard.Entry>>()
-                       .Subscribe(_ => UpdateFromModel(), ThreadOption.UIThread, true, m => m == Model));
+      disposables.Add(eventAggregator.OnModelUpdate(Model, UpdateFromModel));
     }
 
     public ICommand PlayCommand { get; }
@@ -95,10 +93,7 @@ namespace AmbientOTron.Views.SoundBoard
       statusSubscription.Disposable = model.Sound.Status.Select(x => x != Status.Ready).Subscribe(x => HasError = x);
       PropertyCommand = navigationService.CreateNavigationCommand<PropertiesView>(
         ShellViewModel.PropertiesPane,
-        new NavigationParameters
-        {
-          {"model", Model}
-        });
+        new NavigationParameters().WithModel(Model));
       UpdateFromModel();
     }
 

@@ -161,7 +161,21 @@
     </Compile>
     <Compile Include="Controls\ProgressCircle.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Views\Cache\CacheNavigationViewModel.cs" />
+    <Compile Include="Views\Ambience\Navigation\AmbienceNavigationGroup.cs" />
+    <Compile Include="Views\Ambience\Navigation\AmbienceNavigationViewModel.cs" />
+    <Compile Include="Views\Ambience\Entries\AmbienceEntryViewModel.cs" />
+    <Compile Include="Views\Ambience\AmbienceView.xaml.cs">
+      <DependentUpon>AmbienceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Ambience\AmbienceViewModel.cs" />
+    <Compile Include="Views\Ambience\Entries\LoopViewModel.cs" />
+    <Compile Include="Views\Ambience\Navigation\LoopNavigationViewModel.cs" />
+    <Compile Include="Views\Ambience\NewLoopViewModel.cs" />
+    <Compile Include="Views\Ambience\NewAmbienceView.xaml.cs">
+      <DependentUpon>NewAmbienceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Ambience\NewAmbienceViewModel.cs" />
+    <Compile Include="Views\Cache\Navigation\CacheNavigationViewModel.cs" />
     <Compile Include="Views\Dialogs\MessageBox\Extensions.cs" />
     <Compile Include="Views\Dialogs\MessageBox\View.xaml.cs">
       <DependentUpon>View.xaml</DependentUpon>
@@ -170,7 +184,7 @@
     <Compile Include="Views\Empty.xaml.cs">
       <DependentUpon>Empty.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Cache\CacheNavigationGroup.cs" />
+    <Compile Include="Views\Cache\Navigation\CacheNavigationGroup.cs" />
     <Compile Include="Views\Navigation\INavitagionItem.cs" />
     <Compile Include="Views\Properties\PropertyViewModels\ColorPropertyViewModel.cs" />
     <Compile Include="Views\Properties\PropertiesView.xaml.cs">
@@ -186,8 +200,8 @@
       <DependentUpon>NewSoundBoardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SoundBoard\NewSoundBoardViewModel.cs" />
-    <Compile Include="Views\SoundBoard\SoundBoardNavigationGroup.cs" />
-    <Compile Include="Views\SoundBoard\SoundBoardNavigationViewModel.cs" />
+    <Compile Include="Views\SoundBoard\Navigation\SoundBoardNavigationGroup.cs" />
+    <Compile Include="Views\SoundBoard\Navigation\SoundBoardNavigationViewModel.cs" />
     <Compile Include="Views\SoundBoard\SoundBoardView.xaml.cs">
       <DependentUpon>SoundBoardView.xaml</DependentUpon>
     </Compile>
@@ -200,7 +214,7 @@
     <Compile Include="Views\Shell\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sounds\SoundNavigationViewModel.cs" />
+    <Compile Include="Views\Cache\Navigation\SoundNavigationViewModel.cs" />
     <Page Include="Controls\IconContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -236,6 +250,14 @@
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Ambience\AmbienceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Ambience\NewAmbienceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\MessageBox\View.xaml">
       <SubType>Designer</SubType>

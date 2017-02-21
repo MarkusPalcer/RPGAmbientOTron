@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using Core.Repository.Attributes;
 using Core.Repository.Sounds;
+using Newtonsoft.Json;
 
 namespace Core.Repository.Models
 {
   [TypeName("Sound Board")]
   public class SoundBoard
   {
-    public Guid Id { get; set; } = Guid.NewGuid();
-
     [Property]
     public string Name { get; set; } = @"Unnamed soundboard";
 
@@ -22,6 +21,7 @@ namespace Core.Repository.Models
       public Sound Sound { get; set; }
 
       [Property]
+      [JsonIgnore]
       public string Name
       {
         get { return Sound.Name; }

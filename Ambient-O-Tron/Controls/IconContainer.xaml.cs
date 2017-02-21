@@ -13,7 +13,7 @@ namespace AmbientOTron.Controls
             InitializeComponent();
         }
 
-        private enum DesiredSize
+        private enum IconicSize
         {
             Large,
             Medium,
@@ -39,9 +39,9 @@ namespace AmbientOTron.Controls
         private Viewbox medium;
         private Viewbox small;
 
-        private DesiredSize size;
+        private IconicSize size;
 
-        private DesiredSize Size
+        private IconicSize Size
         {
             get { return size; }
             set
@@ -67,13 +67,13 @@ namespace AmbientOTron.Controls
         {
             switch (Size)
             {
-                case DesiredSize.Large:
+                case IconicSize.Large:
                     Content = large ?? medium ?? small;
                     break;
-                case DesiredSize.Medium:
+                case IconicSize.Medium:
                     Content = medium ?? small ?? large;
                     break;
-                case DesiredSize.Small:
+                case IconicSize.Small:
                     Content = small ?? medium ?? large;
                     break;
                 default:
@@ -87,15 +87,15 @@ namespace AmbientOTron.Controls
 
             if (newSize < 32)
             {
-                Size = DesiredSize.Small;
+                Size = IconicSize.Small;
             }
             else if (newSize > 64)
             {
-                Size = DesiredSize.Large;
+                Size = IconicSize.Large;
             }
             else
             {
-                Size = DesiredSize.Medium;
+                Size = IconicSize.Medium;
             }
         }
     }

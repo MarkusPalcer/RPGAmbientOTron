@@ -12,5 +12,11 @@ namespace Core.Extensions
       await x.WaitAsync();
       return Disposable.Create(() => x.Release());
     }
+
+    public static IDisposable Protect(this SemaphoreSlim x)
+    {
+      x.Wait();
+      return Disposable.Create(() => x.Release());
+    }
   }
 }

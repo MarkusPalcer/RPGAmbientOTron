@@ -9,9 +9,9 @@ namespace AmbientOTron.Views.Navigation
     object Model { get; }
   }
 
-  public interface IWithModel<out TModel>  : IWithModel
+  public interface IWithModel<TModel>  : IWithModel
   {
-    new TModel Model { get; }
+    new TModel Model { get; set; }
   }
 
   public abstract class NavigationItemViewModel<TModel, TChildren> : BindableBase, INavigationEntry<TChildren>, IWithModel<TModel>
@@ -43,6 +43,8 @@ namespace AmbientOTron.Views.Navigation
 
     protected abstract void UpdateFromModel();
 
+    protected virtual void OnModelSet(TModel newModel) { }
+
     private TModel model = null;
 
     public TModel Model
@@ -51,6 +53,7 @@ namespace AmbientOTron.Views.Navigation
       set
       {
         model = value;
+        OnModelSet(value);
         UpdateFromModel();
       }
     }
