@@ -58,8 +58,8 @@
                                         ToolTip="Preview"
                                         Command="{Binding TogglePlaybackCommand}">
                         <Grid>
-                            <controls:IconContainer IconName="IconicMediaPlay" Visibility="{Binding IsPlaying, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"  />
-                            <controls:IconContainer IconName="IconicMediaStop" Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"  />
+                            <controls:IconContainer IconName="IconicMediaPlay" Visibility="{Binding IsPlaying, Converter={StaticResource InvertedBooleanToHiddenConverter}}"  />
+                            <controls:IconContainer IconName="IconicMediaStop" Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToHiddenConverter}}"  />
                         </Grid>
                     </Button>
 
