@@ -3,23 +3,27 @@ using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
 using System.Windows.Input;
 using AmbientOTron.Views.Navigation;
+using AmbientOTron.Views.Properties;
 using Core.Extensions;
+using Core.Navigation;
 using Core.Repository.Models;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Regions;
+using static System.Single;
 
 namespace AmbientOTron.Views.Ambience.Entries
 {
   [Export]
-  public class LoopViewModel : AmbienceEntryViewModel, IDisposable, IWithModel<Loop>
+  public class LoopViewModel : AmbienceEntryViewModel, IDisposable, IWithModel<LoopModel>
   {
     private readonly SerialDisposable modelUpdateSubscription = new SerialDisposable();
     private readonly IEventAggregator eventAggregator;
-    private Loop model;
+    private LoopModel model;
     private readonly DelegateCommand togglePlaybackCommand;
 
     [ImportingConstructor]
-    public LoopViewModel(IEventAggregator eventAggregator)
+    public LoopViewModel(IEventAggregator eventAggregator, INavigationService navigationService)
     {
       this.eventAggregator = eventAggregator;
 
@@ -30,7 +34,11 @@ namespace AmbientOTron.Views.Ambience.Entries
           eventAggregator.ModelUpdated(model);
         },
         () => model != null);
+
+      PropertyCommand = new DelegateCommand(() => navigationService.NavigateAsync<PropertiesView>(Shell.ShellViewModel.PropertiesPane, new NavigationParameters().WithModel(model)));
     }
+
+    public ICommand PropertyCommand { get; }
 
     public ICommand TogglePlaybackCommand => togglePlaybackCommand;
 
@@ -38,7 +46,21 @@ namespace AmbientOTron.Views.Ambience.Entries
 
     public bool IsPlaying => model.IsPlaying;
 
-    public Loop Model
+    public float Volume
+    {
+      get { return Model.Volume; }
+      set
+      {
+        if (Math.Abs(Model.Volume - value) < Epsilon)
+          return;
+
+        Model.Volume = value;
+
+        eventAggregator.ModelUpdated(Model);
+      }
+    }
+
+    public LoopModel Model
     {
       get { return model; }
       set
@@ -56,6 +78,7 @@ namespace AmbientOTron.Views.Ambience.Entries
     private void UpdateFromModel()
     {
       OnPropertyChanged(() => Name);
+      OnPropertyChanged(() => Volume);
       OnPropertyChanged(() => IsPlaying);
     }
 

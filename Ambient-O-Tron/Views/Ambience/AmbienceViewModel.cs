@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
+using System.Windows.Input;
 using AmbientOTron.Views.Ambience.Entries;
 using AmbientOTron.Views.Navigation;
+using AmbientOTron.Views.Properties;
 using Core.Extensions;
+using Core.Navigation;
 using Core.Repository;
 using Core.Repository.Models;
 using Core.Util;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -28,13 +32,20 @@ namespace AmbientOTron.Views.Ambience
     private readonly DynamicVisitor<AmbienceModel.Entry> entryViewModelCreator = new DynamicVisitor<AmbienceModel.Entry>();
 
     [ImportingConstructor]
-    public AmbienceViewModel(IEventAggregator eventAggregator, ExportFactory<LoopViewModel> loopViewModelFactory, IRepository repository)
+    public AmbienceViewModel(IEventAggregator eventAggregator, ExportFactory<LoopViewModel> loopViewModelFactory, IRepository repository, INavigationService navigationService)
     {
       this.eventAggregator = eventAggregator;
       this.loopViewModelFactory = loopViewModelFactory;
       this.repository = repository;
 
-      entryViewModelCreator.Register(CreateViewModelFactory<Loop,LoopViewModel>(loopViewModelFactory));
+      entryViewModelCreator.Register(CreateViewModelFactory<LoopModel,LoopViewModel>(loopViewModelFactory));
+
+      PropertiesCommand =
+        new DelegateCommand(
+          () =>
+            navigationService.NavigateAsync<PropertiesView>(
+              Shell.ShellViewModel.PropertiesPane,
+              new NavigationParameters().WithModel(Model)));
     }
 
     private Action<TModel> CreateViewModelFactory<TModel, TViewModel>(ExportFactory<TViewModel> exportFactory)
@@ -82,6 +93,8 @@ namespace AmbientOTron.Views.Ambience
     }
 
     public AmbienceModel Model { get; set; }
+
+    public ICommand PropertiesCommand { get; }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
     {

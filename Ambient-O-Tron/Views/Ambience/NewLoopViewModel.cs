@@ -28,14 +28,14 @@ namespace AmbientOTron.Views.Ambience
       dragDropHelper = new DragDropHelper
       {
         {DragDropHelper.IsFileDrop, AddFiles},
-        {x => x.Data is Loop, CopyLoop},
+        {x => x.Data is LoopModel, CopyLoop},
         {x => x.Data is Core.Repository.Sounds.Sound, AddSound}
       };
     }
 
     private void AddSound(IDropInfo obj)
     {
-      model.Entries.Add(new Loop
+      model.Entries.Add(new LoopModel
       {
         Sound = (obj.Data as Core.Repository.Sounds.Sound)?.Clone()
       });
@@ -45,7 +45,7 @@ namespace AmbientOTron.Views.Ambience
 
     private void CopyLoop(IDropInfo obj)
     {
-      model.Entries.Add((obj.Data as Loop)?.Clone());
+      model.Entries.Add((obj.Data as LoopModel)?.Clone());
 
       eventAggregator.ModelUpdated(model);
     }
@@ -63,11 +63,11 @@ namespace AmbientOTron.Views.Ambience
 
         var source = await repository.ImportFile(file);
 
-        if (model.Entries.OfType<Loop>().Any(x => x.Sound == source))
+        if (model.Entries.OfType<LoopModel>().Any(x => x.Sound == source))
           continue;
 
         model.Entries.Add(
-          new Loop
+          new LoopModel
           {
             Sound = source
           });

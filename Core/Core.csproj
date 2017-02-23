@@ -124,6 +124,7 @@
     <Compile Include="Navigation\NavigationRequestCollection.cs" />
     <Compile Include="Navigation\NavigationService.cs" />
     <Compile Include="Repository\Attributes\PropertyAttribute.cs" />
+    <Compile Include="Repository\Attributes\SliderPropertyAttribute.cs" />
     <Compile Include="Repository\Attributes\TypeNameAttribute.cs" />
     <Compile Include="Repository\Models\AmbienceModel.cs" />
     <Compile Include="Repository\Models\Cache.cs" />

@@ -25,6 +25,18 @@
                     <xctk:ColorPicker SelectedColor="{Binding Value, Mode=TwoWay}" />
                 </StackPanel>
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type propertyViewModels:BoolPropertyViewModel}">
+                <CheckBox Content="{Binding Name}" IsChecked="{Binding Value}" />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type propertyViewModels:SliderPropertyViewModel}">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="{Binding Name}" />
+                    <Slider Value="{Binding Value}" Maximum="{Binding Maximum}" Minimum="{Binding Minimum}" LargeChange="{Binding LargeChange}"
+                            />
+                </StackPanel>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -46,6 +58,11 @@
                         <StackPanel Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type ContentPresenter}">
+                        <Setter Property="Margin" Value="5"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
             </ItemsControl>
         </ScrollViewer>
     </Grid>
