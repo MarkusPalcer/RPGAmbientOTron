@@ -16,8 +16,9 @@ namespace Core.Audio.ModelSpecificWaveProviders
     private readonly MixingSampleProvider mixer;
 
     private readonly Dictionary<AmbienceModel.Entry, ISampleProvider> entrySources = new Dictionary<AmbienceModel.Entry, ISampleProvider>();
-    private readonly SampleToWaveProvider output;
+    private readonly IWaveProvider output;
     private readonly DynamicVisitor<AmbienceModel.Entry> entryVisitor = new DynamicVisitor<AmbienceModel.Entry>();
+    private readonly VolumeWaveProvider16 volumeLimiter;
 
     [ImportingConstructor]
     public AmbienceWaveProvider(ExportFactory<LoopWaveProvider> loopSourceExportFactory, IEventAggregator eventAggregator) : base(eventAggregator)
@@ -27,10 +28,11 @@ namespace Core.Audio.ModelSpecificWaveProviders
         ReadFully = true
       };
 
-      output = new SampleToWaveProvider(mixer);
+      volumeLimiter = new VolumeWaveProvider16(new SampleToWaveProvider16(mixer));
+      output = volumeLimiter;
       WaveFormat = output.WaveFormat;
 
-      entryVisitor.Register(CreateEntryFactory<Loop, LoopWaveProvider>(loopSourceExportFactory));
+      entryVisitor.Register(CreateEntryFactory<LoopModel, LoopWaveProvider>(loopSourceExportFactory));
     }
 
     private Action<TModel> CreateEntryFactory<TModel, TWaveProvider>(ExportFactory<TWaveProvider> factory)
@@ -48,6 +50,8 @@ namespace Core.Audio.ModelSpecificWaveProviders
 
     protected override void UpdateFromModel(AmbienceModel model)
     {
+      volumeLimiter.Volume = model.Volume;
+
       var oldEntries = new HashSet<AmbienceModel.Entry>(entrySources.Keys);
       var newEntries = new HashSet<AmbienceModel.Entry>(model.IsPlaying ? model.Entries : Enumerable.Empty<AmbienceModel.Entry>());
 
@@ -73,7 +77,6 @@ namespace Core.Audio.ModelSpecificWaveProviders
       }
     }
 
-    public ISampleProvider Audio => mixer;
     public override int Read(byte[] buffer, int offset, int count)
     {
       return output.Read(buffer, offset, count);

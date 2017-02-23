@@ -13,13 +13,14 @@ using Prism.Events;
 namespace Core.Audio.ModelSpecificWaveProviders
 {
   [Export]
-  public class LoopWaveProvider : ModelSpecificWaveProvider<Loop>
+  public class LoopWaveProvider : ModelSpecificWaveProvider<LoopModel>
   {
     private readonly IInternalRepository repository;
     private IWaveProvider waveProviderImplementation;
     private WaveStream sourceStream;
     private readonly byte[] internalBuffer;
     private readonly SemaphoreSlim semaphore =new SemaphoreSlim(1);
+    private VolumeWaveProvider16 volumeLimiter;
 
     [ImportingConstructor]
     internal LoopWaveProvider(IInternalRepository repository, IEventAggregator eventAggregator) : base(eventAggregator)
@@ -29,7 +30,7 @@ namespace Core.Audio.ModelSpecificWaveProviders
       WaveFormat = AudioService.DefaultWaveFormat;
     }
 
-    public override void SetModel(Loop model)
+    public override void SetModel(LoopModel model)
     {
       base.SetModel(model);
       model.Sound.Status.DistinctUntilChanged().Where(x => x == Status.Ready).Subscribe(_ => Dispatcher.CurrentDispatcher.Invoke(() => ReloadSound(model.Sound)));
@@ -40,13 +41,24 @@ namespace Core.Audio.ModelSpecificWaveProviders
       using (semaphore.Protect())
       {
         sourceStream = repository.GetSource(sound).Open();
-
+        
         var stereo = sourceStream.WaveFormat.Channels == 1
                        ? new MonoToStereoProvider16(sourceStream)
                        : (IWaveProvider) sourceStream;
 
-        waveProviderImplementation = new Wave16ToFloatProvider(stereo);
+        volumeLimiter = new VolumeWaveProvider16(stereo)
+        {
+          Volume = Model.Volume
+        };
+        
+        waveProviderImplementation = new Wave16ToFloatProvider(volumeLimiter);
       }
+    }
+
+    protected override void UpdateFromModel(LoopModel model)
+    {
+      base.UpdateFromModel(model);
+      if (volumeLimiter != null) volumeLimiter.Volume = model.Volume;
     }
 
     public override int Read(byte[] buffer, int offset, int count)

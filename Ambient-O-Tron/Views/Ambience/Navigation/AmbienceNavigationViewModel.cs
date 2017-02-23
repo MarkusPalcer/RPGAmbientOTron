@@ -26,7 +26,7 @@ namespace AmbientOTron.Views.Ambience.Navigation
       this.eventAggregator = eventAggregator;
 
       dynamicVisitor = new DynamicVisitor<AmbienceModel.Entry>();
-      dynamicVisitor.Register(CreateItemViewModelFactory<Loop, LoopNavigationViewModel,object>(loopViewModelFactory));
+      dynamicVisitor.Register(CreateItemViewModelFactory<LoopModel, LoopNavigationViewModel,object>(loopViewModelFactory));
     }
 
     protected override void OnModelSet(AmbienceModel newModel)

@@ -103,7 +103,7 @@ namespace Core.Repository
     private void ImportAmbiences(Library model)
     {
       var visitor = new DynamicVisitor<AmbienceModel.Entry>();
-      visitor.Register((Loop x) => x.Sound.Status = CreateOrSetStatus(x.Sound.Hash, Status.NotFound));
+      visitor.Register((LoopModel x) => x.Sound.Status = CreateOrSetStatus(x.Sound.Hash, Status.NotFound));
 
       foreach (var ambience in model.Ambiences)
       {

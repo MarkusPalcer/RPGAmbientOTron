@@ -15,14 +15,21 @@ namespace Core.Repository.Models
     [JsonIgnore]
     public bool IsPlaying { get; set; } = false;
 
+    [SliderProperty]
+    public float Volume { get; set; } = 1.0f;
+
     public abstract class Entry
     {
       public abstract string Name { get; set; }
+
+      [SliderProperty]
+      public float Volume { get; set; } = 1.0f;
+
     }
   }
 
   [TypeName("Looped Sound")]
-  public class Loop : AmbienceModel.Entry
+  public class LoopModel : AmbienceModel.Entry
   {
     public Sound Sound { get; set; }
 
@@ -33,9 +40,9 @@ namespace Core.Repository.Models
     [Property]
     public bool IsPlaying { get; set; } = true;
 
-    public Loop Clone()
+    public LoopModel Clone()
     {
-      return new Loop
+      return new LoopModel
       {
         Sound = Sound.Clone()
       };

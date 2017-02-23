@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reflection;
 using AmbientOTron.Views.Properties.PropertyViewModels;
-using Core.Events;
 using Core.Extensions;
 using Core.Repository;
 using Core.Repository.Attributes;
@@ -50,7 +49,8 @@ namespace AmbientOTron.Views.Properties
     }
 
     private IEnumerable<PropertyViewModel> properties = Enumerable.Empty<PropertyViewModel>();
-    protected object Model { get; private set; }
+
+    private object Model { get; set; }
 
     public IEnumerable<PropertyViewModel> Properties  
     {
@@ -67,7 +67,7 @@ namespace AmbientOTron.Views.Properties
 
       var modelType = Model.GetType();
 
-      logger.InfoFormat("Creating property pane for {1}", modelType.FullName);
+      logger.InfoFormat($"Creating property pane for {modelType.FullName}");
 
       TypeName = modelType.GetCustomAttributes(typeof(TypeNameAttribute), false).OfType<TypeNameAttribute>().FirstOrDefault()?.Name ??
                      modelType.Name;
@@ -76,29 +76,22 @@ namespace AmbientOTron.Views.Properties
 
       foreach (var property in modelType.GetProperties())
       {
-        var propertyAttribute = property.GetCustomAttributes<PropertyAttribute>().FirstOrDefault();
-
-        if (propertyAttribute == null)
         {
-          continue;
+          var attribute = property.GetCustomAttribute<SliderPropertyAttribute>();
+          if (attribute != null && property.PropertyType == typeof(float))
+          {
+            props.Add(SliderPropertyViewModel.Create(property, Model, attribute));
+            continue;
+          }
         }
 
-        KnownPropertyType knownType;
-        if (!knownPropertyTypes.TryGetValue(property.PropertyType, out knownType))
         {
-          logger.Warn($"No view present for properties of type {property.PropertyType.Name} (property {modelType.FullName}.{property.Name})");
-          continue;
-        }
-
-        try
-        {
-          var viewModel = knownType.ViewModelFactory(property, Model);
-          viewModel.Name = propertyAttribute.Name ?? property.Name;
-          props.Add(viewModel);
-        }
-        catch (Exception ex)
-        {
-          logger.Error($"Could not create view model of type {property.PropertyType.Name} (property {modelType.FullName}.{property.Name}", ex);
+          var attribute = property.GetCustomAttribute<PropertyAttribute>();
+          if (attribute != null)
+          {
+            props.AddRange(AddGenericProperty(attribute, property, modelType));
+            continue;
+          }
         }
       }
 
@@ -112,13 +105,38 @@ namespace AmbientOTron.Views.Properties
       Properties.ForEach(x => x.Update());
     }
 
+    private IEnumerable<PropertyViewModel> AddGenericProperty(PropertyAttribute propertyAttribute, PropertyInfo property, Type modelType)
+    {
+      KnownPropertyType knownType;
+      if (!knownPropertyTypes.TryGetValue(property.PropertyType, out knownType))
+      {
+        logger.Warn($"No view present for properties of type {property.PropertyType.Name} (property {modelType.FullName}.{property.Name})");
+        yield break;
+      }
+
+      PropertyViewModel viewModel;
+
+      try
+      {
+        viewModel = knownType.ViewModelFactory(property, Model);
+        viewModel.Name = propertyAttribute.Name ?? property.Name;
+      }
+      catch (Exception ex)
+      {
+        logger.Error($"Could not create view model of type {property.PropertyType.Name} (property {modelType.FullName}.{property.Name}", ex);
+        yield break;
+      }
+
+      yield return viewModel;
+    }
+
     protected Action SendModelUpdate;
 
     // ReSharper disable once UnusedMember.Global Used through reflection
     public void HookupUpdateEvent<TModel>()
     {
       modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(
-        Model,
+        (TModel)Model,
         () => Properties.ForEach(x => x.Update()));
 
       SendModelUpdate = () => eventAggregator.ModelUpdated((TModel) Model);

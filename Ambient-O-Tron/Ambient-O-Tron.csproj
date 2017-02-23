@@ -186,12 +186,14 @@
     </Compile>
     <Compile Include="Views\Cache\Navigation\CacheNavigationGroup.cs" />
     <Compile Include="Views\Navigation\INavitagionItem.cs" />
+    <Compile Include="Views\Properties\PropertyViewModels\BoolPropertyViewModel.cs" />
     <Compile Include="Views\Properties\PropertyViewModels\ColorPropertyViewModel.cs" />
     <Compile Include="Views\Properties\PropertiesView.xaml.cs">
       <DependentUpon>PropertiesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Properties\PropertiesViewModel.cs" />
     <Compile Include="Views\Properties\PropertyViewModels\PropertyViewModel.cs" />
+    <Compile Include="Views\Properties\PropertyViewModels\SliderPropertyViewModel.cs" />
     <Compile Include="Views\Properties\PropertyViewModels\StringPropertyViewModel.cs" />
     <Compile Include="Views\SoundBoard\SoundBoardEntryViewModel.cs" />
     <Compile Include="Views\Navigation\NavigationGroup.cs" />

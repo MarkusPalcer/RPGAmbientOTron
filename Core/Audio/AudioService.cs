@@ -67,7 +67,7 @@ namespace Core.Audio
     {
       var source = ambienceSourceFactory.CreateExport().Value;
       source.SetModel(model);
-      rootMixer.AddMixerInput(source.Audio);
+      rootMixer.AddMixerInput(source);
     }
   }
 }
