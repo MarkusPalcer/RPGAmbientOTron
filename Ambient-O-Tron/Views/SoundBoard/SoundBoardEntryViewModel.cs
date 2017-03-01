@@ -6,7 +6,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
-using Core.Audio;
 using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
@@ -21,7 +20,7 @@ namespace AmbientOTron.Views.SoundBoard
   [Export]
   public class SoundBoardEntryViewModel : BindableBase, IDisposable
   {
-    private readonly IAudioService audioService;
+    private readonly IEventAggregator eventAggregator;
     private readonly CompositeDisposable disposables = new CompositeDisposable();
     private readonly INavigationService navigationService;
 
@@ -34,10 +33,9 @@ namespace AmbientOTron.Views.SoundBoard
     public SoundBoardEntryViewModel(
       IEventAggregator eventAggregator,
       IRepository repository,
-      IAudioService audioService,
       INavigationService navigationService)
     {
-      this.audioService = audioService;
+      this.eventAggregator = eventAggregator;
       this.navigationService = navigationService;
 
       PlayCommand = new DelegateCommand(Play, () => !HasError).ObservesProperty(() => HasError);
@@ -75,16 +73,9 @@ namespace AmbientOTron.Views.SoundBoard
       GC.SuppressFinalize(this);
     }
 
-    private async void Play()
+    private void Play()
     {
-      try
-      {
-        await audioService.Play(Model.Sound);
-      }
-      catch (Exception)
-      {
-        HasError = true;
-      }
+      eventAggregator.Trigger(Model.Sound);
     }
 
     public void SetModel(Core.Repository.Models.SoundBoard.Entry model)

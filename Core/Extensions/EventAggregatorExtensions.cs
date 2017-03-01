@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Events;
+using Core.Repository.Sounds;
 using Prism.Events;
 
 namespace Core.Extensions
@@ -35,6 +36,11 @@ namespace Core.Extensions
     {
       return eventAggregator.GetEvent<AddModelEvent<TModel>>()
                      .Subscribe(handler, ThreadOption.UIThread, true);
+    }
+
+    public static void Trigger(this IEventAggregator eventAggregator, Sound sound)
+    {
+      eventAggregator.GetEvent<TriggerSoundEvent>().Publish(sound);
     }
   }
 }

@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using Core.Audio.NAudio;
 using Core.Extensions;
 using Core.Repository;
 using Core.Repository.Models;
@@ -41,10 +42,8 @@ namespace Core.Audio.ModelSpecificWaveProviders
       using (semaphore.Protect())
       {
         sourceStream = repository.GetSource(sound).Open();
-        
-        var stereo = sourceStream.WaveFormat.Channels == 1
-                       ? new MonoToStereoProvider16(sourceStream)
-                       : (IWaveProvider) sourceStream;
+
+        var stereo = sourceStream.MakeStereo();
 
         volumeLimiter = new VolumeWaveProvider16(stereo)
         {

@@ -3,7 +3,6 @@ using Core.Audio.ModelSpecificWaveProviders;
 using Core.Extensions;
 using Core.Repository;
 using Core.Repository.Models;
-using Core.Repository.Sounds;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Prism.Events;
@@ -15,41 +14,24 @@ namespace Core.Audio
   [PartCreationPolicy(CreationPolicy.Shared)]
   public class AudioService : IAudioService
   {
-    private readonly IInternalRepository repository;
     private readonly ExportFactory<AmbienceWaveProvider> ambienceSourceFactory;
-
-    private readonly NoPlayback noPlayback = new NoPlayback();
 
     private WaveOut outputDevice;
     private MixingSampleProvider rootMixer;
 
     public const int TemporarayBufferSize = 1024;
 
-    internal static WaveFormat DefaultWaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
+    internal static readonly WaveFormat DefaultWaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
+    private readonly SoundBoardWaveProvider soundBoardWaveProvider;
 
     [ImportingConstructor]
     internal AudioService(IInternalRepository repository, ExportFactory<AmbienceWaveProvider> ambienceSourceFactory, IEventAggregator eventAggregator)
     {
-      this.repository = repository;
       this.ambienceSourceFactory = ambienceSourceFactory;
 
       eventAggregator.OnModelAdd<AmbienceModel>(Initialize);
+      soundBoardWaveProvider = new SoundBoardWaveProvider(repository, eventAggregator);
     }
-
-    #region Implementation of IAudioService
-
-    public IPlayback Play(Sound sound)
-    {
-      var source = repository.GetSource(sound);
-
-      if (source == null)
-        return noPlayback;
-
-      return new Playback(source.Open());
-    }
-
-    #endregion
-
 
     public void Init()
     {
@@ -57,6 +39,8 @@ namespace Core.Audio
       {
         ReadFully = true
       };
+
+      rootMixer.AddMixerInput(soundBoardWaveProvider);
 
       outputDevice = new WaveOut();
       outputDevice.Init(rootMixer);
