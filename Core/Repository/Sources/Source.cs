@@ -31,7 +31,7 @@ namespace Core.Repository.Sources
         byte[] data;
         if (cache.TryGetTarget(out data))
         {
-          return new RawSourceWaveStream(new MemoryStream(data), format);
+          return CreateWaveStream(data);
         }
 
         using (var src = new Mp3FileReader(open()))
@@ -41,9 +41,14 @@ namespace Core.Repository.Sources
           src.Read(data, 0, data.Length);
           format = src.WaveFormat;
 
-          return new RawSourceWaveStream(new MemoryStream(data), format);
+          return CreateWaveStream(data);
         }
       }
+    }
+
+    private WaveStream CreateWaveStream(byte[] data)
+    {
+      return new RawSourceWaveStream(new MemoryStream(data), format);
     }
 
     protected bool Equals(Source other)

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 
 namespace Core.Repository.Sources
 {
