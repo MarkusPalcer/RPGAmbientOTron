@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows;
 using System.Windows.Input;
+using AmbientOTron.Extensions;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
 using Core.Events;
@@ -26,6 +28,7 @@ namespace AmbientOTron.Views.SoundBoard
   {
     private readonly ExportFactory<SoundBoardEntryViewModel> audioFileViewModelFactory;
     private readonly SerialDisposable updateSubscription = new SerialDisposable();
+    private readonly SerialDisposable deleteSubscription = new SerialDisposable();
     private readonly CompositeDisposable disposables = new CompositeDisposable();
 
     private readonly DragDropHelper dragDropHelper;
@@ -176,6 +179,7 @@ namespace AmbientOTron.Views.SoundBoard
         new NavigationParameters().WithModel(model));
 
       updateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
+      deleteSubscription.Disposable = eventAggregator.OnModelRemove(model, _ => navigationService.CloseSoundBoard());
 
       UpdateFromModel();
 

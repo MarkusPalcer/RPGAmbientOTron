@@ -9,5 +9,7 @@ namespace AmbientOTron.Views.Navigation
     public string Name { get; set; }
     public ObservableCollection<TItem> Items { get; set; }
     public ICommand NavigateCommand { get; } = null;
+
+    public IEnumerable<NavigationItemContextMenuEntry> ContextMenuEntries { get; protected set; } = null;
   }
 }

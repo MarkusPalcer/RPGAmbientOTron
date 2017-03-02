@@ -160,6 +160,7 @@
       <DependentUpon>LabelledControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ProgressCircle.cs" />
+    <Compile Include="Extensions\NavigationServiceExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Views\Ambience\Navigation\AmbienceNavigationGroup.cs" />
     <Compile Include="Views\Ambience\Navigation\AmbienceNavigationViewModel.cs" />
@@ -186,6 +187,7 @@
     </Compile>
     <Compile Include="Views\Cache\Navigation\CacheNavigationGroup.cs" />
     <Compile Include="Views\Navigation\INavitagionItem.cs" />
+    <Compile Include="Views\Navigation\NavigationItemContextMenuEntry.cs" />
     <Compile Include="Views\Properties\PropertyViewModels\BoolPropertyViewModel.cs" />
     <Compile Include="Views\Properties\PropertyViewModels\ColorPropertyViewModel.cs" />
     <Compile Include="Views\Properties\PropertiesView.xaml.cs">

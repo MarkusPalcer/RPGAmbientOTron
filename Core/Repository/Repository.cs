@@ -48,6 +48,7 @@ namespace Core.Repository
 
       eventAggregator.OnModelAdd<SoundBoardModel>(model => soundBoardCache.Add(model));
       eventAggregator.OnModelAdd<AmbienceModel>(newModel => ambiences.Add(newModel));
+      eventAggregator.OnModelRemove<SoundBoardModel>(model => soundBoardCache.Remove(model));
     }
 
     public async void Init()

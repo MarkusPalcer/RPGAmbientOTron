@@ -1,6 +1,8 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Disposables;
 using Core.Audio.Triggerables;
 using Core.Audio.Triggers;
 using Core.Events;
@@ -23,7 +25,9 @@ namespace Core.Audio.ModelSpecificWaveProviders
     private readonly MixingSampleProvider rootMixer;
     private readonly IWaveProvider waveProviderImplementation;
 
-    private IDisposable modelUpdateDisposable;
+    private readonly SerialDisposable modelUpdateDisposable = new SerialDisposable();
+    private readonly SerialDisposable modelRemoveDisposable = new SerialDisposable();
+
     private readonly DynamicVisitor<SoundBoardModel.Entry> triggerCreationVisitor = new DynamicVisitor<SoundBoardModel.Entry>();
 
     private class TriggerData
@@ -32,12 +36,11 @@ namespace Core.Audio.ModelSpecificWaveProviders
       public readonly HashSet<ITriggerToken> TriggeredSounds = new HashSet<ITriggerToken>();
     }
 
-    private Dictionary<SoundBoardModel.Entry, ITrigger> triggers = new Dictionary<SoundBoardModel.Entry, ITrigger>();
+    private readonly Dictionary<SoundBoardModel.Entry, ITrigger> triggers = new Dictionary<SoundBoardModel.Entry, ITrigger>();
     private readonly Dictionary<ITrigger, TriggerData> triggerData = new Dictionary<ITrigger, TriggerData>();
 
     private void LoadNewSoundBoard(SoundBoardModel model)
     {
-      modelUpdateDisposable?.Dispose();
       triggerData.Keys.ToArray().ForEach(RemoveTrigger);
       triggers.Clear();
 
@@ -45,7 +48,8 @@ namespace Core.Audio.ModelSpecificWaveProviders
         return;
 
       model.Entries.ForEach(triggerCreationVisitor.Visit);
-      modelUpdateDisposable = eventAggregator.OnModelUpdate(model, UpdateModel);
+      modelUpdateDisposable.Disposable = eventAggregator.OnModelUpdate(model, UpdateModel);
+      modelRemoveDisposable.Disposable = eventAggregator.OnModelRemove(model, _ => LoadNewSoundBoard(null));
     }
 
     private void UpdateModel(SoundBoardModel model)
@@ -103,7 +107,10 @@ namespace Core.Audio.ModelSpecificWaveProviders
         {
           rootMixer.RemoveMixerInput(item);
           item.Dispose();
-          triggerData[trigger].TriggeredSounds.Remove(item);
+          if (triggerData.ContainsKey(trigger))
+          {
+            triggerData[trigger].TriggeredSounds.Remove(item);
+          }
         });
     }
 

@@ -4,10 +4,18 @@ using System.Windows.Input;
 
 namespace AmbientOTron.Views.Navigation
 {
-  public interface INavigationEntry<TChildren>
+  public interface INavigationEntry
   {
     string Name { get; }
-    ObservableCollection<TChildren> Items { get; }
+
     ICommand NavigateCommand { get; }
+    IEnumerable<NavigationItemContextMenuEntry> ContextMenuEntries { get; }
+  }
+
+  public interface INavigationEntry<TChildren> : INavigationEntry
+  {
+    
+    ObservableCollection<TChildren> Items { get; }
+    
   }
 }

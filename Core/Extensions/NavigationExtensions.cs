@@ -1,4 +1,5 @@
-﻿using Prism.Regions;
+﻿using Core.Navigation;
+using Prism.Regions;
 
 namespace Core.Extensions
 {
