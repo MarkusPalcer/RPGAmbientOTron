@@ -3,7 +3,7 @@ using Core.Repository.Sounds;
 
 namespace AmbientOTron.Views.Cache.Navigation
 {
-  public class SoundNavigationViewModel : NavigationItemViewModel<Sound>
+  public class SoundNavigationViewModel : NavigationItemViewModel<SoundModel>
   {
     protected override void UpdateFromModel()
     {

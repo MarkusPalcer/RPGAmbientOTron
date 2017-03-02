@@ -9,7 +9,7 @@ using Prism.Regions;
 namespace AmbientOTron.Views.SoundBoard.Navigation
 {
   [Export]
-  public class SoundBoardNavigationViewModel : NavigationItemViewModel<Core.Repository.Models.SoundBoard>
+  public class SoundBoardNavigationViewModel : NavigationItemViewModel<Core.Repository.Models.SoundBoardModel>
   {
     private readonly IEventAggregator eventAggregator;
     private readonly INavigationService navigationService;
@@ -23,7 +23,7 @@ namespace AmbientOTron.Views.SoundBoard.Navigation
       this.eventAggregator = eventAggregator;
     }
 
-    protected override void OnModelSet(Core.Repository.Models.SoundBoard newModel)
+    protected override void OnModelSet(Core.Repository.Models.SoundBoardModel newModel)
     {
       NavigateCommand = navigationService.CreateNavigationCommand<SoundBoardView>(
         ShellViewModel.LowerPane,

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Core.Repository.Sounds
 {
-  public class Sound 
+  public class SoundModel 
   {
     public string Hash { get; set; }
 
@@ -12,9 +12,9 @@ namespace Core.Repository.Sounds
     [JsonIgnore]
     public IObservable<Status> Status { get; internal set; }
 
-    public Sound Clone()
+    public SoundModel Clone()
     {
-      return new Sound()
+      return new SoundModel()
       {
         Hash = Hash,
         Name = Name,

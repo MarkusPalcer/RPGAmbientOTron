@@ -31,7 +31,7 @@ namespace Core.Repository.Models
   [TypeName("Looped Sound")]
   public class LoopModel : AmbienceModel.Entry
   {
-    public Sound Sound { get; set; }
+    public SoundModel Sound { get; set; }
 
     [Property]
     [JsonIgnore] 

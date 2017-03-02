@@ -11,7 +11,7 @@ namespace Core.Repository.Models
     public string Folder { get; set; }
 
     [JsonIgnore]
-    public List<Sound> Sounds { get; } = new List<Sound>();
+    public List<SoundModel> Sounds { get; } = new List<SoundModel>();
 
     protected bool Equals(Cache other)
     {

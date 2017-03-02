@@ -20,11 +20,11 @@ namespace AmbientOTron.Views.SoundBoard.Navigation
 
       Items = new ObservableCollection<SoundBoardNavigationViewModel>();
 
-      eventAggregator.OnModelAdd<Core.Repository.Models.SoundBoard>(
+      eventAggregator.OnModelAdd<Core.Repository.Models.SoundBoardModel>(
         x => Items.Add(CreateItemViewModel(x)));
     }
 
-    private SoundBoardNavigationViewModel CreateItemViewModel(Core.Repository.Models.SoundBoard model)
+    private SoundBoardNavigationViewModel CreateItemViewModel(Core.Repository.Models.SoundBoardModel model)
     {
       var export = itemFactory.CreateExport();
       export.Value.Model = model;

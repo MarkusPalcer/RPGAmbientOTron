@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace Core.Repository.Models
 {
   [TypeName("Sound Board")]
-  public class SoundBoard
+  public class SoundBoardModel
   {
     [Property]
     public string Name { get; set; } = @"Unnamed soundboard";
@@ -18,7 +18,7 @@ namespace Core.Repository.Models
     [TypeName("Sound Board Entry")]
     public class Entry
     {
-      public Sound Sound { get; set; }
+      public SoundModel Sound { get; set; }
 
       [Property]
       [JsonIgnore]

@@ -26,7 +26,7 @@ namespace Core.Repository
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
     private readonly IEventAggregator eventAggregator;
-    private readonly HashSet<SoundBoard> soundBoardCache = new HashSet<SoundBoard>();
+    private readonly HashSet<SoundBoardModel> soundBoardCache = new HashSet<SoundBoardModel>();
     private readonly Dictionary<string, ISource> knownFiles = new Dictionary<string, ISource>();
     private readonly Dictionary<string, ISource> knownSources = new Dictionary<string, ISource>();
     private readonly Dictionary<string, BehaviorSubject<Status>> statuses = new Dictionary<string, BehaviorSubject<Status>>();
@@ -46,7 +46,7 @@ namespace Core.Repository
         TypeNameHandling = TypeNameHandling.Auto,
       };
 
-      eventAggregator.OnModelAdd<SoundBoard>(model => soundBoardCache.Add(model));
+      eventAggregator.OnModelAdd<SoundBoardModel>(model => soundBoardCache.Add(model));
       eventAggregator.OnModelAdd<AmbienceModel>(newModel => ambiences.Add(newModel));
     }
 
@@ -247,13 +247,13 @@ namespace Core.Repository
       // Release unmanaged resources here
     }
 
-    ISource IInternalRepository.GetSource(Sound sound)
+    ISource IInternalRepository.GetSource(SoundModel sound)
     {
       ISource result;
       return knownSources.TryGetValue(sound.Hash, out result) ? result : null;
     }
 
-    public async Task<Sound> ImportFile(string fileName)
+    public async Task<SoundModel> ImportFile(string fileName)
     {
       using (await semaphore.ProtectAsync())
       {
@@ -280,9 +280,9 @@ namespace Core.Repository
       }
     }
 
-    private Sound ResolveSound(ISource source, string defaultName)
+    private SoundModel ResolveSound(ISource source, string defaultName)
     {
-      var result = new Sound
+      var result = new SoundModel
       {
         Name = defaultName,
         Hash = source.Hash
