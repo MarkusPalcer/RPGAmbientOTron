@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
+using Core.Events;
 using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
@@ -33,7 +34,7 @@ namespace AmbientOTron.Views.SoundBoard
     private readonly IRepository repository;
 
     private ObservableCollection<SoundBoardEntryViewModel> files;
-    private Core.Repository.Models.SoundBoard model;
+    private Core.Repository.Models.SoundBoardModel model;
 
     private string name = "Unnamed soundboard";
 
@@ -54,7 +55,7 @@ namespace AmbientOTron.Views.SoundBoard
       {
         {DragDropHelper.IsFileDrop, DropFile},
         {dropInfo => dropInfo.Data is SoundBoardEntryViewModel, ReorderEntries, _ => DragDropEffects.Move},
-        {dropInfo => dropInfo.Data is Sound, DropModel}
+        {dropInfo => dropInfo.Data is SoundModel, DropModel}
       };
 
       disposables.Add(updateSubscription);
@@ -90,7 +91,7 @@ namespace AmbientOTron.Views.SoundBoard
     private void SaveChanges()
     {
       if (model == null)
-        model = new Core.Repository.Models.SoundBoard();
+        model = new Core.Repository.Models.SoundBoardModel();
 
       model.Name = Name;
       model.Entries = Files.Select(x => x.Model).ToList();
@@ -121,7 +122,7 @@ namespace AmbientOTron.Views.SoundBoard
 
         Files.Add(
           CreateSourceViewModel(
-            new Core.Repository.Models.SoundBoard.Entry
+            new Core.Repository.Models.SoundBoardModel.Entry
             {
               Sound = source
             }));
@@ -132,13 +133,13 @@ namespace AmbientOTron.Views.SoundBoard
 
     private void DropModel(IDropInfo dropInfo)
     {
-      var droppedModel = dropInfo.Data as Sound;
+      var droppedModel = dropInfo.Data as SoundModel;
       if (droppedModel == null)
         return;
 
       Files.Add(
         CreateSourceViewModel(
-          new Core.Repository.Models.SoundBoard.Entry
+          new Core.Repository.Models.SoundBoardModel.Entry
           {
             Sound = droppedModel.Clone()
           }));
@@ -153,7 +154,7 @@ namespace AmbientOTron.Views.SoundBoard
       Files.AddRange(model.Entries.Select(CreateSourceViewModel));
     }
 
-    private SoundBoardEntryViewModel CreateSourceViewModel(Core.Repository.Models.SoundBoard.Entry forModel)
+    private SoundBoardEntryViewModel CreateSourceViewModel(Core.Repository.Models.SoundBoardModel.Entry forModel)
     {
       var export = audioFileViewModelFactory.CreateExport();
       disposables.Add(export);
@@ -168,7 +169,7 @@ namespace AmbientOTron.Views.SoundBoard
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     { 
-      model = navigationContext.GetModel<Core.Repository.Models.SoundBoard>();
+      model = navigationContext.GetModel<Core.Repository.Models.SoundBoardModel>();
 
       PropertiesCommand = navigationService.CreateNavigationCommand<PropertiesView>(
         ShellViewModel.PropertiesPane,
@@ -177,6 +178,8 @@ namespace AmbientOTron.Views.SoundBoard
       updateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
 
       UpdateFromModel();
+
+      eventAggregator.GetEvent<InitializeSoundBoardEvent>().Publish(model);
     }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)

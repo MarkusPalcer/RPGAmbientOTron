@@ -38,9 +38,9 @@ namespace Core.Extensions
                      .Subscribe(handler, ThreadOption.UIThread, true);
     }
 
-    public static void Trigger(this IEventAggregator eventAggregator, Sound sound)
+    public static void Trigger(this IEventAggregator eventAggregator, SoundModel sound)
     {
-      eventAggregator.GetEvent<TriggerSoundEvent>().Publish(sound);
+      eventAggregator.GetEvent<ManualTriggerEvent<SoundModel>>().Publish(sound);
     }
   }
 }

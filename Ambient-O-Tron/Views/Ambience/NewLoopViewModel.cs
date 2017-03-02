@@ -29,7 +29,7 @@ namespace AmbientOTron.Views.Ambience
       {
         {DragDropHelper.IsFileDrop, AddFiles},
         {x => x.Data is LoopModel, CopyLoop},
-        {x => x.Data is Core.Repository.Sounds.Sound, AddSound}
+        {x => x.Data is Core.Repository.Sounds.SoundModel, AddSound}
       };
     }
 
@@ -37,7 +37,7 @@ namespace AmbientOTron.Views.Ambience
     {
       model.Entries.Add(new LoopModel
       {
-        Sound = (obj.Data as Core.Repository.Sounds.Sound)?.Clone()
+        Sound = (obj.Data as Core.Repository.Sounds.SoundModel)?.Clone()
       });
 
       eventAggregator.ModelUpdated(model);

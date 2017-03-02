@@ -52,7 +52,7 @@ namespace AmbientOTron.Views.SoundBoard
       private set { SetProperty(ref propertyCommand, value); }
     }
 
-    public Core.Repository.Models.SoundBoard.Entry Model { get; set; }
+    public Core.Repository.Models.SoundBoardModel.Entry Model { get; set; }
 
     public string Name => Model.Sound.Name;
 
@@ -78,7 +78,7 @@ namespace AmbientOTron.Views.SoundBoard
       eventAggregator.Trigger(Model.Sound);
     }
 
-    public void SetModel(Core.Repository.Models.SoundBoard.Entry model)
+    public void SetModel(Core.Repository.Models.SoundBoardModel.Entry model)
     {
       Model = model;
       statusSubscription.Disposable = model.Sound.Status.Select(x => x != Status.Ready).Subscribe(x => HasError = x);

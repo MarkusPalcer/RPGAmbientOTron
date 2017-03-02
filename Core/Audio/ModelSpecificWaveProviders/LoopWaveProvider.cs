@@ -37,7 +37,7 @@ namespace Core.Audio.ModelSpecificWaveProviders
       model.Sound.Status.DistinctUntilChanged().Where(x => x == Status.Ready).Subscribe(_ => Dispatcher.CurrentDispatcher.Invoke(() => ReloadSound(model.Sound)));
     }
 
-    private void ReloadSound(Sound sound)
+    private void ReloadSound(SoundModel sound)
     {
       using (semaphore.Protect())
       {

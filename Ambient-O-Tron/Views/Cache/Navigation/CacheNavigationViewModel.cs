@@ -54,7 +54,7 @@ namespace AmbientOTron.Views.Cache.Navigation
       }
     }
 
-    private SoundNavigationViewModel CreateItemViewModel(Sound sound)
+    private SoundNavigationViewModel CreateItemViewModel(SoundModel sound)
     {
       return new SoundNavigationViewModel
       {

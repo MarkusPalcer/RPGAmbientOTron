@@ -3,5 +3,5 @@ using Prism.Events;
 
 namespace Core.Events
 {
-  public class TriggerSoundEvent : PubSubEvent<Sound> { }
+  public class ManualTriggerEvent<TModel> : PubSubEvent<TModel> { }
 }

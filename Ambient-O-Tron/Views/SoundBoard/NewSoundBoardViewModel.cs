@@ -37,7 +37,7 @@ namespace AmbientOTron.Views.SoundBoard
 
     private void Save()
     {
-      var newModel = new Core.Repository.Models.SoundBoard
+      var newModel = new Core.Repository.Models.SoundBoardModel
       {
         Name = name,
       };

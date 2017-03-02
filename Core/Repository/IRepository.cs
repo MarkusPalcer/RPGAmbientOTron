@@ -6,12 +6,12 @@ namespace Core.Repository
 {
   internal interface IInternalRepository
   {
-    ISource GetSource(Sound sound);
+    ISource GetSource(SoundModel sound);
   }
 
   public interface IRepository
   {
-    Task<Sound> ImportFile(string fileName);
+    Task<SoundModel> ImportFile(string fileName);
       
     Task ImportCache(string cacheFolder);
   }
