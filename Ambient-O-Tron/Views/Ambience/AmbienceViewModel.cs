@@ -25,27 +25,46 @@ namespace AmbientOTron.Views.Ambience
   {
     private readonly SerialDisposable modelUpdateSubscription = new SerialDisposable();
     private readonly IEventAggregator eventAggregator;
-    private readonly ExportFactory<LoopViewModel> loopViewModelFactory;
     private readonly IRepository repository;
     private readonly List<IDisposable> viewModelDisposables = new List<IDisposable>();
     private AmbienceEntryViewModel loopCreator;
     private readonly DynamicVisitor<AmbienceModel.Entry> entryViewModelCreator = new DynamicVisitor<AmbienceModel.Entry>();
+    private readonly DynamicVisitor<AmbienceEntryViewModel> entryDeleter = new DynamicVisitor<AmbienceEntryViewModel>();
 
     [ImportingConstructor]
     public AmbienceViewModel(IEventAggregator eventAggregator, ExportFactory<LoopViewModel> loopViewModelFactory, IRepository repository, INavigationService navigationService)
     {
       this.eventAggregator = eventAggregator;
-      this.loopViewModelFactory = loopViewModelFactory;
       this.repository = repository;
 
       entryViewModelCreator.Register(CreateViewModelFactory<LoopModel,LoopViewModel>(loopViewModelFactory));
 
-      PropertiesCommand =
-        new DelegateCommand(
-          () =>
+      entryDeleter.Register(CreateViewModelRemoval<LoopModel,LoopViewModel>());
+
+      PropertiesCommand = new DelegateCommand(() =>
             navigationService.NavigateAsync<PropertiesView>(
               Shell.ShellViewModel.PropertiesPane,
               new NavigationParameters().WithModel(Model)));
+
+      DeleteEntryCommand = new DelegateCommand<AmbienceEntryViewModel>(DeleteEntry);
+    }
+
+    private void DeleteEntry(AmbienceEntryViewModel entry)
+    {
+      entryDeleter.Visit(entry);
+    }
+
+    public ICommand DeleteEntryCommand { get; set; }
+
+    private Action<TViewModel> CreateViewModelRemoval<TModel, TViewModel>()
+      where TViewModel : AmbienceEntryViewModel, IWithModel<TModel>
+      where TModel : AmbienceModel.Entry
+    {
+      return vm =>
+      {
+        Model.Entries.Remove(vm.Model);
+        eventAggregator.ModelUpdated(Model);
+      };
     }
 
     private Action<TModel> CreateViewModelFactory<TModel, TViewModel>(ExportFactory<TViewModel> exportFactory)
