@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Reactive.Disposables;
 using System.Windows.Input;
+using AmbientOTron.Extensions;
 using AmbientOTron.Views.Ambience.Entries;
 using AmbientOTron.Views.Navigation;
 using AmbientOTron.Views.Properties;
@@ -24,18 +25,22 @@ namespace AmbientOTron.Views.Ambience
   public class AmbienceViewModel : BindableBase, INavigationAware, IDisposable
   {
     private readonly SerialDisposable modelUpdateSubscription = new SerialDisposable();
+    private readonly SerialDisposable deleteSubscription = new SerialDisposable();
     private readonly IEventAggregator eventAggregator;
     private readonly IRepository repository;
+    private readonly INavigationService navigationService;
     private readonly List<IDisposable> viewModelDisposables = new List<IDisposable>();
     private AmbienceEntryViewModel loopCreator;
     private readonly DynamicVisitor<AmbienceModel.Entry> entryViewModelCreator = new DynamicVisitor<AmbienceModel.Entry>();
     private readonly DynamicVisitor<AmbienceEntryViewModel> entryDeleter = new DynamicVisitor<AmbienceEntryViewModel>();
+    
 
     [ImportingConstructor]
     public AmbienceViewModel(IEventAggregator eventAggregator, ExportFactory<LoopViewModel> loopViewModelFactory, IRepository repository, INavigationService navigationService)
     {
       this.eventAggregator = eventAggregator;
       this.repository = repository;
+      this.navigationService = navigationService;
 
       entryViewModelCreator.Register(CreateViewModelFactory<LoopModel,LoopViewModel>(loopViewModelFactory));
 
@@ -69,6 +74,7 @@ namespace AmbientOTron.Views.Ambience
 
     private Action<TModel> CreateViewModelFactory<TModel, TViewModel>(ExportFactory<TViewModel> exportFactory)
       where TViewModel: AmbienceEntryViewModel, IWithModel<TModel>
+      where TModel : AmbienceModel.Entry
     {
       return m =>
       {
@@ -90,6 +96,7 @@ namespace AmbientOTron.Views.Ambience
       loopCreator = new NewLoopViewModel(Model, eventAggregator, repository);
 
       modelUpdateSubscription.Disposable = eventAggregator.OnModelUpdate(Model, UpdateFromModel);
+      deleteSubscription.Disposable = eventAggregator.OnModelRemove(Model, _ => navigationService.CloseAmbience());
 
       Model.IsPlaying = true;
       eventAggregator.ModelUpdated(Model);
@@ -149,6 +156,8 @@ namespace AmbientOTron.Views.Ambience
         Entries.Clear();
         viewModelDisposables.ForEach(x => x.Dispose());
         viewModelDisposables.Clear();
+        modelUpdateSubscription.Dispose();
+        deleteSubscription.Dispose();
       }
 
       // Release unmanaged resources here

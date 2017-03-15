@@ -187,6 +187,7 @@
     </Compile>
     <Compile Include="Views\Cache\Navigation\CacheNavigationGroup.cs" />
     <Compile Include="Views\Navigation\INavitagionItem.cs" />
+    <Compile Include="Views\Navigation\NavigationEntry.cs" />
     <Compile Include="Views\Navigation\NavigationItemContextMenuEntry.cs" />
     <Compile Include="Views\Properties\PropertyViewModels\BoolPropertyViewModel.cs" />
     <Compile Include="Views\Properties\PropertyViewModels\ColorPropertyViewModel.cs" />
