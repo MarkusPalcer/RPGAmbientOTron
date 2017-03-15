@@ -3,8 +3,7 @@ using Core.Audio.Triggerables;
 
 namespace Core.Audio.Triggers
 {
-  public interface ITrigger : IObservable<ITriggerToken>
+  public interface ITrigger : IObservable<ITriggerToken>, IDisposable
   {
-    
   }
 }

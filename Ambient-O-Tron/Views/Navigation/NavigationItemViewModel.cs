@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using Prism.Mvvm;
 
@@ -59,12 +61,14 @@ namespace AmbientOTron.Views.Navigation
     }
 
     object IWithModel.Model => model;
+
+    public IEnumerable<NavigationItemContextMenuEntry> ContextMenuEntries { get; protected set; } =
+      Enumerable.Empty<NavigationItemContextMenuEntry>();
+
   }
 
   public abstract class NavigationItemViewModel<TModel> : NavigationItemViewModel<TModel, object>
     where TModel : class
   {
   }
-
-  
 }

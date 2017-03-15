@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -6,15 +7,18 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows;
 using System.Windows.Input;
+using AmbientOTron.Extensions;
 using AmbientOTron.Views.Properties;
 using AmbientOTron.Views.Shell;
 using Core.Events;
 using Core.Extensions;
 using Core.Navigation;
 using Core.Repository;
+using Core.Repository.Models;
 using Core.Repository.Sounds;
 using Core.WPF;
 using GongSolutions.Wpf.DragDrop;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -26,6 +30,7 @@ namespace AmbientOTron.Views.SoundBoard
   {
     private readonly ExportFactory<SoundBoardEntryViewModel> audioFileViewModelFactory;
     private readonly SerialDisposable updateSubscription = new SerialDisposable();
+    private readonly SerialDisposable deleteSubscription = new SerialDisposable();
     private readonly CompositeDisposable disposables = new CompositeDisposable();
 
     private readonly DragDropHelper dragDropHelper;
@@ -34,7 +39,7 @@ namespace AmbientOTron.Views.SoundBoard
     private readonly IRepository repository;
 
     private ObservableCollection<SoundBoardEntryViewModel> files;
-    private Core.Repository.Models.SoundBoardModel model;
+    private SoundBoardModel model;
 
     private string name = "Unnamed soundboard";
 
@@ -51,6 +56,8 @@ namespace AmbientOTron.Views.SoundBoard
       this.eventAggregator = eventAggregator;
       Files = new ObservableCollection<SoundBoardEntryViewModel>();
 
+      DeleteEntryCommand = new DelegateCommand<SoundBoardEntryViewModel>(DeleteEntry);
+
       dragDropHelper = new DragDropHelper
       {
         {DragDropHelper.IsFileDrop, DropFile},
@@ -59,6 +66,12 @@ namespace AmbientOTron.Views.SoundBoard
       };
 
       disposables.Add(updateSubscription);
+    }
+
+    private void DeleteEntry(SoundBoardEntryViewModel entry)
+    {
+      model.Entries.Remove(entry.Model);
+      eventAggregator.ModelUpdated(model);
     }
 
     public ObservableCollection<SoundBoardEntryViewModel> Files
@@ -78,6 +91,9 @@ namespace AmbientOTron.Views.SoundBoard
     }
 
     public ICommand PropertiesCommand { get; private set; }
+
+    public ICommand DeleteEntryCommand { get; }
+
 
     #region IDisposable
 
@@ -176,6 +192,7 @@ namespace AmbientOTron.Views.SoundBoard
         new NavigationParameters().WithModel(model));
 
       updateSubscription.Disposable = eventAggregator.OnModelUpdate(model, UpdateFromModel);
+      deleteSubscription.Disposable = eventAggregator.OnModelRemove(model, _ => navigationService.CloseSoundBoard());
 
       UpdateFromModel();
 

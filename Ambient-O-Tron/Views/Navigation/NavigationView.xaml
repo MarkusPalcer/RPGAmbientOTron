@@ -8,14 +8,11 @@
              xmlns:dd="urn:gong-wpf-dragdrop"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-    </UserControl.Resources>
     <TreeView ItemsSource="{Binding Groups}"
                   dd:DragDrop.IsDragSource="True"
                   dd:DragDrop.DragHandler="{Binding}"
                   dd:DragDrop.IsDropTarget="True"
-                  dd:DragDrop.DropHandler="{Binding}"
-              >
+                  dd:DragDrop.DropHandler="{Binding}">
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate ItemsSource="{Binding Items}">
                 <TextBlock Text="{Binding Name}"></TextBlock>
@@ -27,6 +24,26 @@
                     Value="{Binding NavigateCommand}"/>
                 <Setter Property="behaviors:MouseDoubleClick.CommandParameter"
                     Value="{Binding}"/>
+                <Setter Property="MenuItem.ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu
+                            ItemsSource="{Binding ContextMenuEntries}">
+                            <ContextMenu.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:NavigationItemContextMenuEntry}">
+                                    <TextBlock Text="{Binding Caption}" />
+                                </DataTemplate>
+                            </ContextMenu.ItemTemplate>
+                            <ContextMenu.ItemContainerStyle>
+                                <Style TargetType="{x:Type MenuItem}">
+                                    <Setter Property="Command" Value="{Binding Command}" />
+                                    
+                                </Style>
+                                
+                            </ContextMenu.ItemContainerStyle>
+                            
+                        </ContextMenu>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </TreeView.ItemContainerStyle>
     </TreeView>

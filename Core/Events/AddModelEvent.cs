@@ -2,8 +2,5 @@
 
 namespace Core.Events
 {
-    public class AddModelEvent<TModel> : PubSubEvent<TModel>
-    {
-        
-    }
+    public class AddModelEvent<TModel> : PubSubEvent<TModel> { }
 }

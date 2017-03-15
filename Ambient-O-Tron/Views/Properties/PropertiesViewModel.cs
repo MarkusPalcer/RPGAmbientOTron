@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reflection;
 using AmbientOTron.Views.Properties.PropertyViewModels;
+using AmbientOTron.Views.Shell;
 using Core.Extensions;
 using Core.Repository;
 using Core.Repository.Attributes;
@@ -26,17 +27,20 @@ namespace AmbientOTron.Views.Properties
     }
 
     private readonly IEventAggregator eventAggregator;
+    private readonly IRegionManager regionManager;
 
     private readonly SerialDisposable modelUpdateSubscription = new SerialDisposable();
+    private readonly SerialDisposable modelRemoveSubscription = new SerialDisposable();
 
     private readonly IDictionary<Type, KnownPropertyType> knownPropertyTypes;
 
     private readonly ILog logger = LogManager.GetLogger(typeof(Repository));
 
     [ImportingConstructor]
-    protected PropertiesViewModel(IEventAggregator eventAggregator, [ImportMany] IEnumerable<KnownPropertyType> knownPropertyTypes)
+    protected PropertiesViewModel(IEventAggregator eventAggregator, [ImportMany] IEnumerable<KnownPropertyType> knownPropertyTypes, IRegionManager regionManager)
     {
       this.eventAggregator = eventAggregator;
+      this.regionManager = regionManager;
       this.knownPropertyTypes = knownPropertyTypes.ToDictionary(x => x.Type);
     }
 
@@ -139,6 +143,10 @@ namespace AmbientOTron.Views.Properties
         (TModel)Model,
         () => Properties.ForEach(x => x.Update()));
 
+      modelRemoveSubscription.Disposable = eventAggregator.OnModelRemove(
+        (TModel) Model,
+        _ => regionManager.Regions[ShellViewModel.PropertiesPane].RemoveAll());
+
       SendModelUpdate = () => eventAggregator.ModelUpdated((TModel) Model);
     }
 
@@ -172,6 +180,7 @@ namespace AmbientOTron.Views.Properties
       if (disposing)
       {
         modelUpdateSubscription.Dispose();
+        modelRemoveSubscription.Dispose();
       }
 
       // Release unmanaged resources here

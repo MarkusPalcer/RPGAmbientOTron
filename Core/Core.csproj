@@ -120,6 +120,7 @@
     <Compile Include="Events\AddModelEvent.cs" />
     <Compile Include="Events\InitializeSoundBoardEvent.cs" />
     <Compile Include="Events\ManualTriggerEvent.cs" />
+    <Compile Include="Events\RemoveModelEvent.cs" />
     <Compile Include="Events\UpdateModelEvent.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\EventAggregatorExtensions.cs" />

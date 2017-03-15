@@ -15,4 +15,12 @@
     <Style TargetType="{x:Type Label}">
         <Setter Property="Margin" Value="-5,10,0,0" />
     </Style>
+
+    <Style TargetType="{x:Type ContextMenu}">
+        <Style.Triggers>
+            <Trigger Property="HasItems" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

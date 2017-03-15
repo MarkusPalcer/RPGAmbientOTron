@@ -15,7 +15,11 @@ namespace Core.Extensions
     public static void ModelAdded<TModel>(this IEventAggregator eventAggregator, TModel model)
     {
       eventAggregator.GetEvent<AddModelEvent<TModel>>().Publish(model);
-      
+    }
+
+    public static void ModelRemoved<TModel>(this IEventAggregator eventAggregator, TModel model)
+    {
+      eventAggregator.GetEvent<RemoveModelEvent<TModel>>().Publish(model);
     }
 
     public static SubscriptionToken OnModelUpdate<TModel>(
@@ -30,6 +34,18 @@ namespace Core.Extensions
     {
       return eventAggregator.GetEvent<UpdateModelEvent<TModel>>()
                      .Subscribe(handler, ThreadOption.UIThread, true, m => ReferenceEquals(m, model));
+    }
+
+    public static SubscriptionToken OnModelRemove<TModel>(this IEventAggregator eventAggregator, TModel model, Action<TModel> handler, ThreadOption threadOption = ThreadOption.UIThread)
+    {
+      return eventAggregator.GetEvent<RemoveModelEvent<TModel>>()
+                     .Subscribe(handler, threadOption, true, m => ReferenceEquals(m, model));
+    }
+
+    public static SubscriptionToken OnModelRemove<TModel>(this IEventAggregator eventAggregator, Action<TModel> handler, ThreadOption threadOption = ThreadOption.UIThread)
+    {
+      return eventAggregator.GetEvent<RemoveModelEvent<TModel>>()
+                     .Subscribe(handler, threadOption, true);
     }
 
     public static SubscriptionToken OnModelAdd<TModel>(this IEventAggregator eventAggregator, Action<TModel> handler)

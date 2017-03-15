@@ -41,15 +41,30 @@
                     </Rectangle.Fill>
                 </Rectangle>
 
-                <Button HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Margin="10,5,5,0"
-                        Style="{StaticResource IconButtonStyle16}"
-                        Template="{StaticResource BorderlessIconButtonTemplate}"
-                        ToolTip="Edit properties"
-                        Command="{Binding PropertyCommand}">
-                    <controls:IconContainer IconName="IconicCog" />
-                </Button>
+
+                <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Margin="10,5,5,0">
+                    <Button 
+                                    Style="{StaticResource IconButtonStyle16}"
+                                    Template="{StaticResource BorderlessIconButtonTemplate}"
+                                    ToolTip="Edit properties"
+                                    Margin="5"
+                                    Command="{Binding ElementName=list, Path=DataContext.DeleteEntryCommand}"
+                                    CommandParameter="{Binding}">
+                        <controls:IconContainer IconName="IconicTrash" />
+                    </Button>
+
+                    <Button 
+                                    Style="{StaticResource IconButtonStyle16}"
+                                    Template="{StaticResource BorderlessIconButtonTemplate}"
+                                    ToolTip="Edit properties"
+                                    Margin="5"
+                                    Command="{Binding PropertyCommand}">
+                        <controls:IconContainer IconName="IconicCog" />
+                    </Button>
+                </StackPanel>
 
                 <StackPanel Margin="5"
                             Orientation="Vertical">
@@ -111,7 +126,7 @@
         <ScrollViewer HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Disabled"
                       Grid.Row="1">
-            <ItemsControl ItemsSource="{Binding Entries}">
+            <ItemsControl ItemsSource="{Binding Entries}" x:Name="list">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Vertical" />

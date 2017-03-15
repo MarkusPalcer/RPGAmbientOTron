@@ -47,6 +47,8 @@ namespace AmbientOTron.Views.SoundBoard
       navigationService.NavigateAsync<SoundBoardView>(
         ShellViewModel.LowerPane,
         new NavigationParameters().WithModel(newModel));
+
+      Name = string.Empty;
     }
   }
 }
