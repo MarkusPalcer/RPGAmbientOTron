@@ -89,6 +89,7 @@ namespace Core.Audio.ModelSpecificWaveProviders
       data.Subscription.Dispose();
       data.TriggeredSounds.ForEach(x => x.Dispose());
       triggerData.Remove(trigger);
+      trigger.Dispose();
     }
 
     private void AddTrigger(ITrigger trigger)
